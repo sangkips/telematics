@@ -1,4 +1,4 @@
-import { Vehicle, Alert, User, AuthUser, LoginCredentials } from "../types";
+import { Vehicle, Alert, User, AuthUser, LoginCredentials, MaintenanceRecord, MaintenanceSchedule } from "../types";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/v1";
@@ -35,11 +35,15 @@ class ApiService {
           this.logout();
           throw new Error("Authentication failed");
         }
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.message || `HTTP error! status: ${response.status}`
+        );
       }
 
       const data = await response.json();
-      return data;
+      // Handle the backend response format { success: true, data: ... }
+      return data.success ? data.data : data;
     } catch (error) {
       console.error("API request failed:", error);
       throw error;
@@ -65,10 +69,15 @@ class ApiService {
   }
 
   async logout(): Promise<void> {
+    const token = this.token; // Store current token
     try {
-      await this.request("/auth/logout", { method: "POST" });
+      // Only make logout request if we have a token
+      if (token) {
+        await this.request("/auth/logout", { method: "POST" });
+      }
     } catch (error) {
       console.error("Logout error:", error);
+      // Don't throw error for logout failures
     } finally {
       this.token = null;
       localStorage.removeItem("auth_token");
@@ -86,6 +95,9 @@ class ApiService {
     return response;
   }
 
+  async getCurrentUser(): Promise<AuthUser> {
+    return this.request<AuthUser>("/auth/profile");
+  }
   // Vehicles
   async getVehicles(): Promise<Vehicle[]> {
     return this.request<Vehicle[]>("/vehicles");
@@ -106,7 +118,7 @@ class ApiService {
 
   async updateVehicle(id: string, vehicle: Partial<Vehicle>): Promise<Vehicle> {
     return this.request<Vehicle>(`/vehicles/${id}`, {
-      method: "PUT",
+      method: "PATCH",
       body: JSON.stringify(vehicle),
     });
   }
@@ -122,11 +134,17 @@ class ApiService {
     return this.request<Vehicle[]>("/vehicles/updates");
   }
 
+  async getVehiclesByStatus(status: string): Promise<Vehicle[]> {
+    return this.request<Vehicle[]>(`/vehicles?status=${status}`);
+  }
   // Alerts
   async getAlerts(): Promise<Alert[]> {
     return this.request<Alert[]>("/alerts");
   }
 
+  async getUnresolvedAlerts(): Promise<Alert[]> {
+    return this.request<Alert[]>("/alerts/unresolved");
+  }
   async resolveAlert(alertId: string): Promise<void> {
     return this.request<void>(`/alerts/${alertId}/resolve`, {
       method: "PATCH",
@@ -147,7 +165,7 @@ class ApiService {
   async createUser(
     user: Omit<User, "id" | "createdAt" | "updatedAt">
   ): Promise<User> {
-    return this.request<User>("/users", {
+    return this.request<User>("/auth/register", {
       method: "POST",
       body: JSON.stringify(user),
     });
@@ -155,7 +173,7 @@ class ApiService {
 
   async updateUser(id: string, user: Partial<User>): Promise<User> {
     return this.request<User>(`/users/${id}`, {
-      method: "PUT",
+      method: "PATCH",
       body: JSON.stringify(user),
     });
   }
@@ -237,6 +255,96 @@ class ApiService {
     return this.request<void>(`/api-keys/${keyId}`, {
       method: "DELETE",
     });
+  }
+
+  // Maintenance Records
+  async getMaintenanceRecords(): Promise<MaintenanceRecord[]> {
+    return this.request<MaintenanceRecord[]>("/maintenance/records");
+  }
+
+  async getMaintenanceRecord(id: string): Promise<MaintenanceRecord> {
+    return this.request<MaintenanceRecord>(`/maintenance/records/${id}`);
+  }
+
+  async createMaintenanceRecord(
+    record: Omit<MaintenanceRecord, "id" | "createdAt" | "updatedAt">
+  ): Promise<MaintenanceRecord> {
+    return this.request<MaintenanceRecord>("/maintenance/records", {
+      method: "POST",
+      body: JSON.stringify(record),
+    });
+  }
+
+  async updateMaintenanceRecord(
+    id: string,
+    record: Partial<MaintenanceRecord>
+  ): Promise<MaintenanceRecord> {
+    return this.request<MaintenanceRecord>(`/maintenance/records/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(record),
+    });
+  }
+
+  async deleteMaintenanceRecord(id: string): Promise<void> {
+    return this.request<void>(`/maintenance/records/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // Maintenance Schedules
+  async getAllMaintenanceSchedules(): Promise<MaintenanceSchedule[]> {
+    return this.request<MaintenanceSchedule[]>("/maintenance/schedules");
+  }
+
+  async getMaintenanceSchedule(id: string): Promise<MaintenanceSchedule> {
+    return this.request<MaintenanceSchedule>(`/maintenance/schedules/${id}`);
+  }
+
+  async createMaintenanceSchedule(
+    schedule: Omit<MaintenanceSchedule, "id" | "createdAt" | "updatedAt">
+  ): Promise<MaintenanceSchedule> {
+    return this.request<MaintenanceSchedule>("/maintenance/schedules", {
+      method: "POST",
+      body: JSON.stringify(schedule),
+    });
+  }
+
+  async updateMaintenanceSchedule(
+    id: string,
+    schedule: Partial<MaintenanceSchedule>
+  ): Promise<MaintenanceSchedule> {
+    return this.request<MaintenanceSchedule>(`/maintenance/schedules/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(schedule),
+    });
+  }
+
+  async deleteMaintenanceSchedule(id: string): Promise<void> {
+    return this.request<void>(`/maintenance/schedules/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  async getSchedulesByVehicle(vehicleId: string): Promise<MaintenanceSchedule[]> {
+    return this.request<MaintenanceSchedule[]>(`/maintenance/schedules/vehicle/${vehicleId}`);
+  }
+
+  async getUpcomingSchedules(): Promise<MaintenanceSchedule[]> {
+    return this.request<MaintenanceSchedule[]>("/maintenance/schedules/upcoming");
+  }
+
+  // Service Reminders
+  async getServiceReminders(vehicleId: string): Promise<any[]> {
+    return this.request<any[]>(`/maintenance/reminders/vehicle/${vehicleId}`);
+  }
+
+  async getOverdueReminders(): Promise<any[]> {
+    return this.request<any[]>("/maintenance/reminders/overdue");
+  }
+
+  // Health Check
+  async healthCheck(): Promise<{ status: string; timestamp: string }> {
+    return this.request<{ status: string; timestamp: string }>("/health");
   }
 }
 

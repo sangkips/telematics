@@ -77,6 +77,28 @@ export const mockVehicles: Vehicle[] = [
     model: 'Camry',
     year: 2022,
     vin: '1HGBH41JXMN109186',
+    maintenanceRecords: [
+      {
+        id: '1',
+        vehicleId: '1',
+        type: 'oil_change',
+        description: 'Regular oil change and filter replacement',
+        cost: 85.50,
+        currency: 'USD',
+        performedBy: 'AutoCare Service Center',
+        performedAt: new Date('2024-01-15'),
+        odometer: 120000,
+        nextServiceOdometer: 130000,
+        nextServiceDate: new Date('2024-04-15'),
+        partsReplaced: ['Oil Filter', 'Engine Oil'],
+        notes: 'Used synthetic oil as requested',
+        status: 'completed',
+        createdAt: new Date('2024-01-15'),
+        updatedAt: new Date('2024-01-15'),
+      }
+    ],
+    nextServiceDue: new Date('2024-04-15'),
+    nextServiceOdometer: 130000,
     createdAt: new Date('2024-01-15'),
     updatedAt: new Date()
   },
@@ -111,6 +133,26 @@ export const mockVehicles: Vehicle[] = [
     model: 'Accord',
     year: 2021,
     vin: '1HGCV1F30JA123456',
+    maintenanceRecords: [
+      {
+        id: '2',
+        vehicleId: '2',
+        type: 'brake_service',
+        description: 'Front brake pad replacement',
+        cost: 245.00,
+        currency: 'USD',
+        performedBy: 'Brake Masters',
+        performedAt: new Date('2024-01-10'),
+        odometer: 95000,
+        partsReplaced: ['Front Brake Pads', 'Brake Fluid'],
+        notes: 'Rear brakes still in good condition',
+        status: 'completed',
+        createdAt: new Date('2024-01-10'),
+        updatedAt: new Date('2024-01-10'),
+      }
+    ],
+    nextServiceDue: new Date('2025-01-10'), // Service due in future
+    nextServiceOdometer: 105000,
     createdAt: new Date('2024-02-01'),
     updatedAt: new Date()
   },
@@ -145,6 +187,25 @@ export const mockVehicles: Vehicle[] = [
     model: 'F-150',
     year: 2023,
     vin: '1FTFW1ET5DFC12345',
+    maintenanceRecords: [
+      {
+        id: '3',
+        vehicleId: '3',
+        type: 'inspection',
+        description: 'Annual safety inspection',
+        cost: 125.00,
+        currency: 'USD',
+        performedBy: 'State Inspection Center',
+        performedAt: new Date('2024-01-05'),
+        odometer: 85000,
+        nextServiceDate: new Date('2025-01-05'),
+        status: 'completed',
+        createdAt: new Date('2024-01-05'),
+        updatedAt: new Date('2024-01-05'),
+      }
+    ],
+    nextServiceDue: new Date('2024-02-20'), // Overdue service
+    nextServiceOdometer: 90000,
     createdAt: new Date('2024-01-20'),
     updatedAt: new Date()
   },
@@ -170,6 +231,28 @@ export const mockVehicles: Vehicle[] = [
     model: 'Silverado',
     year: 2022,
     vin: '1GCUYDED5JZ123456',
+    maintenanceRecords: [
+      {
+        id: '4',
+        vehicleId: '4',
+        type: 'tire_rotation',
+        description: 'Tire rotation and alignment check',
+        cost: 89.99,
+        currency: 'USD',
+        performedBy: 'Tire Pro Service',
+        performedAt: new Date('2024-01-20'),
+        odometer: 155000,
+        nextServiceOdometer: 165000,
+        nextServiceDate: new Date('2024-07-20'),
+        partsReplaced: [],
+        notes: 'All tires in good condition',
+        status: 'completed',
+        createdAt: new Date('2024-01-20'),
+        updatedAt: new Date('2024-01-20'),
+      }
+    ],
+    nextServiceDue: new Date('2024-07-20'),
+    nextServiceOdometer: 165000,
     createdAt: new Date('2024-03-10'),
     updatedAt: new Date()
   }

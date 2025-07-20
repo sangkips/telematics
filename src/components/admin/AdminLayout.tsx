@@ -10,6 +10,7 @@ import {
   Globe,
   ArrowLeft,
   BarChart3,
+  Wrench,
 } from "lucide-react";
 import { VehicleManagement } from "./VehicleManagement";
 import { UserManagement } from "./UserManagement";
@@ -17,6 +18,9 @@ import { SystemSettings } from "./SystemSettings";
 import { NotificationSettings } from "./NotificationSettings";
 import { SecuritySettings } from "./SecuritySettings";
 import { ReportsPanel } from "./ReportsPanel";
+import { MaintenancePanel } from "./MaintenancePanel";
+import { MaintenanceSchedulePanel } from "./MaintenanceSchedulePanel";
+import { MaintenanceTabsPanel } from "./MaintenanceTabsPanel";
 import { useAuth } from "../../contexts/AuthContext";
 import { Vehicle } from "../../types";
 
@@ -29,11 +33,10 @@ interface AdminLayoutProps {
 export const AdminLayout: React.FC<AdminLayoutProps> = ({
   vehicles,
   onClose,
-  onVehicleUpdate,
 }) => {
   const { user, hasPermission } = useAuth();
   const [activeTab, setActiveTab] = useState<
-    "vehicles" | "users" | "system" | "notifications" | "security" | "reports"
+    "vehicles" | "users" | "maintenance" | "system" | "notifications" | "security" | "reports"
   >("vehicles");
 
   const adminStats = {
@@ -57,6 +60,13 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       icon: Users,
       permission: "view_users",
       description: "Manage system users and permissions",
+    },
+    {
+      id: "maintenance",
+      label: "Maintenance",
+      icon: Wrench,
+      permission: "view_maintenance",
+      description: "Track vehicle maintenance records and schedules",
     },
     {
       id: "reports",
@@ -83,7 +93,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       id: "security",
       label: "Security",
       icon: Shield,
-      permission: "view_security_settings",
+      permission: "manage_api_keys",
       description: "Manage API keys and security policies",
     },
   ].filter((tab) => hasPermission(tab.permission) || hasPermission("all"));
@@ -197,11 +207,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`w-full flex items-start space-x-3 p-4 rounded-lg transition-colors text-left ${
-                    activeTab === tab.id
-                      ? "bg-blue-600 text-white"
-                      : "text-gray-400 hover:text-gray-300 hover:bg-gray-700"
-                  }`}
+                  className={`w-full flex items-start space-x-3 p-4 rounded-lg transition-colors text-left ${activeTab === tab.id
+                    ? "bg-blue-600 text-white"
+                    : "text-gray-400 hover:text-gray-300 hover:bg-gray-700"
+                    }`}
                 >
                   <tab.icon className="w-5 h-5 mt-0.5 flex-shrink-0" />
                   <div>
@@ -228,6 +237,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
           <div className="bg-gray-800 rounded-lg border border-gray-700 min-h-[600px]">
             {activeTab === "vehicles" && <VehicleManagement />}
             {activeTab === "users" && <UserManagement />}
+            {activeTab === "maintenance" && (
+              <div className="p-6">
+                <MaintenanceTabsPanel />
+              </div>
+            )}
             {activeTab === "reports" && <ReportsPanel vehicles={vehicles} />}
             {activeTab === "system" && <SystemSettings />}
             {activeTab === "notifications" && <NotificationSettings />}

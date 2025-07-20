@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "../../.."
+		},
+		{
+			"path": "../../../../telemetry/fleet-backend"
+		}
+	],
+	"settings": {
+	}
+}

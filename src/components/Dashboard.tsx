@@ -9,12 +9,14 @@ import {
   Plus,
   Edit,
   Trash2,
+  Wrench,
 } from "lucide-react";
 import { Vehicle, Alert } from "../types";
 import { VehicleCard } from "./VehicleCard";
 import { VehicleMap } from "./VehicleMap";
 import { AlertPanel } from "./AlertPanel";
 import { FuelGauge } from "./FuelGauge";
+import { MaintenanceDashboard } from "./MaintenanceDashboard";
 import { AdminLayout } from "./admin/AdminLayout";
 import { Header } from "./layout/Header";
 import { useAuth } from "../contexts/AuthContext";
@@ -30,7 +32,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 }) => {
   const { hasPermission, hasAnyPermission } = useAuth();
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "map" | "alerts">(
+  const [activeTab, setActiveTab] = useState<"overview" | "map" | "alerts" | "maintenance">(
     "overview"
   );
   const [notifications, setNotifications] = useState(true);
@@ -83,7 +85,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
   // If admin panel is open, show the admin layout instead
   if (
     showAdminPanel &&
-    (hasPermission("all") || hasPermission("view_system_settings"))
+    (hasPermission("all") ||
+      hasAnyPermission([
+        "view_system_settings",
+        "create_users",
+        "create_vehicles",
+        "manage_api_keys",
+        "view_users",
+      ]))
   ) {
     return (
       <AdminLayout
@@ -125,6 +134,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
               label: "Alerts",
               icon: AlertTriangle,
               permission: "view_alerts",
+            },
+            {
+              id: "maintenance",
+              label: "Maintenance",
+              icon: Wrench,
+              permission: "view_maintenance",
             },
           ]
             .filter(
@@ -224,15 +239,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
             {/* Vehicle Grid */}
             <div>
-              <div className="flex items-center justify-between mb-4">
+              {/* <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold">Vehicle Fleet</h2>
                 {hasPermission("create_vehicles") && (
                   <button className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
                     <Plus className="w-4 h-4" />
-                    <span>Add Vehicle</span>
+                    <span>Add Vehiclesss</span>
                   </button>
                 )}
-              </div>
+              </div> */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {vehicles.map((vehicle) => (
                   <div key={vehicle.id} className="relative group">
@@ -342,6 +357,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
               onResolveAlert={canManageAlerts ? handleResolveAlert : undefined}
               onDismissAlert={canManageAlerts ? handleDismissAlert : undefined}
             />
+          </div>
+        )}
+
+        {activeTab === "maintenance" && (hasPermission("view_maintenance") || hasPermission("all")) && (
+          <div className="space-y-6">
+            <MaintenanceDashboard vehicles={vehicles} />
           </div>
         )}
       </main>

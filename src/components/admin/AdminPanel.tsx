@@ -8,20 +8,22 @@ import {
   Plus,
   Activity,
   Database,
-  Globe
+  Globe,
+  Wrench
 } from 'lucide-react';
 import { VehicleManagement } from './VehicleManagement';
 import { UserManagement } from './UserManagement';
 import { SystemSettings } from './SystemSettings';
 import { NotificationSettings } from './NotificationSettings';
 import { SecuritySettings } from './SecuritySettings';
+import { MaintenancePanel } from './MaintenancePanel';
 
 interface AdminPanelProps {
   onClose: () => void;
 }
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
-  const [activeTab, setActiveTab] = useState<'vehicles' | 'users' | 'system' | 'notifications' | 'security'>('vehicles');
+  const [activeTab, setActiveTab] = useState<'vehicles' | 'users' | 'maintenance' | 'system' | 'notifications' | 'security'>('vehicles');
 
   const adminStats = {
     totalUsers: 124,
@@ -33,6 +35,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
   const tabs = [
     { id: 'vehicles', label: 'Vehicle Management', icon: Car },
     { id: 'users', label: 'User Management', icon: Users },
+    { id: 'maintenance', label: 'Maintenance', icon: Wrench },
     { id: 'system', label: 'System Settings', icon: Settings },
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'security', label: 'Security', icon: Shield }
@@ -134,6 +137,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
         <div className="flex-1 overflow-auto p-6">
           {activeTab === 'vehicles' && <VehicleManagement />}
           {activeTab === 'users' && <UserManagement />}
+          {activeTab === 'maintenance' && <MaintenancePanel />}
           {activeTab === 'system' && <SystemSettings />}
           {activeTab === 'notifications' && <NotificationSettings />}
           {activeTab === 'security' && <SecuritySettings />}

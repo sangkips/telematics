@@ -7,7 +7,8 @@ import {
   AlertTriangle, 
   CheckCircle, 
   XCircle,
-  Pause
+  Pause,
+  Wrench
 } from 'lucide-react';
 import { Vehicle } from '../types';
 import { FuelGauge } from './FuelGauge';
@@ -111,6 +112,28 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle, onClick }) =>
           </span>
         </div>
       </div>
+
+      {/* Maintenance Status */}
+      {vehicle.nextServiceDue && (
+        <div className="mt-4 p-3 bg-gray-700 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <Wrench className="w-4 h-4 text-blue-400 mr-2" />
+              <span className="text-sm text-gray-300">Next Service</span>
+            </div>
+            <div className="text-right">
+              <div className="text-sm font-medium text-white">
+                {new Date(vehicle.nextServiceDue).toLocaleDateString()}
+              </div>
+              {vehicle.nextServiceOdometer && (
+                <div className="text-xs text-gray-400">
+                  @ {vehicle.nextServiceOdometer.toLocaleString()} km
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Statistics */}
       <div className="mt-4 pt-4 border-t border-gray-700">
