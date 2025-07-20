@@ -30,20 +30,6 @@ export const LoginForm: React.FC = () => {
     }
   };
 
-  // const demoAccounts = [
-  //   { username: "admin", role: "Admin", description: "Full system access" },
-  //   {
-  //     username: "manager1",
-  //     role: "Manager",
-  //     description: "Vehicle & user management",
-  //   },
-  //   {
-  //     username: "operator1",
-  //     role: "Operator",
-  //     description: "Vehicle operations",
-  //   },
-  // ];
-
   const displayError = error || authError;
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 flex items-center justify-center p-4">
@@ -141,42 +127,6 @@ export const LoginForm: React.FC = () => {
             </button>
           </form>
         </div>
-
-        {/* Demo Accounts */}
-        {/* <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-semibold text-white mb-4">
-            Demo Accounts
-          </h3>
-          <div className="space-y-3">
-            {demoAccounts.map((account) => (
-              <div
-                key={account.email}
-                className="flex items-center justify-between p-3 bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-600 transition-colors"
-                onClick={() =>
-                  setCredentials({
-                    email: account.email,
-                    password: "demo",
-                  })
-                }
-              >
-                <div>
-                  <div className="text-white font-medium">
-                    {account.username}
-                  </div>
-                  <div className="text-gray-400 text-sm">
-                    {account.description}
-                  </div>
-                </div>
-                <div className="text-blue-400 text-sm font-medium">
-                  {account.role}
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="text-gray-400 text-xs mt-3">
-            Click any account above to auto-fill credentials. Password: "demo"
-          </p>
-        </div> */}
       </div>
     </div>
   );
