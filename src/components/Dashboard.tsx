@@ -32,9 +32,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
 }) => {
   const { hasPermission, hasAnyPermission } = useAuth();
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "map" | "alerts" | "maintenance">(
-    "overview"
-  );
+  const [activeTab, setActiveTab] = useState<
+    "overview" | "map" | "alerts" | "maintenance"
+  >("overview");
   const [notifications, setNotifications] = useState(true);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
 
@@ -239,15 +239,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
             {/* Vehicle Grid */}
             <div>
-              {/* <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">Vehicle Fleet</h2>
-                {hasPermission("create_vehicles") && (
-                  <button className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
-                    <Plus className="w-4 h-4" />
-                    <span>Add Vehiclesss</span>
-                  </button>
-                )}
-              </div> */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {vehicles.map((vehicle) => (
                   <div key={vehicle.id} className="relative group">
@@ -360,11 +351,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
         )}
 
-        {activeTab === "maintenance" && (hasPermission("view_maintenance") || hasPermission("all")) && (
-          <div className="space-y-6">
-            <MaintenanceDashboard vehicles={vehicles} />
-          </div>
-        )}
+        {activeTab === "maintenance" &&
+          (hasPermission("view_maintenance") || hasPermission("all")) && (
+            <div className="space-y-6">
+              <MaintenanceDashboard vehicles={vehicles} />
+            </div>
+          )}
       </main>
     </div>
   );
