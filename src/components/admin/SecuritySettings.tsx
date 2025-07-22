@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Save, Shield, Key, Plus, Eye, EyeOff, Copy, RefreshCw, Trash2 } from 'lucide-react';
+import { Save, Shield, Key, Plus, Eye, EyeOff, Copy, RefreshCw, Trash2, ChevronDown, ChevronRight } from 'lucide-react';
 import { SecuritySettings as SecuritySettingsType, ApiKey } from '../../types';
+import { useResponsive } from '../../hooks/useResponsive';
+import { useResponsiveContext } from '../../contexts/ResponsiveContext';
 
 const mockApiKeys: ApiKey[] = [
   {
@@ -26,6 +28,8 @@ const mockApiKeys: ApiKey[] = [
 ];
 
 export const SecuritySettings: React.FC = () => {
+  const { isMobile } = useResponsive();
+  const { expandedCards, toggleExpandedCard } = useResponsiveContext();
   const [settings, setSettings] = useState<SecuritySettingsType>({
     sessionTimeout: 60,
     passwordPolicy: {
@@ -109,12 +113,16 @@ export const SecuritySettings: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className={isMobile ? 'space-y-4' : 'space-y-6'}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-white">Security Settings</h2>
-          <p className="text-gray-400">Manage API keys, security policies, and access controls</p>
+      <div className={`flex items-center justify-between ${isMobile ? 'flex-col space-y-3' : ''}`}>
+        <div className={isMobile ? 'text-center' : ''}>
+          <h2 className={`font-bold text-white ${isMobile ? 'text-xl' : 'text-2xl'}`}>
+            Security Settings
+          </h2>
+          {!isMobile && (
+            <p className="text-gray-400">Manage API keys, security policies, and access controls</p>
+          )}
         </div>
         <button
           onClick={handleSave}
@@ -122,191 +130,429 @@ export const SecuritySettings: React.FC = () => {
             saved 
               ? 'bg-green-600 text-white' 
               : 'bg-blue-600 hover:bg-blue-700 text-white'
-          }`}
+          } ${isMobile ? 'w-full justify-center min-h-[44px]' : ''}`}
         >
           <Save className="w-4 h-4" />
           <span>{saved ? 'Saved!' : 'Save Changes'}</span>
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* API Keys */}
-        <div className="lg:col-span-2 bg-gray-800 rounded-lg p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-white flex items-center">
-              <Key className="w-5 h-5 mr-2 text-blue-400" />
-              API Keys
-            </h3>
-            <button
-              onClick={() => setShowNewKeyModal(true)}
-              className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+      {isMobile ? (
+        /* Mobile: Expandable Card Layout */
+        <div className="space-y-4">
+          {/* API Keys Card */}
+          <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+            <div
+              className="p-4 cursor-pointer"
+              onClick={() => toggleExpandedCard('api-keys')}
             >
-              <Plus className="w-4 h-4" />
-              <span>Generate New API Key</span>
-            </button>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Key className="w-5 h-5 text-blue-400" />
+                  <h3 className="text-lg font-semibold text-white">API Keys</h3>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowNewKeyModal(true);
+                    }}
+                    className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                    title="Generate New API Key"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                  {expandedCards.includes('api-keys') ? (
+                    <ChevronDown className="w-4 h-4 text-gray-400" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4 text-gray-400" />
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            {expandedCards.includes('api-keys') && (
+              <div className="px-4 pb-4 border-t border-gray-700">
+                <div className="space-y-3 mt-4">
+                  {apiKeys.map((apiKey) => (
+                    <div key={apiKey.id} className="bg-gray-700 rounded-lg p-3">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center space-x-2 mb-1">
+                            <h4 className="text-white font-medium text-sm truncate">{apiKey.name}</h4>
+                          </div>
+                          <div className="flex items-center space-x-2 mb-2">
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getKeyTypeColor(apiKey.type)}`}>
+                              {apiKey.type}
+                            </span>
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getKeyStatusColor(apiKey.status)}`}>
+                              {apiKey.status}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-1 ml-2">
+                          <button
+                            onClick={() => copyToClipboard(apiKey.key)}
+                            className="p-2 text-gray-400 hover:text-white hover:bg-gray-600 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                            title="Copy to clipboard"
+                          >
+                            <Copy className="w-4 h-4" />
+                          </button>
+                          {apiKey.status === 'active' && (
+                            <button
+                              onClick={() => revokeApiKey(apiKey.id)}
+                              className="p-2 text-amber-400 hover:text-amber-300 hover:bg-gray-600 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                              title="Revoke key"
+                            >
+                              <RefreshCw className="w-4 h-4" />
+                            </button>
+                          )}
+                          <button
+                            onClick={() => deleteApiKey(apiKey.id)}
+                            className="p-2 text-red-400 hover:text-red-300 hover:bg-gray-600 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                            title="Delete key"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div className="mb-2">
+                        <code className="bg-gray-800 px-2 py-1 rounded text-xs text-gray-300 font-mono block truncate">
+                          {apiKey.key}
+                        </code>
+                      </div>
+                      
+                      <div className="text-xs text-gray-400">
+                        Created: {apiKey.createdAt.toLocaleDateString()}<br />
+                        Last used: {apiKey.lastUsed ? apiKey.lastUsed.toLocaleDateString() : 'Never'}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
-          <div className="space-y-4">
-            {apiKeys.map((apiKey) => (
-              <div key={apiKey.id} className="bg-gray-700 rounded-lg p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-3 mb-2">
-                      <h4 className="text-white font-medium">{apiKey.name}</h4>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getKeyTypeColor(apiKey.type)}`}>
-                        {apiKey.type}
-                      </span>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getKeyStatusColor(apiKey.status)}`}>
-                        {apiKey.status}
-                      </span>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2 mb-2">
-                      <code className="bg-gray-800 px-3 py-1 rounded text-sm text-gray-300 font-mono">
-                        {apiKey.key}
-                      </code>
-                      <button
-                        onClick={() => copyToClipboard(apiKey.key)}
-                        className="text-gray-400 hover:text-white"
-                        title="Copy to clipboard"
-                      >
-                        <Copy className="w-4 h-4" />
-                      </button>
-                    </div>
-                    
-                    <div className="text-xs text-gray-400">
-                      Created: {apiKey.createdAt.toLocaleDateString()} • 
-                      Last used: {apiKey.lastUsed ? apiKey.lastUsed.toLocaleDateString() : 'Never'}
-                    </div>
+          {/* Security Policies Card */}
+          <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+            <div
+              className="p-4 cursor-pointer"
+              onClick={() => toggleExpandedCard('security-policies')}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Shield className="w-5 h-5 text-green-400" />
+                  <h3 className="text-lg font-semibold text-white">Security Policies</h3>
+                </div>
+                {expandedCards.includes('security-policies') ? (
+                  <ChevronDown className="w-4 h-4 text-gray-400" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                )}
+              </div>
+            </div>
+            
+            {expandedCards.includes('security-policies') && (
+              <div className="px-4 pb-4 border-t border-gray-700">
+                <div className="space-y-4 mt-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Session Timeout (minutes)</label>
+                    <input
+                      type="number"
+                      value={settings.sessionTimeout}
+                      onChange={(e) => setSettings({...settings, sessionTimeout: parseInt(e.target.value)})}
+                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 min-h-[44px]"
+                      min="5"
+                      max="480"
+                    />
                   </div>
                   
-                  <div className="flex items-center space-x-2">
-                    {apiKey.status === 'active' && (
-                      <button
-                        onClick={() => revokeApiKey(apiKey.id)}
-                        className="text-amber-400 hover:text-amber-300"
-                        title="Revoke key"
-                      >
-                        <RefreshCw className="w-4 h-4" />
-                      </button>
-                    )}
-                    <button
-                      onClick={() => deleteApiKey(apiKey.id)}
-                      className="text-red-400 hover:text-red-300"
-                      title="Delete key"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Max Failed Login Attempts</label>
+                    <input
+                      type="number"
+                      value={settings.maxFailedLogins}
+                      onChange={(e) => setSettings({...settings, maxFailedLogins: parseInt(e.target.value)})}
+                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 min-h-[44px]"
+                      min="1"
+                      max="10"
+                    />
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="text-sm font-medium text-gray-300">Two-Factor Authentication</label>
+                      <p className="text-xs text-gray-400">Require 2FA for all users</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={settings.twoFactorAuth}
+                        onChange={(e) => setSettings({...settings, twoFactorAuth: e.target.checked})}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
                   </div>
                 </div>
               </div>
-            ))}
+            )}
           </div>
-        </div>
 
-        {/* Security Policies */}
-        <div className="bg-gray-800 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <Shield className="w-5 h-5 mr-2 text-green-400" />
-            Security Policies
-          </h3>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Session Timeout (minutes)</label>
-              <input
-                type="number"
-                value={settings.sessionTimeout}
-                onChange={(e) => setSettings({...settings, sessionTimeout: parseInt(e.target.value)})}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                min="5"
-                max="480"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Max Failed Login Attempts</label>
-              <input
-                type="number"
-                value={settings.maxFailedLogins}
-                onChange={(e) => setSettings({...settings, maxFailedLogins: parseInt(e.target.value)})}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                min="1"
-                max="10"
-              />
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div>
-                <label className="text-sm font-medium text-gray-300">Two-Factor Authentication</label>
-                <p className="text-xs text-gray-400">Require 2FA for all users</p>
+          {/* Password Policy Card */}
+          <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+            <div
+              className="p-4 cursor-pointer"
+              onClick={() => toggleExpandedCard('password-policy')}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Key className="w-5 h-5 text-amber-400" />
+                  <h3 className="text-lg font-semibold text-white">Password Policy</h3>
+                </div>
+                {expandedCards.includes('password-policy') ? (
+                  <ChevronDown className="w-4 h-4 text-gray-400" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                )}
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.twoFactorAuth}
-                  onChange={(e) => setSettings({...settings, twoFactorAuth: e.target.checked})}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        {/* Password Policy */}
-        <div className="bg-gray-800 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Password Policy</h3>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Minimum Length</label>
-              <input
-                type="number"
-                value={settings.passwordPolicy.minLength}
-                onChange={(e) => setSettings({
-                  ...settings,
-                  passwordPolicy: {
-                    ...settings.passwordPolicy,
-                    minLength: parseInt(e.target.value)
-                  }
-                })}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                min="6"
-                max="32"
-              />
             </div>
             
-            <div className="space-y-3">
-              {[
-                { key: 'requireUppercase', label: 'Require uppercase letters' },
-                { key: 'requireLowercase', label: 'Require lowercase letters' },
-                { key: 'requireNumbers', label: 'Require numbers' },
-                { key: 'requireSpecialChars', label: 'Require special characters' }
-              ].map(({ key, label }) => (
-                <div key={key} className="flex items-center justify-between">
-                  <label className="text-sm text-gray-300">{label}</label>
-                  <label className="relative inline-flex items-center cursor-pointer">
+            {expandedCards.includes('password-policy') && (
+              <div className="px-4 pb-4 border-t border-gray-700">
+                <div className="space-y-4 mt-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Minimum Length</label>
                     <input
-                      type="checkbox"
-                      checked={settings.passwordPolicy[key as keyof typeof settings.passwordPolicy] as boolean}
+                      type="number"
+                      value={settings.passwordPolicy.minLength}
                       onChange={(e) => setSettings({
                         ...settings,
                         passwordPolicy: {
                           ...settings.passwordPolicy,
-                          [key]: e.target.checked
+                          minLength: parseInt(e.target.value)
                         }
                       })}
-                      className="sr-only peer"
+                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 min-h-[44px]"
+                      min="6"
+                      max="32"
                     />
-                    <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                  </label>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {[
+                      { key: 'requireUppercase', label: 'Require uppercase letters' },
+                      { key: 'requireLowercase', label: 'Require lowercase letters' },
+                      { key: 'requireNumbers', label: 'Require numbers' },
+                      { key: 'requireSpecialChars', label: 'Require special characters' }
+                    ].map(({ key, label }) => (
+                      <div key={key} className="flex items-center justify-between">
+                        <label className="text-sm text-gray-300">{label}</label>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={settings.passwordPolicy[key as keyof typeof settings.passwordPolicy] as boolean}
+                            onChange={(e) => setSettings({
+                              ...settings,
+                              passwordPolicy: {
+                                ...settings.passwordPolicy,
+                                [key]: e.target.checked
+                              }
+                            })}
+                            className="sr-only peer"
+                          />
+                          <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        /* Desktop: Grid Layout */
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* API Keys */}
+          <div className="lg:col-span-2 bg-gray-800 rounded-lg p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-semibold text-white flex items-center">
+                <Key className="w-5 h-5 mr-2 text-blue-400" />
+                API Keys
+              </h3>
+              <button
+                onClick={() => setShowNewKeyModal(true)}
+                className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Generate New API Key</span>
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {apiKeys.map((apiKey) => (
+                <div key={apiKey.id} className="bg-gray-700 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-3 mb-2">
+                        <h4 className="text-white font-medium">{apiKey.name}</h4>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getKeyTypeColor(apiKey.type)}`}>
+                          {apiKey.type}
+                        </span>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getKeyStatusColor(apiKey.status)}`}>
+                          {apiKey.status}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2 mb-2">
+                        <code className="bg-gray-800 px-3 py-1 rounded text-sm text-gray-300 font-mono">
+                          {apiKey.key}
+                        </code>
+                        <button
+                          onClick={() => copyToClipboard(apiKey.key)}
+                          className="text-gray-400 hover:text-white"
+                          title="Copy to clipboard"
+                        >
+                          <Copy className="w-4 h-4" />
+                        </button>
+                      </div>
+                      
+                      <div className="text-xs text-gray-400">
+                        Created: {apiKey.createdAt.toLocaleDateString()} • 
+                        Last used: {apiKey.lastUsed ? apiKey.lastUsed.toLocaleDateString() : 'Never'}
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      {apiKey.status === 'active' && (
+                        <button
+                          onClick={() => revokeApiKey(apiKey.id)}
+                          className="text-amber-400 hover:text-amber-300"
+                          title="Revoke key"
+                        >
+                          <RefreshCw className="w-4 h-4" />
+                        </button>
+                      )}
+                      <button
+                        onClick={() => deleteApiKey(apiKey.id)}
+                        className="text-red-400 hover:text-red-300"
+                        title="Delete key"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
+
+          {/* Security Policies */}
+          <div className="bg-gray-800 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+              <Shield className="w-5 h-5 mr-2 text-green-400" />
+              Security Policies
+            </h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Session Timeout (minutes)</label>
+                <input
+                  type="number"
+                  value={settings.sessionTimeout}
+                  onChange={(e) => setSettings({...settings, sessionTimeout: parseInt(e.target.value)})}
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  min="5"
+                  max="480"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Max Failed Login Attempts</label>
+                <input
+                  type="number"
+                  value={settings.maxFailedLogins}
+                  onChange={(e) => setSettings({...settings, maxFailedLogins: parseInt(e.target.value)})}
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  min="1"
+                  max="10"
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="text-sm font-medium text-gray-300">Two-Factor Authentication</label>
+                  <p className="text-xs text-gray-400">Require 2FA for all users</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={settings.twoFactorAuth}
+                    onChange={(e) => setSettings({...settings, twoFactorAuth: e.target.checked})}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          {/* Password Policy */}
+          <div className="bg-gray-800 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-white mb-4">Password Policy</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Minimum Length</label>
+                <input
+                  type="number"
+                  value={settings.passwordPolicy.minLength}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    passwordPolicy: {
+                      ...settings.passwordPolicy,
+                      minLength: parseInt(e.target.value)
+                    }
+                  })}
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  min="6"
+                  max="32"
+                />
+              </div>
+              
+              <div className="space-y-3">
+                {[
+                  { key: 'requireUppercase', label: 'Require uppercase letters' },
+                  { key: 'requireLowercase', label: 'Require lowercase letters' },
+                  { key: 'requireNumbers', label: 'Require numbers' },
+                  { key: 'requireSpecialChars', label: 'Require special characters' }
+                ].map(({ key, label }) => (
+                  <div key={key} className="flex items-center justify-between">
+                    <label className="text-sm text-gray-300">{label}</label>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={settings.passwordPolicy[key as keyof typeof settings.passwordPolicy] as boolean}
+                        onChange={(e) => setSettings({
+                          ...settings,
+                          passwordPolicy: {
+                            ...settings.passwordPolicy,
+                            [key]: e.target.checked
+                          }
+                        })}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Generate API Key Modal */}
       {showNewKeyModal && (

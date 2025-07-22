@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { Save, Bell, Mail, MessageSquare, Webhook, AlertTriangle } from 'lucide-react';
+import { Save, Bell, Mail, MessageSquare, Webhook, AlertTriangle, ChevronDown, ChevronRight } from 'lucide-react';
 import { NotificationSettings as NotificationSettingsType } from '../../types';
+import { useResponsive } from '../../hooks/useResponsive';
+import { useResponsiveContext } from '../../contexts/ResponsiveContext';
 
 export const NotificationSettings: React.FC = () => {
+  const { isMobile } = useResponsive();
+  const { expandedCards, toggleExpandedCard } = useResponsiveContext();
   const [settings, setSettings] = useState<NotificationSettingsType>({
     maxSpeed: 80,
     lowFuelThreshold: 20,
@@ -54,12 +58,16 @@ export const NotificationSettings: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className={isMobile ? 'space-y-4' : 'space-y-6'}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-white">Notification Settings</h2>
-          <p className="text-gray-400">Configure alert thresholds and notification channels</p>
+      <div className={`flex items-center justify-between ${isMobile ? 'flex-col space-y-3' : ''}`}>
+        <div className={isMobile ? 'text-center' : ''}>
+          <h2 className={`font-bold text-white ${isMobile ? 'text-xl' : 'text-2xl'}`}>
+            Notification Settings
+          </h2>
+          {!isMobile && (
+            <p className="text-gray-400">Configure alert thresholds and notification channels</p>
+          )}
         </div>
         <button
           onClick={handleSave}
@@ -67,187 +75,398 @@ export const NotificationSettings: React.FC = () => {
             saved 
               ? 'bg-green-600 text-white' 
               : 'bg-blue-600 hover:bg-blue-700 text-white'
-          }`}
+          } ${isMobile ? 'w-full justify-center min-h-[44px]' : ''}`}
         >
           <Save className="w-4 h-4" />
           <span>{saved ? 'Saved!' : 'Save Changes'}</span>
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Alert Thresholds */}
-        <div className="bg-gray-800 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <AlertTriangle className="w-5 h-5 mr-2 text-amber-400" />
-            Alert Thresholds
-          </h3>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Maximum Speed Alert</label>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="number"
-                  value={settings.maxSpeed}
-                  onChange={(e) => setSettings({...settings, maxSpeed: parseInt(e.target.value)})}
-                  className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                  min="1"
-                  max="200"
-                />
-                <span className="text-gray-400">km/h</span>
+      {isMobile ? (
+        /* Mobile: Expandable Card Layout */
+        <div className="space-y-4">
+          {/* Alert Thresholds Card */}
+          <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+            <div
+              className="p-4 cursor-pointer"
+              onClick={() => toggleExpandedCard('alert-thresholds')}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <AlertTriangle className="w-5 h-5 text-amber-400" />
+                  <h3 className="text-lg font-semibold text-white">Alert Thresholds</h3>
+                </div>
+                {expandedCards.includes('alert-thresholds') ? (
+                  <ChevronDown className="w-4 h-4 text-gray-400" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                )}
               </div>
-              <p className="text-xs text-gray-400 mt-1">Alert when vehicle exceeds this speed</p>
             </div>
             
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Low Fuel Alert</label>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="number"
-                  value={settings.lowFuelThreshold}
-                  onChange={(e) => setSettings({...settings, lowFuelThreshold: parseInt(e.target.value)})}
-                  className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                  min="1"
-                  max="50"
-                />
-                <span className="text-gray-400">%</span>
+            {expandedCards.includes('alert-thresholds') && (
+              <div className="px-4 pb-4 border-t border-gray-700">
+                <div className="space-y-4 mt-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Maximum Speed Alert</label>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="number"
+                        value={settings.maxSpeed}
+                        onChange={(e) => setSettings({...settings, maxSpeed: parseInt(e.target.value)})}
+                        className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 min-h-[44px]"
+                        min="1"
+                        max="200"
+                      />
+                      <span className="text-gray-400">km/h</span>
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1">Alert when vehicle exceeds this speed</p>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Low Fuel Alert</label>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="number"
+                        value={settings.lowFuelThreshold}
+                        onChange={(e) => setSettings({...settings, lowFuelThreshold: parseInt(e.target.value)})}
+                        className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 min-h-[44px]"
+                        min="1"
+                        max="50"
+                      />
+                      <span className="text-gray-400">%</span>
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1">Alert when fuel level drops below this percentage</p>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Fuel Theft Detection</label>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="number"
+                        value={settings.fuelTheftThreshold}
+                        onChange={(e) => setSettings({...settings, fuelTheftThreshold: parseInt(e.target.value)})}
+                        className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 min-h-[44px]"
+                        min="1"
+                        max="50"
+                      />
+                      <span className="text-gray-400">L</span>
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1">Alert when fuel drops by this amount suddenly</p>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="text-sm font-medium text-gray-300">Maintenance Reminders</label>
+                      <p className="text-xs text-gray-400">Send periodic maintenance alerts</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={settings.maintenanceReminder}
+                        onChange={(e) => setSettings({...settings, maintenanceReminder: e.target.checked})}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                  </div>
+                </div>
               </div>
-              <p className="text-xs text-gray-400 mt-1">Alert when fuel level drops below this percentage</p>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Fuel Theft Detection</label>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="number"
-                  value={settings.fuelTheftThreshold}
-                  onChange={(e) => setSettings({...settings, fuelTheftThreshold: parseInt(e.target.value)})}
-                  className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                  min="1"
-                  max="50"
-                />
-                <span className="text-gray-400">L</span>
-              </div>
-              <p className="text-xs text-gray-400 mt-1">Alert when fuel drops by this amount suddenly</p>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div>
-                <label className="text-sm font-medium text-gray-300">Maintenance Reminders</label>
-                <p className="text-xs text-gray-400">Send periodic maintenance alerts</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.maintenanceReminder}
-                  onChange={(e) => setSettings({...settings, maintenanceReminder: e.target.checked})}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
+            )}
           </div>
-        </div>
 
-        {/* Notification Channels */}
-        <div className="bg-gray-800 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <Bell className="w-5 h-5 mr-2 text-blue-400" />
-            Notification Channels
-          </h3>
-          
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <Mail className="w-5 h-5 text-green-400 mr-3" />
-                <div>
-                  <label className="text-sm font-medium text-gray-300">Email Notifications</label>
-                  <p className="text-xs text-gray-400">Send alerts via email</p>
+          {/* Notification Channels Card */}
+          <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+            <div
+              className="p-4 cursor-pointer"
+              onClick={() => toggleExpandedCard('notification-channels')}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Bell className="w-5 h-5 text-blue-400" />
+                  <h3 className="text-lg font-semibold text-white">Notification Channels</h3>
                 </div>
+                {expandedCards.includes('notification-channels') ? (
+                  <ChevronDown className="w-4 h-4 text-gray-400" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                )}
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.channels.email}
-                  onChange={(e) => updateChannel('email', e.target.checked)}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
             </div>
             
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <MessageSquare className="w-5 h-5 text-blue-400 mr-3" />
-                <div>
-                  <label className="text-sm font-medium text-gray-300">SMS Notifications</label>
-                  <p className="text-xs text-gray-400">Send alerts via SMS</p>
+            {expandedCards.includes('notification-channels') && (
+              <div className="px-4 pb-4 border-t border-gray-700">
+                <div className="space-y-4 mt-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Mail className="w-5 h-5 text-green-400 mr-3" />
+                      <div>
+                        <label className="text-sm font-medium text-gray-300">Email Notifications</label>
+                        <p className="text-xs text-gray-400">Send alerts via email</p>
+                      </div>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={settings.channels.email}
+                        onChange={(e) => updateChannel('email', e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <MessageSquare className="w-5 h-5 text-blue-400 mr-3" />
+                      <div>
+                        <label className="text-sm font-medium text-gray-300">SMS Notifications</label>
+                        <p className="text-xs text-gray-400">Send alerts via SMS</p>
+                      </div>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={settings.channels.sms}
+                        onChange={(e) => updateChannel('sms', e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Bell className="w-5 h-5 text-purple-400 mr-3" />
+                      <div>
+                        <label className="text-sm font-medium text-gray-300">Push Notifications</label>
+                        <p className="text-xs text-gray-400">Browser/mobile push alerts</p>
+                      </div>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={settings.channels.push}
+                        onChange={(e) => updateChannel('push', e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Webhook className="w-5 h-5 text-orange-400 mr-3" />
+                      <div>
+                        <label className="text-sm font-medium text-gray-300">Webhook</label>
+                        <p className="text-xs text-gray-400">Send to external systems</p>
+                      </div>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={settings.channels.webhook}
+                        onChange={(e) => updateChannel('webhook', e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                  </div>
+                  
+                  {settings.channels.webhook && (
+                    <div className="mt-4">
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Webhook URL</label>
+                      <input
+                        type="url"
+                        value={settings.webhookUrl}
+                        onChange={(e) => setSettings({...settings, webhookUrl: e.target.value})}
+                        placeholder="https://your-system.com/webhook"
+                        className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 min-h-[44px]"
+                      />
+                    </div>
+                  )}
                 </div>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.channels.sms}
-                  onChange={(e) => updateChannel('sms', e.target.checked)}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <Bell className="w-5 h-5 text-purple-400 mr-3" />
-                <div>
-                  <label className="text-sm font-medium text-gray-300">Push Notifications</label>
-                  <p className="text-xs text-gray-400">Browser/mobile push alerts</p>
-                </div>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.channels.push}
-                  onChange={(e) => updateChannel('push', e.target.checked)}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <Webhook className="w-5 h-5 text-orange-400 mr-3" />
-                <div>
-                  <label className="text-sm font-medium text-gray-300">Webhook</label>
-                  <p className="text-xs text-gray-400">Send to external systems</p>
-                </div>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.channels.webhook}
-                  onChange={(e) => updateChannel('webhook', e.target.checked)}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
-            
-            {settings.channels.webhook && (
-              <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-300 mb-2">Webhook URL</label>
-                <input
-                  type="url"
-                  value={settings.webhookUrl}
-                  onChange={(e) => setSettings({...settings, webhookUrl: e.target.value})}
-                  placeholder="https://your-system.com/webhook"
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                />
               </div>
             )}
           </div>
         </div>
-      </div>
+      ) : (
+        /* Desktop: Grid Layout */
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Alert Thresholds */}
+          <div className="bg-gray-800 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+              <AlertTriangle className="w-5 h-5 mr-2 text-amber-400" />
+              Alert Thresholds
+            </h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Maximum Speed Alert</label>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="number"
+                    value={settings.maxSpeed}
+                    onChange={(e) => setSettings({...settings, maxSpeed: parseInt(e.target.value)})}
+                    className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    min="1"
+                    max="200"
+                  />
+                  <span className="text-gray-400">km/h</span>
+                </div>
+                <p className="text-xs text-gray-400 mt-1">Alert when vehicle exceeds this speed</p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Low Fuel Alert</label>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="number"
+                    value={settings.lowFuelThreshold}
+                    onChange={(e) => setSettings({...settings, lowFuelThreshold: parseInt(e.target.value)})}
+                    className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    min="1"
+                    max="50"
+                  />
+                  <span className="text-gray-400">%</span>
+                </div>
+                <p className="text-xs text-gray-400 mt-1">Alert when fuel level drops below this percentage</p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Fuel Theft Detection</label>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="number"
+                    value={settings.fuelTheftThreshold}
+                    onChange={(e) => setSettings({...settings, fuelTheftThreshold: parseInt(e.target.value)})}
+                    className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    min="1"
+                    max="50"
+                  />
+                  <span className="text-gray-400">L</span>
+                </div>
+                <p className="text-xs text-gray-400 mt-1">Alert when fuel drops by this amount suddenly</p>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="text-sm font-medium text-gray-300">Maintenance Reminders</label>
+                  <p className="text-xs text-gray-400">Send periodic maintenance alerts</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={settings.maintenanceReminder}
+                    onChange={(e) => setSettings({...settings, maintenanceReminder: e.target.checked})}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          {/* Notification Channels */}
+          <div className="bg-gray-800 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+              <Bell className="w-5 h-5 mr-2 text-blue-400" />
+              Notification Channels
+            </h3>
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Mail className="w-5 h-5 text-green-400 mr-3" />
+                  <div>
+                    <label className="text-sm font-medium text-gray-300">Email Notifications</label>
+                    <p className="text-xs text-gray-400">Send alerts via email</p>
+                  </div>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={settings.channels.email}
+                    onChange={(e) => updateChannel('email', e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <MessageSquare className="w-5 h-5 text-blue-400 mr-3" />
+                  <div>
+                    <label className="text-sm font-medium text-gray-300">SMS Notifications</label>
+                    <p className="text-xs text-gray-400">Send alerts via SMS</p>
+                  </div>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={settings.channels.sms}
+                    onChange={(e) => updateChannel('sms', e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Bell className="w-5 h-5 text-purple-400 mr-3" />
+                  <div>
+                    <label className="text-sm font-medium text-gray-300">Push Notifications</label>
+                    <p className="text-xs text-gray-400">Browser/mobile push alerts</p>
+                  </div>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={settings.channels.push}
+                    onChange={(e) => updateChannel('push', e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Webhook className="w-5 h-5 text-orange-400 mr-3" />
+                  <div>
+                    <label className="text-sm font-medium text-gray-300">Webhook</label>
+                    <p className="text-xs text-gray-400">Send to external systems</p>
+                  </div>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={settings.channels.webhook}
+                    onChange={(e) => updateChannel('webhook', e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+              
+              {settings.channels.webhook && (
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Webhook URL</label>
+                  <input
+                    type="url"
+                    value={settings.webhookUrl}
+                    onChange={(e) => setSettings({...settings, webhookUrl: e.target.value})}
+                    placeholder="https://your-system.com/webhook"
+                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Email Recipients */}
       {settings.channels.email && (

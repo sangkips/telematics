@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Dashboard } from "./components/Dashboard";
 import { LoginForm } from "./components/auth/LoginForm";
 // import { ConnectionStatus } from "./components/ConnectionStatus";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { ResponsiveProvider } from "./contexts/ResponsiveContext";
 import { Vehicle } from "./types";
 import { useRealTimeVehicles } from "./hooks/useApi";
 import { apiService } from "./services/api";
@@ -81,7 +82,9 @@ const AppContent: React.FC = () => {
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <ResponsiveProvider>
+        <AppContent />
+      </ResponsiveProvider>
     </AuthProvider>
   );
 }

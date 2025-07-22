@@ -12,10 +12,15 @@ import {
   AlertTriangle,
   CheckCircle,
   FileText,
+  ChevronDown,
+  ChevronRight,
+  MoreVertical,
 } from "lucide-react";
 import { MaintenanceRecord, Vehicle } from "../../types";
 import { useMaintenanceRecords, useVehicles } from "../../hooks/useApi";
 import { apiService } from "../../services/api";
+import { useResponsive } from "../../hooks/useResponsive";
+import { useResponsiveContext } from "../../contexts/ResponsiveContext";
 
 const SERVICE_TYPES = [
   { value: "oil_change", label: "Oil Change" },
@@ -33,6 +38,8 @@ const SERVICE_TYPES = [
 type ServiceType = (typeof SERVICE_TYPES)[number]['value'];
 
 export const MaintenancePanel: React.FC = () => {
+  const { isMobile } = useResponsive();
+  const { expandedCards, toggleExpandedCard } = useResponsiveContext();
   const { data: maintenanceRecords, loading: recordsLoading, error: recordsError, refetch: refetchRecords } = useMaintenanceRecords();
   const { data: vehicles, loading: vehiclesLoading, error: vehiclesError } = useVehicles();
   const [showAddModal, setShowAddModal] = useState(false);
@@ -217,18 +224,24 @@ export const MaintenancePanel: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className={isMobile ? 'space-y-4' : 'space-y-6'}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-white">Maintenance Management</h2>
-          <p className="text-gray-400">
-            Track vehicle maintenance records and service schedules
-          </p>
+      <div className={`flex items-center justify-between ${isMobile ? 'flex-col space-y-3' : ''}`}>
+        <div className={isMobile ? 'text-center' : ''}>
+          <h2 className={`font-bold text-white ${isMobile ? 'text-xl' : 'text-2xl'}`}>
+            {isMobile ? 'Maintenance Records' : 'Maintenance Management'}
+          </h2>
+          {!isMobile && (
+            <p className="text-gray-400">
+              Track vehicle maintenance records and service schedules
+            </p>
+          )}
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+          className={`flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors ${
+            isMobile ? 'w-full justify-center min-h-[44px]' : ''
+          }`}
         >
           <Plus className="w-4 h-4" />
           <span>Add Record</span>
@@ -236,24 +249,28 @@ export const MaintenancePanel: React.FC = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center space-x-4">
-        <div className="relative flex-1 max-w-md">
+      <div className={`${isMobile ? 'space-y-3' : 'flex items-center space-x-4'}`}>
+        <div className={`relative ${isMobile ? 'w-full' : 'flex-1 max-w-md'}`}>
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
-            placeholder="Search maintenance records..."
+            placeholder={isMobile ? "Search records..." : "Search maintenance records..."}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+            className={`w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 ${
+              isMobile ? 'min-h-[44px]' : ''
+            }`}
           />
         </div>
 
-        <div className="flex items-center space-x-2">
-          <Filter className="w-4 h-4 text-gray-400" />
+        <div className={`flex items-center space-x-2 ${isMobile ? 'justify-between' : ''}`}>
+          {!isMobile && <Filter className="w-4 h-4 text-gray-400" />}
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value as "all" | ServiceType)}
-            className="bg-gray-800 border border-gray-700 rounded-lg text-white px-3 py-2 focus:outline-none focus:border-blue-500"
+            className={`bg-gray-800 border border-gray-700 rounded-lg text-white px-3 py-2 focus:outline-none focus:border-blue-500 ${
+              isMobile ? 'flex-1 min-h-[44px]' : ''
+            }`}
           >
             <option value="all">All Types</option>
             <option value="oil_change">Oil Change</option>
@@ -270,7 +287,9 @@ export const MaintenancePanel: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as "all" | MaintenanceRecord["status"])}
-            className="bg-gray-800 border border-gray-700 rounded-lg text-white px-3 py-2 focus:outline-none focus:border-blue-500"
+            className={`bg-gray-800 border border-gray-700 rounded-lg text-white px-3 py-2 focus:outline-none focus:border-blue-500 ${
+              isMobile ? 'flex-1 min-h-[44px]' : ''
+            }`}
           >
             <option value="all">All Status</option>
             <option value="completed">Completed</option>
@@ -280,120 +299,246 @@ export const MaintenancePanel: React.FC = () => {
         </div>
       </div>
 
-      {/* Maintenance Records Table */}
-      <div className="bg-gray-800 rounded-lg overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-700">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Vehicle
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Service Type
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Odometer
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Cost
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Status
-                </th>
-
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-700">
-              {filteredRecords.map((record) => (
-                <tr key={record.id} className="hover:bg-gray-700">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <Wrench className="w-8 h-8 text-blue-400 mr-3" />
-                      <div>
-                        <div className="text-sm font-medium text-white">
-                          {getVehicleName(record.vehicleId)}
-                        </div>
-                        <div className="text-sm text-gray-400">
-                          {record.serviceCenter}
+      {/* Maintenance Records - Responsive Layout */}
+      {isMobile ? (
+        /* Mobile: Card-based Layout */
+        <div className="space-y-3">
+          {filteredRecords.length === 0 ? (
+            <div className="bg-gray-800 rounded-lg p-6 text-center">
+              <Wrench className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+              <h3 className="text-lg font-medium text-white mb-2">No Records Found</h3>
+              <p className="text-gray-400">No maintenance records match your current filters</p>
+            </div>
+          ) : (
+            filteredRecords.map((record) => {
+              const isExpanded = expandedCards.includes(record.id);
+              return (
+                <div
+                  key={record.id}
+                  className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden"
+                >
+                  {/* Card Header - Always Visible */}
+                  <div
+                    className="p-4 cursor-pointer"
+                    onClick={() => toggleExpandedCard(record.id)}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start space-x-3 flex-1 min-w-0">
+                        <Wrench className="w-6 h-6 text-blue-400 mt-1 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between mb-1">
+                            <h3 className="text-sm font-medium text-white truncate">
+                              {getVehicleName(record.vehicleId)}
+                            </h3>
+                            <span
+                              className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ml-2 flex-shrink-0 ${getStatusColor(
+                                record.status
+                              )}`}
+                            >
+                              {record.status === "completed" && <CheckCircle className="w-3 h-3 mr-1" />}
+                              {record.status === "pending" && <Clock className="w-3 h-3 mr-1" />}
+                              {record.status === "cancelled" && <AlertTriangle className="w-3 h-3 mr-1" />}
+                              {record.status}
+                            </span>
+                          </div>
+                          <p className="text-sm text-blue-400 mb-1">
+                            {getTypesDisplay(record.types)}
+                          </p>
+                          <p className={`text-sm text-gray-300 ${!isExpanded ? 'line-clamp-2' : ''}`}>
+                            {record.description}
+                          </p>
+                          <div className="flex items-center justify-between mt-2">
+                            <div className="flex items-center text-xs text-gray-400">
+                              <Calendar className="w-3 h-3 mr-1" />
+                              {new Date(record.performedAt).toLocaleDateString()}
+                            </div>
+                            <div className="flex items-center text-xs text-gray-400">
+                              <DollarSign className="w-3 h-3 mr-1" />
+                              {record.cost.toFixed(2)} {record.currency}
+                            </div>
+                          </div>
                         </div>
                       </div>
+                      <div className="flex items-center space-x-2 ml-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingRecord(record);
+                          }}
+                          className="p-2 text-blue-400 hover:text-blue-300 hover:bg-gray-700 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                          title="Edit record"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteRecord(record.id);
+                          }}
+                          className="p-2 text-red-400 hover:text-red-300 hover:bg-gray-700 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                          title="Delete record"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                        {isExpanded ? (
+                          <ChevronDown className="w-4 h-4 text-gray-400" />
+                        ) : (
+                          <ChevronRight className="w-4 h-4 text-gray-400" />
+                        )}
+                      </div>
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-white">{getTypesDisplay(record.types)}</div>
-                    <div className="text-xs text-gray-400 truncate max-w-32">
-                      {record.description}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <Calendar className="w-4 h-4 text-gray-400 mr-2" />
-                      <span className="text-sm text-white">
-                        {new Date(record.performedAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
-                    {record.odometer.toLocaleString()} km
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <DollarSign className="w-4 h-4 text-gray-400 mr-1" />
-                      <span className="text-sm text-white">
-                        {record.cost.toFixed(2)} {record.currency}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                        record.status
-                      )}`}
-                    >
-                      {record.status === "completed" && <CheckCircle className="w-3 h-3 mr-1" />}
-                      {record.status === "pending" && <Clock className="w-3 h-3 mr-1" />}
-                      {record.status === "cancelled" && <AlertTriangle className="w-3 h-3 mr-1" />}
-                      {record.status}
-                    </span>
-                  </td>
+                  </div>
 
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => setEditingRecord(record)}
-                        className="text-blue-400 hover:text-blue-300"
-                        title="Edit record"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteRecord(record.id)}
-                        className="text-red-400 hover:text-red-300"
-                        title="Delete record"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        className="text-gray-400 hover:text-gray-300"
-                        title="View details"
-                      >
-                        <FileText className="w-4 h-4" />
-                      </button>
+                  {/* Expanded Details */}
+                  {isExpanded && (
+                    <div className="px-4 pb-4 border-t border-gray-700">
+                      <div className="grid grid-cols-2 gap-4 mt-4">
+                        <div>
+                          <p className="text-xs text-gray-400 mb-1">Service Center</p>
+                          <p className="text-sm text-white">{record.serviceCenter}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-400 mb-1">Odometer</p>
+                          <p className="text-sm text-white">{record.odometer.toLocaleString()} km</p>
+                        </div>
+                        {record.partsReplaced && record.partsReplaced.length > 0 && (
+                          <div className="col-span-2">
+                            <p className="text-xs text-gray-400 mb-1">Parts Replaced</p>
+                            <p className="text-sm text-white">
+                              {Array.isArray(record.partsReplaced) 
+                                ? record.partsReplaced.join(', ') 
+                                : record.partsReplaced}
+                            </p>
+                          </div>
+                        )}
+                        {record.notes && (
+                          <div className="col-span-2">
+                            <p className="text-xs text-gray-400 mb-1">Notes</p>
+                            <p className="text-sm text-white">{record.notes}</p>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  )}
+                </div>
+              );
+            })
+          )}
         </div>
-      </div>
+      ) : (
+        /* Desktop: Table Layout */
+        <div className="bg-gray-800 rounded-lg overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-700">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Vehicle
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Service Type
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Date
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Odometer
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Cost
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-700">
+                {filteredRecords.map((record) => (
+                  <tr key={record.id} className="hover:bg-gray-700">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <Wrench className="w-8 h-8 text-blue-400 mr-3" />
+                        <div>
+                          <div className="text-sm font-medium text-white">
+                            {getVehicleName(record.vehicleId)}
+                          </div>
+                          <div className="text-sm text-gray-400">
+                            {record.serviceCenter}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-white">{getTypesDisplay(record.types)}</div>
+                      <div className="text-xs text-gray-400 truncate max-w-32">
+                        {record.description}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <Calendar className="w-4 h-4 text-gray-400 mr-2" />
+                        <span className="text-sm text-white">
+                          {new Date(record.performedAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                      {record.odometer.toLocaleString()} km
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <DollarSign className="w-4 h-4 text-gray-400 mr-1" />
+                        <span className="text-sm text-white">
+                          {record.cost.toFixed(2)} {record.currency}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
+                          record.status
+                        )}`}
+                      >
+                        {record.status === "completed" && <CheckCircle className="w-3 h-3 mr-1" />}
+                        {record.status === "pending" && <Clock className="w-3 h-3 mr-1" />}
+                        {record.status === "cancelled" && <AlertTriangle className="w-3 h-3 mr-1" />}
+                        {record.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => setEditingRecord(record)}
+                          className="text-blue-400 hover:text-blue-300"
+                          title="Edit record"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteRecord(record.id)}
+                          className="text-red-400 hover:text-red-300"
+                          title="Delete record"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          className="text-gray-400 hover:text-gray-300"
+                          title="View details"
+                        >
+                          <FileText className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {/* Add Maintenance Record Modal */}
       {showAddModal && (

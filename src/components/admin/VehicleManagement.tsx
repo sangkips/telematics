@@ -8,12 +8,19 @@ import {
   Car,
   MapPin,
   User,
+  ChevronDown,
+  ChevronRight,
+  Fuel,
 } from "lucide-react";
 import { Vehicle } from "../../types";
 import { useVehicles } from "../../hooks/useApi";
 import { apiService } from "../../services/api";
+import { useResponsive } from "../../hooks/useResponsive";
+import { useResponsiveContext } from "../../contexts/ResponsiveContext";
 
 export const VehicleManagement: React.FC = () => {
+  const { isMobile } = useResponsive();
+  const { expandedCards, toggleExpandedCard } = useResponsiveContext();
   const { data: vehicles, loading, error, refetch } = useVehicles();
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
@@ -155,18 +162,24 @@ export const VehicleManagement: React.FC = () => {
     );
   }
   return (
-    <div className="space-y-6">
+    <div className={isMobile ? 'space-y-4' : 'space-y-6'}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-white">Vehicle Management</h2>
-          <p className="text-gray-400">
-            Manage your fleet vehicles and their configurations
-          </p>
+      <div className={`flex items-center justify-between ${isMobile ? 'flex-col space-y-3' : ''}`}>
+        <div className={isMobile ? 'text-center' : ''}>
+          <h2 className={`font-bold text-white ${isMobile ? 'text-xl' : 'text-2xl'}`}>
+            Vehicle Management
+          </h2>
+          {!isMobile && (
+            <p className="text-gray-400">
+              Manage your fleet vehicles and their configurations
+            </p>
+          )}
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+          className={`flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors ${
+            isMobile ? 'w-full justify-center min-h-[44px]' : ''
+          }`}
         >
           <Plus className="w-4 h-4" />
           <span>Add Vehicle</span>
@@ -174,24 +187,28 @@ export const VehicleManagement: React.FC = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center space-x-4">
-        <div className="relative flex-1 max-w-md">
+      <div className={`${isMobile ? 'space-y-3' : 'flex items-center space-x-4'}`}>
+        <div className={`relative ${isMobile ? 'w-full' : 'flex-1 max-w-md'}`}>
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
-            placeholder="Search vehicles..."
+            placeholder={isMobile ? "Search vehicles..." : "Search vehicles..."}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+            className={`w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 ${
+              isMobile ? 'min-h-[44px]' : ''
+            }`}
           />
         </div>
 
-        <div className="flex items-center space-x-2">
-          <Filter className="w-4 h-4 text-gray-400" />
+        <div className={`flex items-center space-x-2 ${isMobile ? 'justify-center' : ''}`}>
+          {!isMobile && <Filter className="w-4 h-4 text-gray-400" />}
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-gray-800 border border-gray-700 rounded-lg text-white px-3 py-2 focus:outline-none focus:border-blue-500"
+            className={`bg-gray-800 border border-gray-700 rounded-lg text-white px-3 py-2 focus:outline-none focus:border-blue-500 ${
+              isMobile ? 'w-full min-h-[44px]' : ''
+            }`}
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -202,108 +219,241 @@ export const VehicleManagement: React.FC = () => {
         </div>
       </div>
 
-      {/* Vehicle Table */}
-      <div className="bg-gray-800 rounded-lg overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-700">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Vehicle
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Driver
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Fuel Level
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Location
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-700">
-              {filteredVehicles.map((vehicle) => (
-                <tr key={vehicle.id} className="hover:bg-gray-700">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <Car className="w-8 h-8 text-blue-400 mr-3" />
-                      <div>
-                        <div className="text-sm font-medium text-white">
-                          {vehicle.name}
-                        </div>
-                        <div className="text-sm text-gray-400">
-                          {vehicle.plateNumber}
+      {/* Vehicles - Responsive Layout */}
+      {isMobile ? (
+        /* Mobile: Card-based Layout */
+        <div className="space-y-3">
+          {filteredVehicles.length === 0 ? (
+            <div className="bg-gray-800 rounded-lg p-6 text-center">
+              <Car className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+              <h3 className="text-lg font-medium text-white mb-2">No Vehicles Found</h3>
+              <p className="text-gray-400">No vehicles match your current filters</p>
+            </div>
+          ) : (
+            filteredVehicles.map((vehicle) => {
+              const isExpanded = expandedCards.includes(vehicle.id);
+              return (
+                <div
+                  key={vehicle.id}
+                  className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden"
+                >
+                  {/* Card Header - Always Visible */}
+                  <div
+                    className="p-4 cursor-pointer"
+                    onClick={() => toggleExpandedCard(vehicle.id)}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start space-x-3 flex-1 min-w-0">
+                        <Car className="w-6 h-6 text-blue-400 mt-1 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between mb-1">
+                            <h3 className="text-sm font-medium text-white truncate">
+                              {vehicle.name}
+                            </h3>
+                            <span
+                              className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ml-2 flex-shrink-0 ${getStatusColor(
+                                vehicle.status
+                              )}`}
+                            >
+                              {vehicle.status}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-400 mb-1">
+                            {vehicle.plateNumber}
+                          </p>
+                          <div className="flex items-center space-x-4 mt-2">
+                            <div className="flex items-center text-xs text-gray-400">
+                              <User className="w-3 h-3 mr-1" />
+                              {vehicle.driver}
+                            </div>
+                            <div className="flex items-center text-xs text-gray-400">
+                              <Fuel className="w-3 h-3 mr-1" />
+                              {vehicle.fuelLevel}%
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <User className="w-4 h-4 text-gray-400 mr-2" />
-                      <span className="text-sm text-white">
-                        {vehicle.driver}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                        vehicle.status
-                      )}`}
-                    >
-                      {vehicle.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="w-16 bg-gray-700 rounded-full h-2 mr-2">
-                        <div
-                          className="bg-green-500 h-2 rounded-full"
-                          style={{ width: `${vehicle.fuelLevel}%` }}
-                        ></div>
+                      <div className="flex items-center space-x-2 ml-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingVehicle(vehicle);
+                          }}
+                          className="p-2 text-blue-400 hover:text-blue-300 hover:bg-gray-700 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                          title="Edit vehicle"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteVehicle(vehicle.id);
+                          }}
+                          className="p-2 text-red-400 hover:text-red-300 hover:bg-gray-700 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                          title="Delete vehicle"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                        {isExpanded ? (
+                          <ChevronDown className="w-4 h-4 text-gray-400" />
+                        ) : (
+                          <ChevronRight className="w-4 h-4 text-gray-400" />
+                        )}
                       </div>
-                      <span className="text-sm text-white">
-                        {vehicle.fuelLevel}%
-                      </span>
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <MapPin className="w-4 h-4 text-gray-400 mr-2" />
-                      <span className="text-sm text-white truncate max-w-32">
-                        {vehicle.location.address}
-                      </span>
+                  </div>
+
+                  {/* Expanded Details */}
+                  {isExpanded && (
+                    <div className="px-4 pb-4 border-t border-gray-700">
+                      <div className="grid grid-cols-2 gap-4 mt-4">
+                        <div>
+                          <p className="text-xs text-gray-400 mb-1">Location</p>
+                          <div className="flex items-center">
+                            <MapPin className="w-3 h-3 text-gray-400 mr-1" />
+                            <p className="text-sm text-white truncate">{vehicle.location.address}</p>
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-400 mb-1">Fuel Level</p>
+                          <div className="flex items-center space-x-2">
+                            <div className="flex-1 bg-gray-700 rounded-full h-2">
+                              <div
+                                className="bg-green-500 h-2 rounded-full"
+                                style={{ width: `${vehicle.fuelLevel}%` }}
+                              ></div>
+                            </div>
+                            <span className="text-sm text-white">{vehicle.fuelLevel}%</span>
+                          </div>
+                        </div>
+                        {vehicle.make && (
+                          <div>
+                            <p className="text-xs text-gray-400 mb-1">Make & Model</p>
+                            <p className="text-sm text-white">{vehicle.make} {vehicle.model}</p>
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-xs text-gray-400 mb-1">Odometer</p>
+                          <p className="text-sm text-white">{vehicle.odometer.toLocaleString()} km</p>
+                        </div>
+                        {vehicle.vin && (
+                          <div className="col-span-2">
+                            <p className="text-xs text-gray-400 mb-1">VIN</p>
+                            <p className="text-sm text-white font-mono">{vehicle.vin}</p>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => setEditingVehicle(vehicle)}
-                        className="text-blue-400 hover:text-blue-300"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteVehicle(vehicle.id)}
-                        className="text-red-400 hover:text-red-300"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  )}
+                </div>
+              );
+            })
+          )}
         </div>
-      </div>
+      ) : (
+        /* Desktop: Table Layout */
+        <div className="bg-gray-800 rounded-lg overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-700">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Vehicle
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Driver
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Fuel Level
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Location
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-700">
+                {filteredVehicles.map((vehicle) => (
+                  <tr key={vehicle.id} className="hover:bg-gray-700">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <Car className="w-8 h-8 text-blue-400 mr-3" />
+                        <div>
+                          <div className="text-sm font-medium text-white">
+                            {vehicle.name}
+                          </div>
+                          <div className="text-sm text-gray-400">
+                            {vehicle.plateNumber}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <User className="w-4 h-4 text-gray-400 mr-2" />
+                        <span className="text-sm text-white">
+                          {vehicle.driver}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
+                          vehicle.status
+                        )}`}
+                      >
+                        {vehicle.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="w-16 bg-gray-700 rounded-full h-2 mr-2">
+                          <div
+                            className="bg-green-500 h-2 rounded-full"
+                            style={{ width: `${vehicle.fuelLevel}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-sm text-white">
+                          {vehicle.fuelLevel}%
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <MapPin className="w-4 h-4 text-gray-400 mr-2" />
+                        <span className="text-sm text-white truncate max-w-32">
+                          {vehicle.location.address}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => setEditingVehicle(vehicle)}
+                          className="text-blue-400 hover:text-blue-300"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteVehicle(vehicle.id)}
+                          className="text-red-400 hover:text-red-300"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {/* Add Vehicle Modal */}
       {showAddModal && (

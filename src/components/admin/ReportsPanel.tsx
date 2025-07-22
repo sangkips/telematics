@@ -7,16 +7,21 @@ import {
   Filter,
   Fuel,
   MapPin,
-  Clock,
   AlertTriangle,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 import { Vehicle } from "../../types";
+import { useResponsive } from "../../hooks/useResponsive";
+import { useResponsiveContext } from "../../contexts/ResponsiveContext";
 
 interface ReportsPanelProps {
   vehicles: Vehicle[];
 }
 
 export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles }) => {
+  const { isMobile } = useResponsive();
+  const { expandedCards, toggleExpandedCard } = useResponsiveContext();
   const [dateRange, setDateRange] = useState("7d");
   const [reportType, setReportType] = useState("overview");
 
@@ -55,16 +60,18 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles }) => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className={`${isMobile ? 'p-4 space-y-4' : 'p-6 space-y-6'}`}>
       {/* Report Controls */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <Calendar className="w-4 h-4 text-gray-400" />
+      <div className={`${isMobile ? 'space-y-4' : 'flex items-center justify-between'}`}>
+        <div className={`${isMobile ? 'space-y-3' : 'flex items-center space-x-4'}`}>
+          <div className={`flex items-center space-x-2 ${isMobile ? 'w-full' : ''}`}>
+            {!isMobile && <Calendar className="w-4 h-4 text-gray-400" />}
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="bg-gray-700 border border-gray-600 rounded-lg text-white px-3 py-2 focus:outline-none focus:border-blue-500"
+              className={`bg-gray-700 border border-gray-600 rounded-lg text-white px-3 py-2 focus:outline-none focus:border-blue-500 ${
+                isMobile ? 'w-full min-h-[44px]' : ''
+              }`}
             >
               <option value="1d">Last 24 Hours</option>
               <option value="7d">Last 7 Days</option>
@@ -74,12 +81,14 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles }) => {
             </select>
           </div>
 
-          <div className="flex items-center space-x-2">
-            <Filter className="w-4 h-4 text-gray-400" />
+          <div className={`flex items-center space-x-2 ${isMobile ? 'w-full' : ''}`}>
+            {!isMobile && <Filter className="w-4 h-4 text-gray-400" />}
             <select
               value={reportType}
               onChange={(e) => setReportType(e.target.value)}
-              className="bg-gray-700 border border-gray-600 rounded-lg text-white px-3 py-2 focus:outline-none focus:border-blue-500"
+              className={`bg-gray-700 border border-gray-600 rounded-lg text-white px-3 py-2 focus:outline-none focus:border-blue-500 ${
+                isMobile ? 'w-full min-h-[44px]' : ''
+              }`}
             >
               <option value="overview">Fleet Overview</option>
               <option value="fuel">Fuel Analysis</option>
@@ -90,24 +99,30 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles }) => {
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className={`${isMobile ? 'grid grid-cols-3 gap-2' : 'flex items-center space-x-2'}`}>
           <button
             onClick={() => exportReport("pdf")}
-            className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors"
+            className={`flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors ${
+              isMobile ? 'justify-center min-h-[44px]' : ''
+            }`}
           >
             <Download className="w-4 h-4" />
             <span>PDF</span>
           </button>
           <button
             onClick={() => exportReport("excel")}
-            className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
+            className={`flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors ${
+              isMobile ? 'justify-center min-h-[44px]' : ''
+            }`}
           >
             <Download className="w-4 h-4" />
             <span>Excel</span>
           </button>
           <button
             onClick={() => exportReport("csv")}
-            className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+            className={`flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors ${
+              isMobile ? 'justify-center min-h-[44px]' : ''
+            }`}
           >
             <Download className="w-4 h-4" />
             <span>CSV</span>
@@ -181,112 +196,231 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles }) => {
       </div>
 
       {/* Detailed Reports */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Vehicle Performance Table */}
-        <div className="bg-gray-700 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <TrendingUp className="w-5 h-5 mr-2 text-blue-400" />
-            Vehicle Performance
-          </h3>
+      {isMobile ? (
+        /* Mobile: Expandable Card Layout */
+        <div className="space-y-4">
+          {/* Vehicle Performance Card */}
+          <div className="bg-gray-700 rounded-lg border border-gray-600 overflow-hidden">
+            <div
+              className="p-4 cursor-pointer"
+              onClick={() => toggleExpandedCard('vehicle-performance')}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <TrendingUp className="w-5 h-5 text-blue-400" />
+                  <h3 className="text-lg font-semibold text-white">Vehicle Performance</h3>
+                </div>
+                {expandedCards.includes('vehicle-performance') ? (
+                  <ChevronDown className="w-4 h-4 text-gray-400" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                )}
+              </div>
+            </div>
+            
+            {expandedCards.includes('vehicle-performance') && (
+              <div className="px-4 pb-4 border-t border-gray-600">
+                <div className="space-y-3 mt-4">
+                  {vehicles.slice(0, 5).map((vehicle) => (
+                    <div key={vehicle.id} className="bg-gray-800 rounded-lg p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <div className="text-white font-medium text-sm">{vehicle.name}</div>
+                          <div className="text-gray-400 text-xs">{vehicle.plateNumber}</div>
+                        </div>
+                        <span
+                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            vehicle.status === "active"
+                              ? "text-green-400 bg-green-900"
+                              : vehicle.status === "idle"
+                              ? "text-amber-400 bg-amber-900"
+                              : vehicle.status === "maintenance"
+                              ? "text-blue-400 bg-blue-900"
+                              : "text-red-400 bg-red-900"
+                          }`}
+                        >
+                          {vehicle.status}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-xs text-gray-400">Fuel Level</p>
+                          <p className="text-sm text-white">{vehicle.fuelLevel}%</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-400">Distance</p>
+                          <p className="text-sm text-white">{(vehicle.odometer / 1000).toFixed(1)}k km</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-600">
-                  <th className="text-left text-gray-400 text-sm py-2">
-                    Vehicle
-                  </th>
-                  <th className="text-left text-gray-400 text-sm py-2">
-                    Status
-                  </th>
-                  <th className="text-left text-gray-400 text-sm py-2">Fuel</th>
-                  <th className="text-left text-gray-400 text-sm py-2">
-                    Distance
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {vehicles.slice(0, 5).map((vehicle) => (
-                  <tr key={vehicle.id} className="border-b border-gray-600">
-                    <td className="py-3">
-                      <div className="text-white font-medium">
-                        {vehicle.name}
+          {/* Alert Summary Card */}
+          <div className="bg-gray-700 rounded-lg border border-gray-600 overflow-hidden">
+            <div
+              className="p-4 cursor-pointer"
+              onClick={() => toggleExpandedCard('alert-summary')}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <AlertTriangle className="w-5 h-5 text-red-400" />
+                  <h3 className="text-lg font-semibold text-white">Alert Summary</h3>
+                </div>
+                {expandedCards.includes('alert-summary') ? (
+                  <ChevronDown className="w-4 h-4 text-gray-400" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                )}
+              </div>
+            </div>
+            
+            {expandedCards.includes('alert-summary') && (
+              <div className="px-4 pb-4 border-t border-gray-600">
+                <div className="space-y-3 mt-4">
+                  {vehicles
+                    .flatMap((v) => v.alerts)
+                    .slice(0, 5)
+                    .map((alert) => (
+                      <div key={alert.id} className="bg-gray-800 rounded-lg p-3">
+                        <div className="flex items-start space-x-3">
+                          <div
+                            className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
+                              alert.severity === "critical"
+                                ? "bg-red-500"
+                                : alert.severity === "high"
+                                ? "bg-orange-500"
+                                : alert.severity === "medium"
+                                ? "bg-amber-500"
+                                : "bg-blue-500"
+                            }`}
+                          ></div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1 min-w-0">
+                                <div className="text-white text-sm">{alert.message}</div>
+                                <div className="text-gray-400 text-xs mt-1">
+                                  {alert.timestamp.toLocaleDateString()} • {alert.type.replace("_", " ")}
+                                </div>
+                              </div>
+                              <div
+                                className={`text-xs px-2 py-1 rounded ml-2 flex-shrink-0 ${
+                                  alert.resolved
+                                    ? "text-green-400 bg-green-900"
+                                    : "text-red-400 bg-red-900"
+                                }`}
+                              >
+                                {alert.resolved ? "Resolved" : "Active"}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <div className="text-gray-400 text-sm">
-                        {vehicle.plateNumber}
-                      </div>
-                    </td>
-                    <td className="py-3">
-                      <span
-                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          vehicle.status === "active"
-                            ? "text-green-400 bg-green-900"
-                            : vehicle.status === "idle"
-                            ? "text-amber-400 bg-amber-900"
-                            : vehicle.status === "maintenance"
-                            ? "text-blue-400 bg-blue-900"
-                            : "text-red-400 bg-red-900"
-                        }`}
-                      >
-                        {vehicle.status}
-                      </span>
-                    </td>
-                    <td className="py-3 text-white">{vehicle.fuelLevel}%</td>
-                    <td className="py-3 text-white">
-                      {(vehicle.odometer / 1000).toFixed(1)}k km
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
+      ) : (
+        /* Desktop: Grid Layout */
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Vehicle Performance Table */}
+          <div className="bg-gray-700 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+              <TrendingUp className="w-5 h-5 mr-2 text-blue-400" />
+              Vehicle Performance
+            </h3>
 
-        {/* Alert Summary */}
-        <div className="bg-gray-700 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <AlertTriangle className="w-5 h-5 mr-2 text-red-400" />
-            Alert Summary
-          </h3>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-600">
+                    <th className="text-left text-gray-400 text-sm py-2">Vehicle</th>
+                    <th className="text-left text-gray-400 text-sm py-2">Status</th>
+                    <th className="text-left text-gray-400 text-sm py-2">Fuel</th>
+                    <th className="text-left text-gray-400 text-sm py-2">Distance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {vehicles.slice(0, 5).map((vehicle) => (
+                    <tr key={vehicle.id} className="border-b border-gray-600">
+                      <td className="py-3">
+                        <div className="text-white font-medium">{vehicle.name}</div>
+                        <div className="text-gray-400 text-sm">{vehicle.plateNumber}</div>
+                      </td>
+                      <td className="py-3">
+                        <span
+                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            vehicle.status === "active"
+                              ? "text-green-400 bg-green-900"
+                              : vehicle.status === "idle"
+                              ? "text-amber-400 bg-amber-900"
+                              : vehicle.status === "maintenance"
+                              ? "text-blue-400 bg-blue-900"
+                              : "text-red-400 bg-red-900"
+                          }`}
+                        >
+                          {vehicle.status}
+                        </span>
+                      </td>
+                      <td className="py-3 text-white">{vehicle.fuelLevel}%</td>
+                      <td className="py-3 text-white">{(vehicle.odometer / 1000).toFixed(1)}k km</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-          <div className="space-y-4">
-            {vehicles
-              .flatMap((v) => v.alerts)
-              .slice(0, 5)
-              .map((alert) => (
-                <div key={alert.id} className="flex items-start space-x-3">
-                  <div
-                    className={`w-2 h-2 rounded-full mt-2 ${
-                      alert.severity === "critical"
-                        ? "bg-red-500"
-                        : alert.severity === "high"
-                        ? "bg-orange-500"
-                        : alert.severity === "medium"
-                        ? "bg-amber-500"
-                        : "bg-blue-500"
-                    }`}
-                  ></div>
-                  <div className="flex-1">
-                    <div className="text-white text-sm">{alert.message}</div>
-                    <div className="text-gray-400 text-xs mt-1">
-                      {alert.timestamp.toLocaleDateString()} •{" "}
-                      {alert.type.replace("_", " ")}
+          {/* Alert Summary */}
+          <div className="bg-gray-700 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+              <AlertTriangle className="w-5 h-5 mr-2 text-red-400" />
+              Alert Summary
+            </h3>
+
+            <div className="space-y-4">
+              {vehicles
+                .flatMap((v) => v.alerts)
+                .slice(0, 5)
+                .map((alert) => (
+                  <div key={alert.id} className="flex items-start space-x-3">
+                    <div
+                      className={`w-2 h-2 rounded-full mt-2 ${
+                        alert.severity === "critical"
+                          ? "bg-red-500"
+                          : alert.severity === "high"
+                          ? "bg-orange-500"
+                          : alert.severity === "medium"
+                          ? "bg-amber-500"
+                          : "bg-blue-500"
+                      }`}
+                    ></div>
+                    <div className="flex-1">
+                      <div className="text-white text-sm">{alert.message}</div>
+                      <div className="text-gray-400 text-xs mt-1">
+                        {alert.timestamp.toLocaleDateString()} • {alert.type.replace("_", " ")}
+                      </div>
+                    </div>
+                    <div
+                      className={`text-xs px-2 py-1 rounded ${
+                        alert.resolved
+                          ? "text-green-400 bg-green-900"
+                          : "text-red-400 bg-red-900"
+                      }`}
+                    >
+                      {alert.resolved ? "Resolved" : "Active"}
                     </div>
                   </div>
-                  <div
-                    className={`text-xs px-2 py-1 rounded ${
-                      alert.resolved
-                        ? "text-green-400 bg-green-900"
-                        : "text-red-400 bg-red-900"
-                    }`}
-                  >
-                    {alert.resolved ? "Resolved" : "Active"}
-                  </div>
-                </div>
-              ))}
+                ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Fuel Consumption Chart Placeholder */}
       <div className="bg-gray-700 rounded-lg p-6">

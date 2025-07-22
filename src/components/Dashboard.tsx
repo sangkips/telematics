@@ -1,17 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
-  Car,
-  Fuel,
   MapPin,
   AlertTriangle,
-  TrendingUp,
   Activity,
-  Plus,
-  Edit,
-  Trash2,
   Wrench,
 } from "lucide-react";
-import { Vehicle, Alert } from "../types";
+import { Vehicle } from "../types";
 import { VehicleCard } from "./VehicleCard";
 import { VehicleMap } from "./VehicleMap";
 import { AlertPanel } from "./AlertPanel";
@@ -19,7 +13,11 @@ import { FuelGauge } from "./FuelGauge";
 import { MaintenanceDashboard } from "./MaintenanceDashboard";
 import { AdminLayout } from "./admin/AdminLayout";
 import { Header } from "./layout/Header";
+import { BottomTabNavigation } from "./layout/BottomTabNavigation";
+import { StatsCarousel } from "./StatsCarousel";
+import { ResponsiveVehicleGrid } from "./ResponsiveVehicleGrid";
 import { useAuth } from "../contexts/AuthContext";
+import { useResponsive } from "../hooks/useResponsive";
 
 interface DashboardProps {
   vehicles: Vehicle[];
@@ -31,6 +29,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   onVehicleUpdate,
 }) => {
   const { hasPermission, hasAnyPermission } = useAuth();
+  const { isMobile } = useResponsive();
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [activeTab, setActiveTab] = useState<
     "overview" | "map" | "alerts" | "maintenance"
@@ -72,12 +71,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
     console.log("Dismissing alert:", alertId);
   };
 
-  const canManageVehicles = hasAnyPermission([
-    "create_vehicles",
-    "update_vehicles",
-    "delete_vehicles",
-    "all",
-  ]);
+  const handleRefreshAlerts = async () => {
+    // Simulate API call to refresh alerts
+    console.log("Refreshing alerts...");
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    console.log("Alerts refreshed");
+  };
+
+  // Removed unused variable canManageVehicles
   const canViewAlerts = hasPermission("view_alerts") || hasPermission("all");
   const canManageAlerts =
     hasPermission("resolve_alerts") || hasPermission("all");
@@ -113,184 +114,123 @@ export const Dashboard: React.FC<DashboardProps> = ({
         onOpenAdminPanel={() => setShowAdminPanel(true)}
       />
 
-      {/* Navigation Tabs */}
-      <nav className="bg-gray-800 border-b border-gray-700 px-4">
-        <div className="flex space-x-8">
-          {[
-            {
-              id: "overview",
-              label: "Overview",
-              icon: Activity,
-              permission: "view_vehicles",
-            },
-            {
-              id: "map",
-              label: "Live Map",
-              icon: MapPin,
-              permission: "view_vehicles",
-            },
-            {
-              id: "alerts",
-              label: "Alerts",
-              icon: AlertTriangle,
-              permission: "view_alerts",
-            },
-            {
-              id: "maintenance",
-              label: "Maintenance",
-              icon: Wrench,
-              permission: "view_maintenance",
-            },
-          ]
-            .filter(
-              (tab) => hasPermission(tab.permission) || hasPermission("all")
-            )
-            .map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center space-x-2 py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
-                  activeTab === tab.id
+      {/* Desktop Navigation Tabs - Hidden on Mobile */}
+      {!isMobile && (
+        <nav className="bg-gray-800 border-b border-gray-700 px-4">
+          <div className="flex space-x-8">
+            {[
+              {
+                id: "overview",
+                label: "Overview",
+                icon: Activity,
+                permission: "view_vehicles",
+              },
+              {
+                id: "map",
+                label: "Live Map",
+                icon: MapPin,
+                permission: "view_vehicles",
+              },
+              {
+                id: "alerts",
+                label: "Alerts",
+                icon: AlertTriangle,
+                permission: "view_alerts",
+              },
+              {
+                id: "maintenance",
+                label: "Maintenance",
+                icon: Wrench,
+                permission: "view_maintenance",
+              },
+            ]
+              .filter(
+                (tab) => hasPermission(tab.permission) || hasPermission("all")
+              )
+              .map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`flex items-center space-x-2 py-4 px-2 border-b-2 font-medium text-sm transition-colors ${activeTab === tab.id
                     ? "border-blue-400 text-blue-400"
                     : "border-transparent text-gray-400 hover:text-gray-300"
-                }`}
-              >
-                <tab.icon className="w-4 h-4" />
-                <span>{tab.label}</span>
-                {tab.id === "alerts" &&
-                  activeAlerts.length > 0 &&
-                  canViewAlerts && (
-                    <span className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                      {activeAlerts.length}
-                    </span>
-                  )}
-              </button>
-            ))}
-        </div>
-      </nav>
+                    }`}
+                >
+                  <tab.icon className="w-4 h-4" />
+                  <span>{tab.label}</span>
+                  {tab.id === "alerts" &&
+                    activeAlerts.length > 0 &&
+                    canViewAlerts && (
+                      <span className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                        {activeAlerts.length}
+                      </span>
+                    )}
+                </button>
+              ))}
+          </div>
+        </nav>
+      )}
 
       {/* Main Content */}
-      <main className="p-6">
+      <main className={`${isMobile
+        ? 'p-4 pb-20 space-y-4'
+        : 'p-6 space-y-6'
+        }`}>
         {activeTab === "overview" && (
-          <div className="space-y-6">
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-400 text-sm">Total Vehicles</p>
-                    <p className="text-2xl font-bold text-white">
-                      {fleetStats.totalVehicles}
-                    </p>
-                  </div>
-                  <Car className="w-8 h-8 text-blue-400" />
-                </div>
-                <div className="mt-4 text-sm text-gray-400">
-                  {fleetStats.activeVehicles} active, {fleetStats.idleVehicles}{" "}
-                  idle
-                </div>
-              </div>
+          <div className={isMobile ? 'space-y-4' : 'space-y-6'}>
+            {/* Stats Cards - Mobile-First Responsive Design */}
+            <section className="space-y-2">
+              {isMobile && (
+                <h2 className="text-lg font-semibold text-white px-1">
+                  Fleet Overview
+                </h2>
+              )}
+              <StatsCarousel stats={fleetStats} />
+            </section>
 
-              <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-400 text-sm">Avg Fuel Level</p>
-                    <p className="text-2xl font-bold text-white">
-                      {fleetStats.averageFuelLevel}%
-                    </p>
-                  </div>
-                  <Fuel className="w-8 h-8 text-green-400" />
-                </div>
-                <div className="mt-4 text-sm text-gray-400">
-                  Fleet average fuel efficiency
-                </div>
-              </div>
+            {/* Vehicle Grid - Mobile-First Single Column Layout */}
+            <section className="space-y-2">
+              <ResponsiveVehicleGrid
+                vehicles={vehicles}
+                onVehicleSelect={setSelectedVehicle}
+                onVehicleUpdate={onVehicleUpdate}
+              />
+            </section>
 
-              <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-400 text-sm">Total Distance</p>
-                    <p className="text-2xl font-bold text-white">
-                      {(fleetStats.totalDistance / 1000).toFixed(1)}k
-                    </p>
-                  </div>
-                  <TrendingUp className="w-8 h-8 text-purple-400" />
-                </div>
-                <div className="mt-4 text-sm text-gray-400">
-                  Kilometers driven this month
-                </div>
-              </div>
-
-              <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-400 text-sm">Theft Incidents</p>
-                    <p className="text-2xl font-bold text-white">
-                      {fleetStats.fuelTheftIncidents}
-                    </p>
-                  </div>
-                  <AlertTriangle className="w-8 h-8 text-red-400" />
-                </div>
-                <div className="mt-4 text-sm text-gray-400">
-                  Detected fuel theft cases
-                </div>
-              </div>
-            </div>
-
-            {/* Vehicle Grid */}
-            <div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {vehicles.map((vehicle) => (
-                  <div key={vehicle.id} className="relative group">
-                    <VehicleCard
-                      vehicle={vehicle}
-                      onClick={() => setSelectedVehicle(vehicle)}
-                    />
-                    {canManageVehicles && (
-                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div className="flex space-x-1">
-                          {hasPermission("update_vehicles") && (
-                            <button className="p-1 bg-blue-600 hover:bg-blue-700 rounded text-white">
-                              <Edit className="w-3 h-3" />
-                            </button>
-                          )}
-                          {hasPermission("delete_vehicles") && (
-                            <button className="p-1 bg-red-600 hover:bg-red-700 rounded text-white">
-                              <Trash2 className="w-3 h-3" />
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Fuel Monitoring */}
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Fuel Monitoring</h2>
-              <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Fuel Monitoring - Mobile-First Responsive Layout */}
+            <section className="space-y-2">
+              <h2 className={`font-semibold ${isMobile ? 'text-lg px-1' : 'text-xl'
+                }`}>
+                Fuel Monitoring
+              </h2>
+              <div className={`bg-gray-800 rounded-lg border border-gray-700 ${isMobile ? 'p-4' : 'p-6'
+                }`}>
+                <div className={`grid gap-4 ${isMobile
+                  ? 'grid-cols-1'
+                  : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+                  }`}>
                   {vehicles.map((vehicle) => (
                     <FuelGauge
                       key={vehicle.id}
                       level={vehicle.fuelLevel}
                       capacity={vehicle.maxFuelCapacity}
                       vehicleName={vehicle.name}
-                      size="medium"
+                      size={isMobile ? "large" : "medium"}
                       showAlert={true}
                     />
                   ))}
                 </div>
               </div>
-            </div>
+            </section>
           </div>
         )}
 
         {activeTab === "map" && (
-          <div className="space-y-6">
-            <h2 className="text-xl font-semibold">Live Vehicle Tracking</h2>
+          <div className={isMobile ? 'space-y-4' : 'space-y-6'}>
+            <h2 className={`font-semibold ${isMobile ? 'text-lg px-1' : 'text-xl'
+              }`}>
+              Live Vehicle Tracking
+            </h2>
             <VehicleMap
               vehicles={vehicles}
               selectedVehicle={selectedVehicle || undefined}
@@ -298,16 +238,20 @@ export const Dashboard: React.FC<DashboardProps> = ({
             />
 
             {selectedVehicle && (
-              <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-                <h3 className="text-lg font-semibold mb-4">
+              <div className={`bg-gray-800 rounded-lg border border-gray-700 ${isMobile ? 'p-4' : 'p-6'
+                }`}>
+                <h3 className={`font-semibold mb-4 ${isMobile ? 'text-base' : 'text-lg'
+                  }`}>
                   {selectedVehicle.name} - Details
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className={`grid gap-4 ${isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-3'
+                  } ${isMobile ? 'gap-4' : 'gap-6'}`}>
                   <div>
                     <VehicleCard vehicle={selectedVehicle} />
                   </div>
-                  <div className="md:col-span-2">
-                    <div className="grid grid-cols-2 gap-4">
+                  <div className={isMobile ? '' : 'md:col-span-2'}>
+                    <div className={`grid gap-4 ${isMobile ? 'grid-cols-1' : 'grid-cols-2'
+                      }`}>
                       <div>
                         <p className="text-gray-400 text-sm">
                           Current Location
@@ -342,22 +286,30 @@ export const Dashboard: React.FC<DashboardProps> = ({
         )}
 
         {activeTab === "alerts" && canViewAlerts && (
-          <div className="space-y-6">
+          <div className={isMobile ? 'space-y-4' : 'space-y-6'}>
             <AlertPanel
               alerts={allAlerts}
               onResolveAlert={canManageAlerts ? handleResolveAlert : undefined}
               onDismissAlert={canManageAlerts ? handleDismissAlert : undefined}
+              onRefresh={handleRefreshAlerts}
             />
           </div>
         )}
 
         {activeTab === "maintenance" &&
           (hasPermission("view_maintenance") || hasPermission("all")) && (
-            <div className="space-y-6">
+            <div className={isMobile ? 'space-y-4' : 'space-y-6'}>
               <MaintenanceDashboard vehicles={vehicles} />
             </div>
           )}
       </main>
+
+      {/* Mobile Bottom Tab Navigation */}
+      <BottomTabNavigation
+        activeTab={activeTab}
+        onTabChange={(tabId) => setActiveTab(tabId as any)}
+        alertsCount={canViewAlerts ? activeAlerts.length : 0}
+      />
     </div>
   );
 };
