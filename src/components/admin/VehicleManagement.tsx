@@ -11,21 +11,41 @@ import {
   ChevronDown,
   ChevronRight,
   Fuel,
+  Wifi,
+  WifiOff,
+  RefreshCw,
 } from "lucide-react";
 import { Vehicle } from "../../types";
 import { useVehicles } from "../../hooks/useApi";
 import { apiService } from "../../services/api";
 import { useResponsive } from "../../hooks/useResponsive";
 import { useResponsiveContext } from "../../contexts/ResponsiveContext";
+import { useVehicleUpdate } from "../../contexts/VehicleUpdateContext";
 
 export const VehicleManagement: React.FC = () => {
   const { isMobile } = useResponsive();
   const { expandedCards, toggleExpandedCard } = useResponsiveContext();
-  const { data: vehicles, loading, error, refetch } = useVehicles();
+  const { data: apiVehicles, loading: apiLoading, error: apiError, refetch } = useVehicles();
+  const { 
+    vehicles: contextVehicles, 
+    connectionState, 
+    loading: contextLoading, 
+    error: contextError,
+    updateVehicle,
+    refreshVehicles 
+  } = useVehicleUpdate();
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+
+  // Use context vehicles if available, otherwise fall back to API vehicles
+  const vehicles = Object.keys(contextVehicles).length > 0 
+    ? Object.values(contextVehicles) 
+    : (apiVehicles || []);
+  
+  const loading = contextLoading || apiLoading;
+  const error = contextError || apiError;
 
   const [newVehicle, setNewVehicle] = useState({
     name: "",
@@ -64,10 +84,11 @@ export const VehicleManagement: React.FC = () => {
         lastUpdate: new Date(),
         odometer: 0,
         alerts: [],
+        maintenanceRecords: [],
       };
 
       await apiService.createVehicle(vehicleData);
-      await refetch(); // Refresh the vehicle list
+      await refetch(); 
       setShowAddModal(false);
       setNewVehicle({
         name: "",
@@ -104,8 +125,14 @@ export const VehicleManagement: React.FC = () => {
         odometer: editingVehicle.odometer,
       };
 
-      await apiService.updateVehicle(editingVehicle.id, updateData);
-      await refetch(); // Refresh the vehicle list
+      // Use context updateVehicle if available, otherwise fall back to API
+      if (updateVehicle && Object.keys(contextVehicles).length > 0) {
+        await updateVehicle(editingVehicle.id, updateData);
+      } else {
+        await apiService.updateVehicle(editingVehicle.id, updateData);
+        await refetch(); // Refresh the vehicle list
+      }
+      
       setEditingVehicle(null);
     } catch (error) {
       console.error("Failed to update vehicle:", error);
@@ -166,24 +193,67 @@ export const VehicleManagement: React.FC = () => {
       {/* Header */}
       <div className={`flex items-center justify-between ${isMobile ? 'flex-col space-y-3' : ''}`}>
         <div className={isMobile ? 'text-center' : ''}>
-          <h2 className={`font-bold text-white ${isMobile ? 'text-xl' : 'text-2xl'}`}>
-            Vehicle Management
-          </h2>
+          <div className="flex items-center space-x-3">
+            <h2 className={`font-bold text-white ${isMobile ? 'text-xl' : 'text-2xl'}`}>
+              Vehicle Management
+            </h2>
+            
+            {/* Connection Status Indicator */}
+            {/* <div className="flex items-center space-x-1">
+              {connectionState.status === 'connected' && !connectionState.fallbackMode ? (
+                <div className="flex items-center space-x-1 text-green-400" title="Real-time connected">
+                  <Wifi className="w-4 h-4" />
+                  {!isMobile && <span className="text-xs">Live</span>}
+                </div>
+              ) : connectionState.status === 'connecting' ? (
+                <div className="flex items-center space-x-1 text-yellow-400" title="Connecting...">
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  {!isMobile && <span className="text-xs">Connecting</span>}
+                </div>
+              ) : connectionState.fallbackMode ? (
+                <div className="flex items-center space-x-1 text-orange-400" title="Polling mode">
+                  <RefreshCw className="w-4 h-4" />
+                  {!isMobile && <span className="text-xs">Polling</span>}
+                </div>
+              ) : (
+                <div className="flex items-center space-x-1 text-red-400" title="Disconnected">
+                  <WifiOff className="w-4 h-4" />
+                  {!isMobile && <span className="text-xs">Offline</span>}
+                </div>
+              )}
+            </div> */}
+          </div>
           {!isMobile && (
             <p className="text-gray-400">
               Manage your fleet vehicles and their configurations
             </p>
           )}
         </div>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className={`flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors ${
-            isMobile ? 'w-full justify-center min-h-[44px]' : ''
-          }`}
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add Vehicle</span>
-        </button>
+        
+        <div className="flex items-center space-x-2">
+          {/* Manual Refresh Button */}
+          {/* {(connectionState.fallbackMode || connectionState.status === 'disconnected') && (
+            <button
+              onClick={refreshVehicles}
+              disabled={loading}
+              className="flex items-center space-x-1 px-2 py-1 text-xs bg-gray-700 hover:bg-gray-600 text-gray-300 rounded transition-colors disabled:opacity-50"
+              title="Refresh vehicles"
+            >
+              <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
+              {!isMobile && <span>Refresh</span>}
+            </button>
+          )} */}
+          
+          <button
+            onClick={() => setShowAddModal(true)}
+            className={`flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors ${
+              isMobile ? 'w-full justify-center min-h-[44px]' : ''
+            }`}
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add Vehicle</span>
+          </button>
+        </div>
       </div>
 
       {/* Filters */}

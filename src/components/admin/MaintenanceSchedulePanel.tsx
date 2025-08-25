@@ -19,16 +19,23 @@ import { useVehicles, useMaintenanceSchedules } from "../../hooks/useApi";
 import { apiService } from "../../services/api";
 import { useResponsive } from "../../hooks/useResponsive";
 import { useResponsiveContext } from "../../contexts/ResponsiveContext";
+import { useVehicleUpdate } from "../../contexts/VehicleUpdateContext";
 
 export const MaintenanceSchedulePanel: React.FC = () => {
   const { isMobile } = useResponsive();
   const { expandedCards, toggleExpandedCard } = useResponsiveContext();
-  const { data: vehicles, loading: vehiclesLoading, error: vehiclesError } = useVehicles();
+  const { data: apiVehicles, loading: vehiclesLoading, error: vehiclesError } = useVehicles();
+  const { vehicles: contextVehicles } = useVehicleUpdate();
   const { data: schedules, loading: schedulesLoading, error: schedulesError, refetch: refetchSchedules } = useMaintenanceSchedules();
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingSchedule, setEditingSchedule] = useState<MaintenanceSchedule | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
+
+  // Use context vehicles if available, otherwise fall back to API vehicles
+  const vehicles = Object.keys(contextVehicles).length > 0 
+    ? Object.values(contextVehicles) 
+    : (apiVehicles || []);
 
   const [newSchedule, setNewSchedule] = useState({
     vehicleId: "",

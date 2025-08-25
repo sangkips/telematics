@@ -48,14 +48,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } else {
       setLoading(false);
     }
+
+    // Listen for session expiry events from WebSocket service
+    const handleSessionExpired = () => {
+      setUser(null);
+      setIsAuthenticated(false);
+      setError("Session expired. Please login again.");
+      setLoading(false);
+    };
+
+    window.addEventListener('session-expired', handleSessionExpired);
+
+    return () => {
+      window.removeEventListener('session-expired', handleSessionExpired);
+    };
   }, []);
 
   const verifyToken = async () => {
     try {
       setError(null);
+      
+      // Add timeout to prevent hanging
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Token verification timeout')), 10000); // 10 second timeout
+      });
+      
       // Get current user info to verify token
-      const currentUser = await apiService.getCurrentUser();
-      console.log("Current user:", currentUser); // Debug log
+      const currentUser = await Promise.race([
+        apiService.getCurrentUser(),
+        timeoutPromise
+      ]) as AuthUser;
+      
       setUser(currentUser);
       setIsAuthenticated(true);
     } catch (error) {

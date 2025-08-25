@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  MapPin, 
-  User, 
-  Clock, 
-  Gauge, 
-  AlertTriangle, 
-  CheckCircle, 
+import {
+  MapPin,
+  User,
+  Clock,
+  Gauge,
+  AlertTriangle,
+  CheckCircle,
   XCircle,
   Pause,
   Wrench,
@@ -13,12 +13,17 @@ import {
   ChevronUp,
   Edit,
   Trash2,
-  MoreVertical
+  MoreVertical,
+  Wifi,
+  WifiOff,
+  RefreshCw,
+  Loader2
 } from 'lucide-react';
 import { Vehicle } from '../types';
 import { FuelGauge } from './FuelGauge';
 import { useResponsive } from '../hooks/useResponsive';
 import { useResponsiveContext } from '../contexts/ResponsiveContext';
+import { useVehicleUpdate } from '../contexts/VehicleUpdateContext';
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -27,22 +32,41 @@ interface VehicleCardProps {
   onDelete?: (vehicle: Vehicle) => void;
 }
 
-export const VehicleCard: React.FC<VehicleCardProps> = ({ 
-  vehicle, 
-  onClick, 
-  onEdit, 
-  onDelete 
+export const VehicleCard: React.FC<VehicleCardProps> = ({
+  vehicle,
+  onClick,
+  onEdit,
+  onDelete
 }) => {
-  const { isMobile, isTablet } = useResponsive();
+  const { isMobile } = useResponsive();
   const { expandedCards, toggleExpandedCard } = useResponsiveContext();
+  const { connectionState, pendingUpdates } = useVehicleUpdate();
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [showActions, setShowActions] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const startX = useRef(0);
   const currentX = useRef(0);
   const isDragging = useRef(false);
 
   const isExpanded = expandedCards.includes(vehicle.id);
+
+  // Check if this vehicle has pending updates
+  const vehiclePendingUpdates = Object.values(pendingUpdates).filter(
+    update => update.vehicleId === vehicle.id
+  );
+  const hasPendingUpdates = vehiclePendingUpdates.length > 0;
+  const hasFailedUpdates = vehiclePendingUpdates.some(update => update.status === 'error');
+
+  // Show updating animation for a brief moment after successful updates
+  useEffect(() => {
+    const successfulUpdates = vehiclePendingUpdates.filter(update => update.status === 'success');
+    if (successfulUpdates.length > 0) {
+      setIsUpdating(true);
+      const timer = setTimeout(() => setIsUpdating(false), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [vehiclePendingUpdates]);
 
   const getStatusColor = () => {
     switch (vehicle.status) {
@@ -64,14 +88,14 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
     }
   };
 
-  const criticalAlerts = vehicle.alerts.filter(alert => 
+  const criticalAlerts = vehicle.alerts.filter(alert =>
     alert.severity === 'critical' && !alert.resolved
   );
 
   // Touch event handlers for swipe actions
   const handleTouchStart = (e: React.TouchEvent) => {
     if (!isMobile) return;
-    
+
     startX.current = e.touches[0].clientX;
     currentX.current = startX.current;
     isDragging.current = true;
@@ -79,10 +103,10 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isMobile || !isDragging.current) return;
-    
+
     currentX.current = e.touches[0].clientX;
     const deltaX = currentX.current - startX.current;
-    
+
     // Only allow left swipe (negative deltaX)
     if (deltaX < 0) {
       setSwipeOffset(Math.max(deltaX, -120)); // Limit swipe to 120px
@@ -91,10 +115,10 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
 
   const handleTouchEnd = () => {
     if (!isMobile || !isDragging.current) return;
-    
+
     isDragging.current = false;
     const deltaX = currentX.current - startX.current;
-    
+
     // If swiped more than 60px, show actions
     if (deltaX < -60) {
       setSwipeOffset(-120);
@@ -150,15 +174,62 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
   if (isMobile) {
     return (
       <div className="relative overflow-hidden">
-        <div 
+        <div
           ref={cardRef}
-          className="bg-gray-800 rounded-lg border border-gray-700 hover:border-blue-500 transition-all duration-200 cursor-pointer group relative"
+          className={`bg-gray-800 rounded-lg border transition-all duration-200 cursor-pointer group relative ${hasPendingUpdates || isUpdating
+            ? 'border-blue-400 shadow-blue-400/20 shadow-lg'
+            : hasFailedUpdates
+              ? 'border-red-400 shadow-red-400/20 shadow-lg'
+              : 'border-gray-700 hover:border-blue-500'
+            }`}
           style={{ transform: `translateX(${swipeOffset}px)` }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
           onClick={handleCardClick}
         >
+          {/* Real-time Update Indicator */}
+          {(hasPendingUpdates || isUpdating || hasFailedUpdates) && (
+            <div className="absolute top-2 left-2 z-10">
+              {hasPendingUpdates && !hasFailedUpdates ? (
+                <div className="flex items-center space-x-1 bg-blue-600 text-white px-2 py-1 rounded-full text-xs">
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  <span>Updating</span>
+                </div>
+              ) : hasFailedUpdates ? (
+                <div className="flex items-center space-x-1 bg-red-600 text-white px-2 py-1 rounded-full text-xs">
+                  <XCircle className="w-3 h-3" />
+                  <span>Failed</span>
+                </div>
+              ) : isUpdating ? (
+                <div className="flex items-center space-x-1 bg-green-600 text-white px-2 py-1 rounded-full text-xs">
+                  <CheckCircle className="w-3 h-3" />
+                  <span>Updated</span>
+                </div>
+              ) : null}
+            </div>
+          )}
+
+          {/* Connection Status Indicator */}
+          <div className="absolute top-2 right-2 z-10">
+            {connectionState.status === 'connected' && !connectionState.fallbackMode ? (
+              <div title="Real-time connected">
+                <Wifi className="w-4 h-4 text-green-400" />
+              </div>
+            ) : connectionState.status === 'connecting' ? (
+              <div title="Connecting...">
+                <RefreshCw className="w-4 h-4 text-yellow-400 animate-spin" />
+              </div>
+            ) : connectionState.fallbackMode ? (
+              <div title="Polling mode">
+                <RefreshCw className="w-4 h-4 text-orange-400" />
+              </div>
+            ) : (
+              <div title="Disconnected">
+                <WifiOff className="w-4 h-4 text-red-400" />
+              </div>
+            )}
+          </div>
           {/* Mobile Horizontal Layout */}
           <div className="p-4">
             {/* Primary Info Row */}
@@ -177,7 +248,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
                   </div>
                 </div>
               </div>
-              
+
               {/* Expand/Collapse Button */}
               <button
                 onClick={handleExpandToggle}
@@ -207,8 +278,8 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
                 <span className="truncate">{vehicle.driver}</span>
               </div>
               <div className="ml-4 flex-shrink-0">
-                <FuelGauge 
-                  level={vehicle.fuelLevel} 
+                <FuelGauge
+                  level={vehicle.fuelLevel}
                   capacity={vehicle.maxFuelCapacity}
                   vehicleName=""
                   size="small"
@@ -226,13 +297,13 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
                     <MapPin className="w-4 h-4 mr-2 text-gray-400 flex-shrink-0" />
                     <span className="text-sm truncate">{vehicle.location.address}</span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <div className="flex items-center text-gray-300">
                       <Gauge className="w-4 h-4 mr-2 text-gray-400" />
                       <span className="text-sm">{vehicle.speed} km/h</span>
                     </div>
-                    
+
                     <div className="flex items-center text-gray-300">
                       <Clock className="w-4 h-4 mr-2 text-gray-400" />
                       <span className="text-sm">
@@ -324,10 +395,57 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
 
   // Desktop/Tablet vertical layout (original design)
   return (
-    <div 
-      className="bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-700 hover:border-blue-500 transition-all duration-200 cursor-pointer group relative"
+    <div
+      className={`bg-gray-800 rounded-lg p-6 shadow-lg border transition-all duration-200 cursor-pointer group relative ${hasPendingUpdates || isUpdating
+        ? 'border-blue-400 shadow-blue-400/20 shadow-lg'
+        : hasFailedUpdates
+          ? 'border-red-400 shadow-red-400/20 shadow-lg'
+          : 'border-gray-700 hover:border-blue-500'
+        }`}
       onClick={onClick}
     >
+      {/* Real-time Update Indicator */}
+      {(hasPendingUpdates || isUpdating || hasFailedUpdates) && (
+        <div className="absolute top-4 left-4 z-10">
+          {hasPendingUpdates && !hasFailedUpdates ? (
+            <div className="flex items-center space-x-1 bg-blue-600 text-white px-2 py-1 rounded-full text-xs">
+              <Loader2 className="w-3 h-3 animate-spin" />
+              <span>Updating</span>
+            </div>
+          ) : hasFailedUpdates ? (
+            <div className="flex items-center space-x-1 bg-red-600 text-white px-2 py-1 rounded-full text-xs">
+              <XCircle className="w-3 h-3" />
+              <span>Failed</span>
+            </div>
+          ) : isUpdating ? (
+            <div className="flex items-center space-x-1 bg-green-600 text-white px-2 py-1 rounded-full text-xs">
+              <CheckCircle className="w-3 h-3" />
+              <span>Updated</span>
+            </div>
+          ) : null}
+        </div>
+      )}
+
+      {/* Connection Status Indicator */}
+      <div className="absolute top-4 right-12 z-10">
+        {connectionState.status === 'connected' && !connectionState.fallbackMode ? (
+          <div title="Real-time connected">
+            <Wifi className="w-4 h-4 text-green-400" />
+          </div>
+        ) : connectionState.status === 'connecting' ? (
+          <div title="Connecting...">
+            <RefreshCw className="w-4 h-4 text-yellow-400 animate-spin" />
+          </div>
+        ) : connectionState.fallbackMode ? (
+          <div title="Polling mode">
+            <RefreshCw className="w-4 h-4 text-orange-400" />
+          </div>
+        ) : (
+          <div title="Disconnected">
+            <WifiOff className="w-4 h-4 text-red-400" />
+          </div>
+        )}
+      </div>
       {/* Desktop Actions Menu */}
       {(onEdit || onDelete) && (
         <div className="absolute top-4 right-4">
@@ -341,7 +459,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
             >
               <MoreVertical className="w-4 h-4" />
             </button>
-            
+
             {showActions && (
               <div className="absolute right-0 top-8 bg-gray-700 rounded-lg shadow-lg border border-gray-600 py-1 z-10">
                 {onEdit && (
@@ -399,8 +517,8 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
 
       {/* Fuel Gauge */}
       <div className="mb-4">
-        <FuelGauge 
-          level={vehicle.fuelLevel} 
+        <FuelGauge
+          level={vehicle.fuelLevel}
           capacity={vehicle.maxFuelCapacity}
           vehicleName=""
           size="small"
@@ -414,17 +532,17 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
           <User className="w-4 h-4 mr-2 text-gray-400" />
           <span className="text-sm">{vehicle.driver}</span>
         </div>
-        
+
         <div className="flex items-center text-gray-300">
           <MapPin className="w-4 h-4 mr-2 text-gray-400" />
           <span className="text-sm truncate">{vehicle.location.address}</span>
         </div>
-        
+
         <div className="flex items-center text-gray-300">
           <Gauge className="w-4 h-4 mr-2 text-gray-400" />
           <span className="text-sm">{vehicle.speed} km/h</span>
         </div>
-        
+
         <div className="flex items-center text-gray-300">
           <Clock className="w-4 h-4 mr-2 text-gray-400" />
           <span className="text-sm">

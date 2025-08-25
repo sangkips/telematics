@@ -10,16 +10,26 @@ import {
   AlertTriangle,
   ChevronDown,
   ChevronRight,
+  Wifi,
+  WifiOff,
+  RefreshCw,
 } from "lucide-react";
 import { Vehicle } from "../../types";
 import { useResponsive } from "../../hooks/useResponsive";
 import { useResponsiveContext } from "../../contexts/ResponsiveContext";
+import { useVehicleUpdate } from "../../contexts/VehicleUpdateContext";
 
 interface ReportsPanelProps {
   vehicles: Vehicle[];
 }
 
-export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles }) => {
+export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicles }) => {
+  const { vehicles: contextVehicles, connectionState } = useVehicleUpdate();
+  
+  // Use context vehicles if available, otherwise fall back to props
+  const vehicles = Object.keys(contextVehicles).length > 0 
+    ? Object.values(contextVehicles) 
+    : propVehicles;
   const { isMobile } = useResponsive();
   const { expandedCards, toggleExpandedCard } = useResponsiveContext();
   const [dateRange, setDateRange] = useState("7d");
@@ -61,6 +71,34 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles }) => {
 
   return (
     <div className={`${isMobile ? 'p-4 space-y-4' : 'p-6 space-y-6'}`}>
+      {/* Header with Connection Status */}
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-semibold text-white">Fleet Reports</h2>
+        {/* <div className="flex items-center space-x-1">
+          {connectionState.status === 'connected' && !connectionState.fallbackMode ? (
+            <div className="flex items-center space-x-1 text-green-400" title="Real-time connected">
+              <Wifi className="w-4 h-4" />
+              <span className="text-xs">Live Data</span>
+            </div>
+          ) : connectionState.status === 'connecting' ? (
+            <div className="flex items-center space-x-1 text-yellow-400" title="Connecting...">
+              <RefreshCw className="w-4 h-4 animate-spin" />
+              <span className="text-xs">Connecting</span>
+            </div>
+          ) : connectionState.fallbackMode ? (
+            <div className="flex items-center space-x-1 text-orange-400" title="Polling mode">
+              <RefreshCw className="w-4 h-4" />
+              <span className="text-xs">Polling</span>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-1 text-red-400" title="Disconnected">
+              <WifiOff className="w-4 h-4" />
+              <span className="text-xs">Offline</span>
+            </div>
+          )}
+        </div> */}
+      </div>
+
       {/* Report Controls */}
       <div className={`${isMobile ? 'space-y-4' : 'flex items-center justify-between'}`}>
         <div className={`${isMobile ? 'space-y-3' : 'flex items-center space-x-4'}`}>

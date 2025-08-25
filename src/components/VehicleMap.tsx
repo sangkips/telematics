@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { MapPin, Navigation, Zap, Maximize, Minimize, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { MapPin, Navigation, Maximize, Minimize, ZoomIn, ZoomOut, RotateCcw, Wifi, WifiOff, RefreshCw } from 'lucide-react';
 import { Vehicle } from '../types';
 import { useResponsive } from '../hooks/useResponsive';
 import { useResponsiveContext } from '../contexts/ResponsiveContext';
+import { useVehicleUpdate } from '../contexts/VehicleUpdateContext';
 import { BottomSheet } from './BottomSheet';
 import { VehicleDetails } from './VehicleDetails';
 import { triggerHapticFeedback } from '../utils/responsive';
@@ -14,12 +15,18 @@ interface VehicleMapProps {
 }
 
 export const VehicleMap: React.FC<VehicleMapProps> = ({
-  vehicles,
+  vehicles: propVehicles,
   selectedVehicle,
   onVehicleSelect
 }) => {
   const { isMobile, touchDevice } = useResponsive();
   const { bottomSheetOpen, setBottomSheetOpen } = useResponsiveContext();
+  const { vehicles: contextVehicles, connectionState } = useVehicleUpdate();
+
+  // Use context vehicles if available, otherwise fall back to props
+  const vehicles = Object.keys(contextVehicles).length > 0 
+    ? Object.values(contextVehicles) 
+    : propVehicles;
 
   // Map state
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -325,9 +332,28 @@ export const VehicleMap: React.FC<VehicleMapProps> = ({
           </div>
 
           {/* Real-time Updates Indicator */}
-          <div className="absolute top-4 left-4 flex items-center text-green-400 z-20">
-            <Zap className="w-4 h-4 mr-1 animate-pulse" />
-            <span className="text-sm">Live</span>
+          <div className="absolute top-4 left-4 flex items-center z-20">
+            {connectionState.status === 'connected' && !connectionState.fallbackMode ? (
+              <div className="flex items-center text-green-400">
+                <Wifi className="w-4 h-4 mr-1" />
+                <span className="text-sm">Live</span>
+              </div>
+            ) : connectionState.status === 'connecting' ? (
+              <div className="flex items-center text-yellow-400">
+                <RefreshCw className="w-4 h-4 mr-1 animate-spin" />
+                <span className="text-sm">Connecting</span>
+              </div>
+            ) : connectionState.fallbackMode ? (
+              <div className="flex items-center text-orange-400">
+                <RefreshCw className="w-4 h-4 mr-1" />
+                <span className="text-sm">Polling</span>
+              </div>
+            ) : (
+              <div className="flex items-center text-red-400">
+                <WifiOff className="w-4 h-4 mr-1" />
+                <span className="text-sm">Offline</span>
+              </div>
+            )}
           </div>
 
           {/* Zoom Level Indicator */}

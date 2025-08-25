@@ -9,14 +9,22 @@ import {
 } from "lucide-react";
 import { Vehicle, MaintenanceRecord, MaintenanceSchedule } from "../types";
 import { useMaintenanceRecords, useMaintenanceSchedules } from "../hooks/useApi";
+import { useVehicleUpdate } from "../contexts/VehicleUpdateContext";
+import { ConnectionMonitor } from "./ConnectionMonitor";
 
 interface MaintenanceDashboardProps {
     vehicles: Vehicle[];
 }
 
 export const MaintenanceDashboard: React.FC<MaintenanceDashboardProps> = ({
-    vehicles,
+    vehicles: propVehicles,
 }) => {
+    const { vehicles: contextVehicles, connectionState, refreshVehicles } = useVehicleUpdate();
+
+    // Use context vehicles if available, otherwise fall back to props
+    const vehicles = Object.keys(contextVehicles).length > 0
+        ? Object.values(contextVehicles)
+        : propVehicles;
     const { data: maintenanceRecords, loading: recordsLoading, error: recordsError } = useMaintenanceRecords();
     const { data: maintenanceSchedules, loading: schedulesLoading, error: schedulesError } = useMaintenanceSchedules();
 
@@ -150,6 +158,16 @@ export const MaintenanceDashboard: React.FC<MaintenanceDashboardProps> = ({
 
     return (
         <div className="space-y-6">
+            {/* Connection Status Header */}
+            <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-white">Maintenance Dashboard</h2>
+                <ConnectionMonitor
+                    connectionState={connectionState}
+                    onManualRefresh={refreshVehicles}
+                    className="text-white"
+                />
+            </div>
+
             {/* Maintenance Statistics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="bg-red-900 bg-opacity-50 rounded-lg p-6 border border-red-700">
@@ -281,7 +299,7 @@ export const MaintenanceDashboard: React.FC<MaintenanceDashboardProps> = ({
                                             </div>
                                             <div className="text-xs text-gray-500">
                                                 {new Date(item.record.performedAt).toLocaleDateString()} •
-                                                {item.record.performedBy}
+                                                {item.record.serviceCenter}
                                             </div>
                                         </div>
                                         <div className="text-right">

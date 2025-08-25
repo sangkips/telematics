@@ -272,3 +272,19 @@ export const ROLE_PERMISSIONS = {
     PERMISSIONS.VIEW_MAINTENANCE,
   ],
 };
+
+// Re-export WebSocket types for convenience
+export type {
+  WebSocketMessage,
+  WebSocketMessageType,
+  WebSocketOperation,
+  VehicleUpdatePayload,
+  ConnectionState,
+  WebSocketConfig,
+  WebSocketEventCallback,
+  ConnectionStateCallback,
+  WebSocketSubscription,
+  VehicleWithWebSocketData,
+  VehicleUpdateConflict,
+  WebSocketError
+} from './types/websocket';

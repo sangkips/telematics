@@ -13,6 +13,7 @@ import {
   Wrench,
   Menu,
   X,
+  AlertTriangle,
 } from "lucide-react";
 import { VehicleManagement } from "./VehicleManagement";
 import { UserManagement } from "./UserManagement";
@@ -23,6 +24,7 @@ import { ReportsPanel } from "./ReportsPanel";
 import { MaintenancePanel } from "./MaintenancePanel";
 import { MaintenanceSchedulePanel } from "./MaintenanceSchedulePanel";
 import { MaintenanceTabsPanel } from "./MaintenanceTabsPanel";
+import { AlertDashboard } from "../AlertDashboard";
 import { useAuth } from "../../contexts/AuthContext";
 import { useResponsive } from "../../hooks/useResponsive";
 import { Vehicle } from "../../types";
@@ -40,7 +42,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   const { user, hasPermission } = useAuth();
   const { isMobile, isTablet } = useResponsive();
   const [activeTab, setActiveTab] = useState<
-    "vehicles" | "users" | "maintenance" | "system" | "notifications" | "security" | "reports"
+    "vehicles" | "users" | "maintenance" | "alerts" | "system" | "notifications" | "security" | "reports"
   >("vehicles");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -72,6 +74,13 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       icon: Wrench,
       permission: "view_maintenance",
       description: "Track vehicle maintenance records and schedules",
+    },
+    {
+      id: "alerts",
+      label: "Alert Management",
+      icon: AlertTriangle,
+      permission: "view_alerts",
+      description: "Monitor and manage system alerts and notifications",
     },
     {
       id: "reports",
@@ -160,7 +169,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                   <span>Back to Dashboard</span>
                 </button>
                 <div className="w-px h-6 bg-gray-600"></div>
-                <div className="flex items-center space-x-4">
+                {/* <div className="flex items-center space-x-4">
                   <Settings className="w-8 h-8 text-blue-400" />
                   <div>
                     <h1 className="text-2xl font-bold text-white">
@@ -170,14 +179,14 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                       System management and configuration
                     </p>
                   </div>
-                </div>
+                </div> */}
               </div>
 
               <div className="flex items-center space-x-4">
-                <div className="flex items-center text-green-400">
+                {/* <div className="flex items-center text-green-400">
                   <Activity className="w-4 h-4 mr-1" />
                   <span className="text-sm">System Online</span>
-                </div>
+                </div> */}
                 <div className="text-right">
                   <div className="text-white text-sm font-medium">
                     {user?.firstName} {user?.lastName}
@@ -372,6 +381,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
             {activeTab === "maintenance" && (
               <div className={isMobile ? 'p-4' : 'p-6'}>
                 <MaintenanceTabsPanel />
+              </div>
+            )}
+            {activeTab === "alerts" && (
+              <div className={isMobile ? 'p-4' : 'p-6'}>
+                <AlertDashboard />
               </div>
             )}
             {activeTab === "reports" && <ReportsPanel vehicles={vehicles} />}

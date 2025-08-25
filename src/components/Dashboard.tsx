@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MapPin,
   AlertTriangle,
@@ -16,8 +16,10 @@ import { Header } from "./layout/Header";
 import { BottomTabNavigation } from "./layout/BottomTabNavigation";
 import { StatsCarousel } from "./StatsCarousel";
 import { ResponsiveVehicleGrid } from "./ResponsiveVehicleGrid";
+import { ConnectionMonitor } from "./ConnectionMonitor";
 import { useAuth } from "../contexts/AuthContext";
 import { useResponsive } from "../hooks/useResponsive";
+import { useVehicleUpdate } from "../contexts/VehicleUpdateContext";
 
 interface DashboardProps {
   vehicles: Vehicle[];
@@ -25,12 +27,49 @@ interface DashboardProps {
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
-  vehicles,
+  vehicles: propVehicles,
   onVehicleUpdate,
 }) => {
   const { hasPermission, hasAnyPermission } = useAuth();
   const { isMobile } = useResponsive();
+  const { 
+    vehicles: contextVehicles, 
+    updateVehicle, 
+    connectionState, 
+    loading, 
+    error, 
+    refreshVehicles,
+    clearError 
+  } = useVehicleUpdate();
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+
+  // Use context vehicles if available, otherwise fall back to props
+  const vehicles = Object.keys(contextVehicles).length > 0 
+    ? Object.values(contextVehicles) 
+    : propVehicles;
+
+  // Update selected vehicle when vehicles change (real-time updates)
+  useEffect(() => {
+    if (selectedVehicle && contextVehicles[selectedVehicle.id]) {
+      setSelectedVehicle(contextVehicles[selectedVehicle.id]);
+    }
+  }, [contextVehicles, selectedVehicle]);
+
+  // Handle vehicle updates using context or fallback to prop
+  const handleVehicleUpdate = async (vehicle: Vehicle) => {
+    if (updateVehicle) {
+      // Use context updateVehicle which expects (id, updates)
+      const { id, ...updates } = vehicle;
+      try {
+        await updateVehicle(id, updates);
+      } catch (error) {
+        console.error('Failed to update vehicle:', error);
+      }
+    } else if (onVehicleUpdate) {
+      // Fallback to prop function
+      onVehicleUpdate(vehicle);
+    }
+  };
   const [activeTab, setActiveTab] = useState<
     "overview" | "map" | "alerts" | "maintenance"
   >("overview");
@@ -171,11 +210,21 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </nav>
       )}
 
+      {/* Connection Status Monitor */}
+      <div className="px-4 py-2">
+        <ConnectionMonitor
+          connectionState={connectionState}
+          onManualRefresh={refreshVehicles}
+          showNotifications={true}
+        />
+      </div>
+
       {/* Main Content */}
       <main className={`${isMobile
         ? 'p-4 pb-20 space-y-4'
         : 'p-6 space-y-6'
         }`}>
+
         {activeTab === "overview" && (
           <div className={isMobile ? 'space-y-4' : 'space-y-6'}>
             {/* Stats Cards - Mobile-First Responsive Design */}
@@ -193,7 +242,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <ResponsiveVehicleGrid
                 vehicles={vehicles}
                 onVehicleSelect={setSelectedVehicle}
-                onVehicleUpdate={onVehicleUpdate}
+                onVehicleUpdate={handleVehicleUpdate}
               />
             </section>
 

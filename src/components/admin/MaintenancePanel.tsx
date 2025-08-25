@@ -14,13 +14,13 @@ import {
   FileText,
   ChevronDown,
   ChevronRight,
-  MoreVertical,
 } from "lucide-react";
-import { MaintenanceRecord, Vehicle } from "../../types";
+import { MaintenanceRecord } from "../../types";
 import { useMaintenanceRecords, useVehicles } from "../../hooks/useApi";
 import { apiService } from "../../services/api";
 import { useResponsive } from "../../hooks/useResponsive";
 import { useResponsiveContext } from "../../contexts/ResponsiveContext";
+import { useVehicleUpdate } from "../../contexts/VehicleUpdateContext";
 
 const SERVICE_TYPES = [
   { value: "oil_change", label: "Oil Change" },
@@ -41,12 +41,18 @@ export const MaintenancePanel: React.FC = () => {
   const { isMobile } = useResponsive();
   const { expandedCards, toggleExpandedCard } = useResponsiveContext();
   const { data: maintenanceRecords, loading: recordsLoading, error: recordsError, refetch: refetchRecords } = useMaintenanceRecords();
-  const { data: vehicles, loading: vehiclesLoading, error: vehiclesError } = useVehicles();
+  const { data: apiVehicles, loading: vehiclesLoading, error: vehiclesError } = useVehicles();
+  const { vehicles: contextVehicles } = useVehicleUpdate();
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingRecord, setEditingRecord] = useState<MaintenanceRecord | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<"all" | ServiceType>("all");
   const [statusFilter, setStatusFilter] = useState<"all" | MaintenanceRecord["status"]>("all");
+
+  // Use context vehicles if available, otherwise fall back to API vehicles
+  const vehicles = Object.keys(contextVehicles).length > 0 
+    ? Object.values(contextVehicles) 
+    : (apiVehicles || []);
 
   const [newRecord, setNewRecord] = useState({
     vehicleId: "",
