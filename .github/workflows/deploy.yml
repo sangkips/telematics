@@ -29,7 +29,6 @@ jobs:
         SSH_HOST: ${{ secrets.SSH_HOST }}
         SSH_USER: ${{ secrets.SSH_USER }}
         VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
-        VITE_API_URL: ${{ secrets.VITE_API_URL }}
       run: |
         ssh $SSH_USER@$SSH_HOST << 'ENDSSH'
           # Navigate to frontend directory
@@ -51,7 +50,7 @@ jobs:
           sleep 5
           curl -f http://localhost:3000 || echo "Health check failed"
           
-          echo "Backend deployment complete!"
+          echo "Frontend deployment complete!"
         ENDSSH
 
     - name: Verify Frontend Deployment
