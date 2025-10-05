@@ -1,0 +1,74 @@
+name: Deploy Frontend to OVHcloud
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.8.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Add server to known hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Deploy Frontend
+      env:
+        SSH_HOST: ${{ secrets.SSH_HOST }}
+        SSH_USER: ${{ secrets.SSH_USER }}
+        VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+        VITE_API_URL: ${{ secrets.VITE_API_URL }}
+      run: |
+        ssh $SSH_USER@$SSH_HOST << 'ENDSSH'
+          # Navigate to frontend directory
+          cd /opt/frontend/telematics || exit
+          
+          # Pull latest changes
+          git pull origin main
+          
+          echo "Building and starting containers..."
+          docker compose down
+          docker compose build --no-cache
+          docker compose up -d
+          
+          echo "Cleaning up..."
+          docker system prune -af --volumes
+
+          echo ""
+          echo "Health check:"
+          sleep 5
+          curl -f http://localhost:3000 || echo "Health check failed"
+          
+          echo "Backend deployment complete!"
+        ENDSSH
+
+    - name: Verify Frontend Deployment
+      env:
+        SSH_HOST: ${{ secrets.SSH_HOST }}
+        SSH_USER: ${{ secrets.SSH_USER }}
+      run: |
+        ssh $SSH_USER@$SSH_HOST << 'ENDSSH'
+          cd /opt/frontend/telematics
+          docker compose ps
+          docker compose logs --tail=50 frontend
+        ENDSSH
+
+    - name: Notify on Success
+      if: success()
+      run: echo "✅ Frontend deployed successfully!"
+
+    - name: Notify on Failure
+      if: failure()
+      run: echo "❌ Frontend deployment failed!"
