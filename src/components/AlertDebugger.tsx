@@ -26,8 +26,8 @@ export const AlertDebugger: React.FC = () => {
 
     try {
       // Get the API URL being used
-      const apiUrl = import.meta.env.VITE_API_BASE_URL ?
-        `${import.meta.env.VITE_API_BASE_URL}/alerts` :
+      const apiUrl = import.meta.env.VITE_API_URL ?
+        `${import.meta.env.VITE_API_URL}/alerts` :
         '/api/alerts';
 
       console.log('Testing API connection to:', apiUrl);
@@ -148,9 +148,9 @@ export const AlertDebugger: React.FC = () => {
               </span>
             </div>
             <div>
-              <span className="text-gray-400">VITE_API_BASE_URL: </span>
+              <span className="text-gray-400">VITE_API_URL: </span>
               <span className="font-mono bg-gray-700 px-2 py-1 rounded">
-                {import.meta.env.VITE_API_BASE_URL || 'Not set'}
+                {import.meta.env.VITE_API_URL || 'Not set'}
               </span>
             </div>
           </div>

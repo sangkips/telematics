@@ -28,7 +28,7 @@ jobs:
       env:
         SSH_HOST: ${{ secrets.SSH_HOST }}
         SSH_USER: ${{ secrets.SSH_USER }}
-        VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+        VITE_API_URL: ${{ secrets.VITE_API_URL }}
       run: |
         ssh $SSH_USER@$SSH_HOST << 'ENDSSH'
           # Navigate to frontend directory
