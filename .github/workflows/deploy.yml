@@ -1,73 +1,47 @@
-name: Deploy Frontend to OVHcloud
+name: Build and Push Next.js Docker Image
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
-
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  deploy:
+  build-and-push:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.8.0
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
       with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Add server to known hosts
-      run: |
-        mkdir -p ~/.ssh
-        ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+    - name: Extract metadata for Docker
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ secrets.DOCKERHUB_USERNAME }}/nextjs-frontend
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable={{is_default_branch}}
 
-    - name: Deploy Frontend
-      env:
-        SSH_HOST: ${{ secrets.SSH_HOST }}
-        SSH_USER: ${{ secrets.SSH_USER }}
-        VITE_API_URL: ${{ secrets.VITE_API_URL }}
-      run: |
-        ssh $SSH_USER@$SSH_HOST << 'ENDSSH'
-          # Navigate to frontend directory
-          cd /opt/frontend/telematics || exit
-          
-          # Pull latest changes
-          git pull origin main
-          
-          echo "Building and starting containers..."
-          docker compose down
-          docker compose build --no-cache
-          docker compose up -d
-          
-          echo "Cleaning up..."
-          docker system prune -af --volumes
-
-          echo ""
-          echo "Health check:"
-          sleep 5
-          curl -f http://localhost:3000 || echo "Health check failed"
-          
-          echo "Frontend deployment complete!"
-        ENDSSH
-
-    - name: Verify Frontend Deployment
-      env:
-        SSH_HOST: ${{ secrets.SSH_HOST }}
-        SSH_USER: ${{ secrets.SSH_USER }}
-      run: |
-        ssh $SSH_USER@$SSH_HOST << 'ENDSSH'
-          cd /opt/frontend/telematics
-          docker compose ps
-          docker compose logs --tail=50 frontend
-        ENDSSH
-
-    - name: Notify on Success
-      if: success()
-      run: echo "✅ Frontend deployed successfully!"
-
-    - name: Notify on Failure
-      if: failure()
-      run: echo "❌ Frontend deployment failed!"
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
