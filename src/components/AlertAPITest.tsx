@@ -12,7 +12,7 @@ export const AlertAPITest: React.FC = () => {
     // Test different API URLs
     const apiUrls = [
       '/api/alerts',
-      'http://localhost:8080/api/alerts',
+      `${import.meta.env.VITE_API_URL}/api/alerts`,
     ];
 
     for (const url of apiUrls) {

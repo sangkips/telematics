@@ -1,7 +1,7 @@
 import { Alert, AlertStatistics, CreateAlertRequest, UpdateAlertRequest, AlertFilters, AlertType, AlertSeverity } from '../types/alerts';
 
 // Standardized API configuration matching main application pattern
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 const API_BASE = `${API_BASE_URL}/alerts`;
 
 // Enhanced logging utility for debugging
