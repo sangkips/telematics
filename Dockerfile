@@ -28,5 +28,4 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Expose port 3000
 EXPOSE 3000
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
