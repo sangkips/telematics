@@ -25,7 +25,11 @@ WORKDIR /usr/share/nginx/html
 COPY --from=builder /app/dist ./
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
+# Copy entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 # Expose port 3000
-EXPOSE 5173
+EXPOSE 3000
 
 ENTRYPOINT ["/entrypoint.sh"]
