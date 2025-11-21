@@ -26,6 +26,6 @@ COPY --from=builder /app/dist ./
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 3000
-EXPOSE 3000
+EXPOSE 5173
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
