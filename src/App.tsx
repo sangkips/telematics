@@ -1,21 +1,194 @@
-import React, { useState } from "react";
-import { Dashboard } from "./components/Dashboard";
-import { LoginForm } from "./components/auth/LoginForm";
-import { VehicleUpdateFormTest } from "./components/VehicleUpdateFormTest";
-import { VehicleDetailsTest } from "./components/VehicleDetailsTest";
-// import { ConnectionMonitorTest } from "./components/ConnectionMonitorTest";
-// import { ConnectionStatus } from "./components/ConnectionStatus";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
-import { ResponsiveProvider } from "./contexts/ResponsiveContext";
-import { AlertSystemProvider } from "./contexts/AlertSystemContext";
-import { VehicleUpdateProvider, useVehicleUpdate } from "./contexts/VehicleUpdateContext";
-import { Vehicle } from "./types";
-import { apiService } from "./services/api";
+import { useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Input } from './components/ui/input';
+import { Button } from './components/ui/button';
+import { Label } from './components/ui/label';
+import { Eye, EyeOff, Car, Mail, Lock, AlertCircle } from 'lucide-react';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { Dashboard } from './components/Dashboard';
+import { ResponsiveProvider } from './contexts/ResponsiveContext';
+import { AlertSystemProvider } from './contexts/AlertSystemContext';
+import { VehicleUpdateProvider, useVehicleUpdate } from './contexts/VehicleUpdateContext';
+import { Vehicle } from './types';
+import { apiService } from './services/api';
+import { ResetPasswordPage } from './components/auth/ResetPasswordPage';
+import { ForgotPasswordModal } from './components/auth/ForgotPasswordModal';
 
-const AuthenticatedApp: React.FC = () => {
+const LoginPage = () => {
+  const { login, error: authError } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [showForgotModal, setShowForgotModal] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
+    try {
+      console.log('Login submitted', { email });
+      const success = await login({ email, password });
+      if (!success) {
+        setError(authError || 'Invalid email or password');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const displayError = error || authError;
+
+  return (
+    <div className="min-h-screen w-full bg-gradient-to-br from-emerald-950 via-teal-900 to-cyan-950 flex items-center justify-center p-4">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-emerald-500/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-teal-500/10 rounded-full blur-3xl" />
+      </div>
+
+      {/* Login Card */}
+      <div className="relative w-full max-w-md">
+        <div className="bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 p-8">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl mb-4 shadow-lg shadow-emerald-500/50">
+              <Car className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-white mb-2">Nura Telematic System</h1>
+            <p className="text-emerald-200">Sign in to your account</p>
+          </div>
+
+          {/* Error Display */}
+          {displayError && (
+            <div className="mb-6 bg-red-900/50 border border-red-700 rounded-lg p-3 flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+              <span className="text-red-300 text-sm">{displayError}</span>
+            </div>
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Email Field */}
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-white/90">
+                Email
+              </Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-300" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-emerald-200/50 focus:bg-white/15 focus:border-emerald-400 transition-all"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Password Field */}
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-white/90">
+                Password
+              </Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-300" />
+                <Input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pl-10 pr-10 bg-white/10 border-white/20 text-white placeholder:text-emerald-200/50 focus:bg-white/15 focus:border-emerald-400 transition-all"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-300 hover:text-white transition-colors"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Remember Me & Forgot Password */}
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 rounded border-white/20 bg-white/10 text-emerald-500 focus:ring-emerald-500 focus:ring-offset-0"
+                />
+                <span className="text-sm text-emerald-200">Remember me</span>
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowForgotModal(true)}
+                className="text-sm text-emerald-300 hover:text-white transition-colors"
+              >
+                Forgot password?
+              </button>
+            </div>
+
+            {/* Sign In Button */}
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Signing in...</span>
+                </div>
+              ) : (
+                'Sign In'
+              )}
+            </Button>
+          </form>
+        </div>
+
+        {/* Security Badge */}
+        <div className="mt-4 flex items-center justify-center gap-2 text-emerald-300/80">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+            />
+          </svg>
+          <span className="text-sm">Secure connection</span>
+        </div>
+      </div>
+
+      <ForgotPasswordModal
+        isOpen={showForgotModal}
+        onClose={() => setShowForgotModal(false)}
+      />
+    </div>
+  );
+};
+
+const AuthenticatedApp = () => {
   const { vehicles: vehicleMap, loading, error } = useVehicleUpdate();
-  const [currentView, setCurrentView] = useState<'dashboard' | 'vehicle-update-test' | 'vehicle-details-test' | 'connection-monitor-test'>('dashboard');
-  
+
   // Convert vehicle map to array for compatibility
   const vehicles = Object.values(vehicleMap);
 
@@ -57,80 +230,17 @@ const AuthenticatedApp: React.FC = () => {
   }
 
   return (
-    <>
-      {/* Simple Navigation */}
-      {/* <div className="bg-gray-800 text-white p-4">
-        <div className="max-w-6xl mx-auto flex items-center space-x-4">
-          <h1 className="text-xl font-bold">Fleet Management System</h1>
-          <nav className="flex space-x-4 ml-8">
-            <button
-              onClick={() => setCurrentView('dashboard')}
-              className={`px-3 py-1 rounded ${
-                currentView === 'dashboard' 
-                  ? 'bg-blue-600 text-white' 
-                  : 'text-gray-300 hover:text-white'
-              }`}
-            >
-              Dashboard
-            </button>
-            <button
-              onClick={() => setCurrentView('vehicle-update-test')}
-              className={`px-3 py-1 rounded ${
-                currentView === 'vehicle-update-test' 
-                  ? 'bg-blue-600 text-white' 
-                  : 'text-gray-300 hover:text-white'
-              }`}
-            >
-              Vehicle Update Test
-            </button>
-            <button
-              onClick={() => setCurrentView('vehicle-details-test')}
-              className={`px-3 py-1 rounded ${
-                currentView === 'vehicle-details-test' 
-                  ? 'bg-blue-600 text-white' 
-                  : 'text-gray-300 hover:text-white'
-              }`}
-            >
-              Vehicle Details Test
-            </button>
-            <button
-              onClick={() => setCurrentView('connection-monitor-test')}
-              className={`px-3 py-1 rounded ${
-                currentView === 'connection-monitor-test' 
-                  ? 'bg-blue-600 text-white' 
-                  : 'text-gray-300 hover:text-white'
-              }`}
-            >
-              Connection Monitor Test
-            </button>
-          </nav>
-        </div>
-      </div> */}
-
-      {/* Content */}
-      <div className="min-h-screen bg-gray-100">
-        {currentView === 'dashboard' && (
-          <Dashboard
-            vehicles={vehicles}
-            onVehicleUpdate={handleVehicleUpdate}
-          />
-        )}
-        {currentView === 'vehicle-update-test' && (
-          <VehicleUpdateFormTest />
-        )}
-        {currentView === 'vehicle-details-test' && (
-          <VehicleDetailsTest />
-        )}
-        {/* {currentView === 'connection-monitor-test' && (
-          <ConnectionMonitorTest />
-        )} */}
-      </div>
-    </>
+    <div className="min-h-screen bg-gray-100">
+      <Dashboard
+        vehicles={vehicles}
+        onVehicleUpdate={handleVehicleUpdate}
+      />
+    </div>
   );
 };
 
-const AppContent: React.FC = () => {
-  const { isAuthenticated, loading: authLoading, error: authError } = useAuth();
+const AppContent = () => {
+  const { isAuthenticated, loading: authLoading } = useAuth();
 
   if (authLoading) {
     return (
@@ -144,33 +254,27 @@ const AppContent: React.FC = () => {
   }
 
   if (!isAuthenticated) {
-    return (
-      <>
-        <LoginForm />
-        {authError && (
-          <div className="fixed bottom-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg">
-            {authError}
-          </div>
-        )}
-      </>
-    );
+    return <LoginPage />;
   }
 
   return <AuthenticatedApp />;
 };
 
-function App() {
+export default function App() {
   return (
-    <AuthProvider>
-      <ResponsiveProvider>
-        <AlertSystemProvider>
-          <VehicleUpdateProvider>
-            <AppContent />
-          </VehicleUpdateProvider>
-        </AlertSystemProvider>
-      </ResponsiveProvider>
-    </AuthProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <ResponsiveProvider>
+          <AlertSystemProvider>
+            <VehicleUpdateProvider>
+              <Routes>
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
+                <Route path="/" element={<AppContent />} />
+              </Routes>
+            </VehicleUpdateProvider>
+          </AlertSystemProvider>
+        </ResponsiveProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
-
-export default App;

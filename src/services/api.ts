@@ -62,6 +62,9 @@ class ApiService {
   async login(
     credentials: LoginCredentials
   ): Promise<{ user: AuthUser; token: string }> {
+    console.log("Login attempt with credentials:", { email: credentials.email });
+    console.log("API URL:", `${this.baseURL}/auth/login`);
+
     const response = await this.privateRequest<{ user: AuthUser; token: string }>(
       "/auth/login",
       {
@@ -70,6 +73,7 @@ class ApiService {
       }
     );
 
+    console.log("Login successful, received token");
     this.token = response.token;
     localStorage.setItem("auth_token", response.token);
 
@@ -105,6 +109,20 @@ class ApiService {
 
   async getCurrentUser(): Promise<AuthUser> {
     return this.privateRequest<AuthUser>("/auth/profile");
+  }
+
+  async forgotPassword(email: string): Promise<{ message: string }> {
+    return this.privateRequest<{ message: string }>("/auth/forgot-password", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    });
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
+    return this.privateRequest<{ message: string }>("/auth/reset-password", {
+      method: "POST",
+      body: JSON.stringify({ token, newPassword }),
+    });
   }
   // Vehicles
   async getVehicles(): Promise<Vehicle[]> {
