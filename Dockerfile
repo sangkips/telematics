@@ -18,7 +18,13 @@ RUN npm run build
 FROM nginx:alpine AS runner
 WORKDIR /usr/share/nginx/html
 
+# Remove default nginx static files
+RUN rm -rf ./*
+
+# Copy built app
 COPY --from=builder /app/dist ./
+
+# Copy nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy entrypoint script
