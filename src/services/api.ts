@@ -1,7 +1,7 @@
 import { Vehicle, Alert, User, AuthUser, LoginCredentials, MaintenanceRecord, MaintenanceSchedule } from "../types";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL;
+  import.meta.env.VITE_API_URL || "https://api.autoscaleops.com/api/v1";
 
 class ApiService {
   private baseURL: string;
