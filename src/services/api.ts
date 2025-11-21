@@ -68,7 +68,7 @@ class ApiService {
     console.log("API URL:", `${this.baseURL}/auth/login`);
 
     const response = await this.privateRequest<{ user: AuthUser; token: string }>(
-      "/auth/login",
+      "/api/v1/auth/login",
       {
         method: "POST",
         body: JSON.stringify(credentials),
