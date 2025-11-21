@@ -12,10 +12,6 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Build arguments for environment variables
-ARG VITE_API_URL=__VITE_API_URL__
-ENV VITE_API_URL=$VITE_API_URL
-
 RUN npm run build
 
 # Production image, copy all the files and run nginx
