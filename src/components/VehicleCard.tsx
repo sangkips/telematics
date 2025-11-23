@@ -176,11 +176,11 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
       <div className="relative overflow-hidden">
         <div
           ref={cardRef}
-          className={`bg-gray-800 rounded-lg border transition-all duration-200 cursor-pointer group relative ${hasPendingUpdates || isUpdating
+          className={`bg-white rounded-lg border transition-all duration-200 cursor-pointer group relative shadow-sm ${hasPendingUpdates || isUpdating
             ? 'border-blue-400 shadow-blue-400/20 shadow-lg'
             : hasFailedUpdates
               ? 'border-red-400 shadow-red-400/20 shadow-lg'
-              : 'border-gray-700 hover:border-blue-500'
+              : 'border-gray-200 hover:border-brand-secondary-400'
             }`}
           style={{ transform: `translateX(${swipeOffset}px)` }}
           onTouchStart={handleTouchStart}
@@ -237,10 +237,10 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-base font-semibold text-white truncate group-hover:text-blue-400 transition-colors">
+                    <h3 className="text-base font-semibold text-gray-900 truncate group-hover:text-brand-accent-600 transition-colors">
                       {vehicle.name}
                     </h3>
-                    <p className="text-gray-400 text-sm">{vehicle.plateNumber}</p>
+                    <p className="text-gray-600 text-sm">{vehicle.plateNumber}</p>
                   </div>
                   <div className={`flex items-center ml-3 ${getStatusColor()}`}>
                     {getStatusIcon()}
@@ -259,6 +259,19 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
               </button>
             </div>
 
+            {/* Fuel Level Display - Prominent */}
+            <div className="mb-3">
+              <div className="text-sm">
+                <span className="text-gray-600">Fuel Level</span>
+                <span className="ml-2 font-semibold">
+                  <span className={vehicle.fuelLevel < 20 ? 'text-red-600' : vehicle.fuelLevel < 50 ? 'text-yellow-600' : 'text-green-600'}>
+                    {vehicle.fuelLevel}%
+                  </span>
+                  {vehicle.fuelLevel < 20 && <span className="text-red-600"> • Critical</span>}
+                </span>
+              </div>
+            </div>
+
             {/* Critical Alerts - Always Visible */}
             {criticalAlerts.length > 0 && (
               <div className="mb-3 p-2 bg-red-900 bg-opacity-50 rounded border border-red-700">
@@ -273,8 +286,8 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
 
             {/* Compact Info Row */}
             <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center text-gray-300 min-w-0 flex-1">
-                <User className="w-4 h-4 mr-2 text-gray-400 flex-shrink-0" />
+              <div className="flex items-center text-gray-700 min-w-0 flex-1">
+                <User className="w-4 h-4 mr-2 text-gray-500 flex-shrink-0" />
                 <span className="truncate">{vehicle.driver}</span>
               </div>
               <div className="ml-4 flex-shrink-0">
@@ -396,11 +409,11 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
   // Desktop/Tablet vertical layout (original design)
   return (
     <div
-      className={`bg-gray-800 rounded-lg p-6 shadow-lg border transition-all duration-200 cursor-pointer group relative ${hasPendingUpdates || isUpdating
+      className={`bg-white rounded-lg p-6 shadow-sm border transition-all duration-200 cursor-pointer group relative ${hasPendingUpdates || isUpdating
         ? 'border-blue-400 shadow-blue-400/20 shadow-lg'
         : hasFailedUpdates
           ? 'border-red-400 shadow-red-400/20 shadow-lg'
-          : 'border-gray-700 hover:border-blue-500'
+          : 'border-gray-200 hover:border-brand-secondary-400'
         }`}
       onClick={onClick}
     >
@@ -486,17 +499,29 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
         </div>
       )}
 
-      {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h3 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors">
+          <h3 className="text-lg font-semibold text-gray-900 group-hover:text-brand-accent-600 transition-colors">
             {vehicle.name}
           </h3>
-          <p className="text-gray-400 text-sm">{vehicle.plateNumber}</p>
+          <p className="text-gray-600 text-sm">{vehicle.plateNumber}</p>
         </div>
         <div className={`flex items-center ${getStatusColor()}`}>
           {getStatusIcon()}
           <span className="ml-1 text-sm capitalize">{vehicle.status}</span>
+        </div>
+      </div>
+
+      {/* Fuel Level Display - Prominent */}
+      <div className="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="flex items-center justify-between">
+          <span className="text-gray-600 text-sm">Fuel Level</span>
+          <div className="font-semibold">
+            <span className={vehicle.fuelLevel < 20 ? 'text-red-600' : vehicle.fuelLevel < 50 ? 'text-yellow-600' : 'text-green-600'}>
+              {vehicle.fuelLevel}%
+            </span>
+            {vehicle.fuelLevel < 20 && <span className="text-red-600"> • Critical</span>}
+          </div>
         </div>
       </div>
 
@@ -528,23 +553,23 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
 
       {/* Vehicle Info */}
       <div className="space-y-2">
-        <div className="flex items-center text-gray-300">
-          <User className="w-4 h-4 mr-2 text-gray-400" />
+        <div className="flex items-center text-gray-700">
+          <User className="w-4 h-4 mr-2 text-gray-500" />
           <span className="text-sm">{vehicle.driver}</span>
         </div>
 
-        <div className="flex items-center text-gray-300">
-          <MapPin className="w-4 h-4 mr-2 text-gray-400" />
+        <div className="flex items-center text-gray-700">
+          <MapPin className="w-4 h-4 mr-2 text-gray-500" />
           <span className="text-sm truncate">{vehicle.location.address}</span>
         </div>
 
-        <div className="flex items-center text-gray-300">
-          <Gauge className="w-4 h-4 mr-2 text-gray-400" />
+        <div className="flex items-center text-gray-700">
+          <Gauge className="w-4 h-4 mr-2 text-gray-500" />
           <span className="text-sm">{vehicle.speed} km/h</span>
         </div>
 
-        <div className="flex items-center text-gray-300">
-          <Clock className="w-4 h-4 mr-2 text-gray-400" />
+        <div className="flex items-center text-gray-700">
+          <Clock className="w-4 h-4 mr-2 text-gray-500" />
           <span className="text-sm">
             {new Date(vehicle.lastUpdate).toLocaleTimeString()}
           </span>

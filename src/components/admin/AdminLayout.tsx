@@ -117,9 +117,9 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       {/* Mobile/Desktop Header */}
-      <div className={`bg-gray-800 border-b border-gray-700 ${isMobile ? 'p-4' : 'p-6'}`}>
+      <div className={`bg-brand-primary-800 border-b border-brand-primary-700 ${isMobile ? 'p-4' : 'p-6'}`}>
         <div className="flex items-center justify-between">
           {/* Mobile Layout */}
           {isMobile ? (
@@ -146,9 +146,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                 </button>
               </div>
 
-              {/* Center - Title */}
               <div className="flex items-center space-x-2">
-                <Settings className="w-6 h-6 text-blue-400" />
+                <Settings className="w-6 h-6 text-brand-secondary-400" />
                 <h1 className="text-lg font-bold text-white">Admin</h1>
               </div>
 
@@ -199,20 +198,19 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
         </div>
 
         {/* Stats Cards - Responsive Grid */}
-        <div className={`grid gap-4 mt-6 ${
-          isMobile 
-            ? 'grid-cols-2' 
-            : isTablet 
-              ? 'grid-cols-2 md:grid-cols-4' 
-              : 'grid-cols-1 md:grid-cols-4'
-        }`}>
-          <div className={`bg-gray-700 rounded-lg ${isMobile ? 'p-3' : 'p-4'}`}>
+        {/* <div className={`grid gap-4 mt-6 ${isMobile
+          ? 'grid-cols-2'
+          : isTablet
+            ? 'grid-cols-2 md:grid-cols-4'
+            : 'grid-cols-1 md:grid-cols-4'
+          }`}>
+          <div className={`bg-white rounded-lg shadow-sm border border-gray-200 ${isMobile ? 'p-3' : 'p-4'}`}>
             <div className="flex items-center justify-between">
               <div>
-                <p className={`text-gray-400 ${isMobile ? 'text-xs' : 'text-sm'}`}>
+                <p className={`text-gray-600 ${isMobile ? 'text-xs' : 'text-sm'}`}>
                   Total Users
                 </p>
-                <p className={`font-bold text-white ${isMobile ? 'text-lg' : 'text-2xl'}`}>
+                <p className={`font-bold text-gray-900 ${isMobile ? 'text-lg' : 'text-2xl'}`}>
                   {adminStats.totalUsers}
                 </p>
               </div>
@@ -220,13 +218,13 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
             </div>
           </div>
 
-          <div className={`bg-gray-700 rounded-lg ${isMobile ? 'p-3' : 'p-4'}`}>
+          <div className={`bg-white rounded-lg shadow-sm border border-gray-200 ${isMobile ? 'p-3' : 'p-4'}`}>
             <div className="flex items-center justify-between">
               <div>
-                <p className={`text-gray-400 ${isMobile ? 'text-xs' : 'text-sm'}`}>
+                <p className={`text-gray-600 ${isMobile ? 'text-xs' : 'text-sm'}`}>
                   API Calls
                 </p>
-                <p className={`font-bold text-white ${isMobile ? 'text-lg' : 'text-2xl'}`}>
+                <p className={`font-bold text-gray-900 ${isMobile ? 'text-lg' : 'text-2xl'}`}>
                   {isMobile ? '45K' : adminStats.apiCallsToday.toLocaleString()}
                 </p>
               </div>
@@ -234,13 +232,13 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
             </div>
           </div>
 
-          <div className={`bg-gray-700 rounded-lg ${isMobile ? 'p-3' : 'p-4'}`}>
+          <div className={`bg-white rounded-lg shadow-sm border border-gray-200 ${isMobile ? 'p-3' : 'p-4'}`}>
             <div className="flex items-center justify-between">
               <div>
-                <p className={`text-gray-400 ${isMobile ? 'text-xs' : 'text-sm'}`}>
+                <p className={`text-gray-600 ${isMobile ? 'text-xs' : 'text-sm'}`}>
                   Sessions
                 </p>
-                <p className={`font-bold text-white ${isMobile ? 'text-lg' : 'text-2xl'}`}>
+                <p className={`font-bold text-gray-900 ${isMobile ? 'text-lg' : 'text-2xl'}`}>
                   {adminStats.activeSessions}
                 </p>
               </div>
@@ -248,20 +246,20 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
             </div>
           </div>
 
-          <div className={`bg-gray-700 rounded-lg ${isMobile ? 'p-3' : 'p-4'}`}>
+          <div className={`bg-white rounded-lg shadow-sm border border-gray-200 ${isMobile ? 'p-3' : 'p-4'}`}>
             <div className="flex items-center justify-between">
               <div>
-                <p className={`text-gray-400 ${isMobile ? 'text-xs' : 'text-sm'}`}>
+                <p className={`text-gray-600 ${isMobile ? 'text-xs' : 'text-sm'}`}>
                   Health
                 </p>
-                <p className={`font-bold text-white ${isMobile ? 'text-lg' : 'text-2xl'}`}>
+                <p className={`font-bold text-gray-900 ${isMobile ? 'text-lg' : 'text-2xl'}`}>
                   {adminStats.systemHealth}%
                 </p>
               </div>
               <Database className={`text-purple-400 ${isMobile ? 'w-6 h-6' : 'w-8 h-8'}`} />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Mobile Navigation Overlay */}
@@ -275,9 +273,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       {/* Mobile Slide-out Navigation */}
       {isMobile && (
         <div
-          className={`fixed top-0 left-0 h-full w-80 bg-gray-800 border-r border-gray-700 z-50 transform transition-transform duration-300 ease-in-out ${
-            mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+          className={`fixed top-0 left-0 h-full w-80 bg-brand-primary-800 border-r border-brand-primary-700 z-50 transform transition-transform duration-300 ease-in-out ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
         >
           <div className="p-4">
             <div className="flex items-center justify-between mb-6">
@@ -297,11 +294,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                     setActiveTab(tab.id as any);
                     setMobileMenuOpen(false);
                   }}
-                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors text-left ${
-                    activeTab === tab.id
-                      ? "bg-blue-600 text-white"
-                      : "text-gray-400 hover:text-gray-300 hover:bg-gray-700"
-                  }`}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors text-left ${activeTab === tab.id
+                    ? "bg-brand-accent-600 text-white"
+                    : "text-gray-300 hover:text-white hover:bg-brand-primary-700"
+                    }`}
                 >
                   <tab.icon className="w-5 h-5 flex-shrink-0" />
                   <div>
@@ -318,7 +314,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       <div className={isMobile ? 'block' : 'flex'}>
         {/* Desktop Sidebar Navigation */}
         {!isMobile && (
-          <nav className="w-80 bg-gray-800 border-r border-gray-700 min-h-screen">
+          <nav className="w-80 bg-brand-primary-800 border-r border-brand-primary-700 min-h-screen">
             <div className="p-4">
               <h3 className="text-lg font-semibold text-white mb-4">
                 Administration
@@ -328,11 +324,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
-                    className={`w-full flex items-start space-x-3 p-4 rounded-lg transition-colors text-left ${
-                      activeTab === tab.id
-                        ? "bg-blue-600 text-white"
-                        : "text-gray-400 hover:text-gray-300 hover:bg-gray-700"
-                    }`}
+                    className={`w-full flex items-start space-x-3 p-4 rounded-lg transition-colors text-left ${activeTab === tab.id
+                      ? "bg-brand-accent-600 text-white"
+                      : "text-gray-300 hover:text-white hover:bg-brand-primary-700"
+                      }`}
                   >
                     <tab.icon className="w-5 h-5 mt-0.5 flex-shrink-0" />
                     <div>
@@ -353,10 +348,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
           {/* Mobile Tab Header */}
           {isMobile && (
             <div className="mb-4">
-              <h2 className="text-xl font-bold text-white">
+              <h2 className="text-xl font-bold text-gray-900">
                 {getActiveTabInfo()?.label}
               </h2>
-              <p className="text-gray-400 text-sm">
+              <p className="text-gray-600 text-sm">
                 {getActiveTabInfo()?.description}
               </p>
             </div>
@@ -365,17 +360,15 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
           {/* Desktop Tab Header */}
           {!isMobile && (
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-white">
+              <h2 className="text-2xl font-bold text-gray-900">
                 {getActiveTabInfo()?.label}
               </h2>
-              <p className="text-gray-400">{getActiveTabInfo()?.description}</p>
+              <p className="text-gray-600">{getActiveTabInfo()?.description}</p>
             </div>
           )}
 
-          {/* Content Container */}
-          <div className={`bg-gray-800 rounded-lg border border-gray-700 ${
-            isMobile ? 'min-h-[400px]' : 'min-h-[600px]'
-          }`}>
+          <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${isMobile ? 'min-h-[400px]' : 'min-h-[600px]'
+            }`}>
             {activeTab === "vehicles" && <VehicleManagement />}
             {activeTab === "users" && <UserManagement />}
             {activeTab === "maintenance" && (

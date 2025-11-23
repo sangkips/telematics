@@ -78,7 +78,7 @@ export const StatsCarousel: React.FC<StatsCarouselProps> = ({ stats }) => {
 
   const handleMove = (clientX: number) => {
     if (!isDragging || !isMobile || !carouselRef.current) return;
-    
+
     const x = clientX;
     const walk = (x - startX) * 2;
     carouselRef.current.scrollLeft = scrollLeft - walk;
@@ -87,13 +87,13 @@ export const StatsCarousel: React.FC<StatsCarouselProps> = ({ stats }) => {
   const handleEnd = () => {
     if (!isMobile) return;
     setIsDragging(false);
-    
+
     // Snap to nearest card
     if (carouselRef.current) {
       const cardWidth = carouselRef.current.offsetWidth;
       const newIndex = Math.round(carouselRef.current.scrollLeft / cardWidth);
       setCurrentIndex(Math.max(0, Math.min(newIndex, statCards.length - 1)));
-      
+
       carouselRef.current.scrollTo({
         left: newIndex * cardWidth,
         behavior: 'smooth',
@@ -149,7 +149,7 @@ export const StatsCarousel: React.FC<StatsCarouselProps> = ({ stats }) => {
   useEffect(() => {
     const handleScroll = () => {
       if (!carouselRef.current || isDragging) return;
-      
+
       const cardWidth = carouselRef.current.offsetWidth;
       const newIndex = Math.round(carouselRef.current.scrollLeft / cardWidth);
       setCurrentIndex(newIndex);
@@ -165,7 +165,7 @@ export const StatsCarousel: React.FC<StatsCarouselProps> = ({ stats }) => {
   // Render grid layout for tablet and desktop
   if (!isMobile) {
     const gridCols = isTablet ? 'grid-cols-2' : 'grid-cols-4';
-    
+
     return (
       <div className={`grid ${gridCols} gap-6`}>
         {statCards.map((card) => (
@@ -207,11 +207,10 @@ export const StatsCarousel: React.FC<StatsCarouselProps> = ({ stats }) => {
           <button
             key={index}
             onClick={() => scrollToCard(index)}
-            className={`w-2 h-2 rounded-full transition-colors ${
-              index === currentIndex
-                ? 'bg-blue-400'
-                : 'bg-gray-600 hover:bg-gray-500'
-            }`}
+            className={`w-2 h-2 rounded-full transition-colors ${index === currentIndex
+              ? 'bg-blue-400'
+              : 'bg-gray-600 hover:bg-gray-500'
+              }`}
             aria-label={`Go to stat ${index + 1}`}
           />
         ))}
@@ -223,19 +222,19 @@ export const StatsCarousel: React.FC<StatsCarouselProps> = ({ stats }) => {
 // Individual stat card component
 const StatCard: React.FC<{ card: StatCard }> = ({ card }) => {
   const { Icon } = { Icon: card.icon };
-  
+
   return (
-    <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 min-h-[120px] touch-manipulation">
+    <div className="bg-white rounded-lg p-6 border border-gray-200 min-h-[120px] touch-manipulation shadow-sm">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-gray-400 text-sm">{card.title}</p>
-          <p className="text-2xl font-bold text-white mt-1">
+          <p className="text-gray-600 text-sm">{card.title}</p>
+          <p className="text-2xl font-bold text-gray-900 mt-1">
             {card.value}
           </p>
         </div>
         <Icon className={`w-8 h-8 ${card.iconColor}`} />
       </div>
-      <div className="mt-4 text-sm text-gray-400">
+      <div className="mt-4 text-sm text-gray-600">
         {card.subtitle}
       </div>
     </div>

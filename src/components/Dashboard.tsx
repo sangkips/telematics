@@ -9,7 +9,6 @@ import { Vehicle } from "../types";
 import { VehicleCard } from "./VehicleCard";
 import { VehicleMap } from "./VehicleMap";
 import { AlertPanel } from "./AlertPanel";
-import { FuelGauge } from "./FuelGauge";
 import { MaintenanceDashboard } from "./MaintenanceDashboard";
 import { AdminLayout } from "./admin/AdminLayout";
 import { Header } from "./layout/Header";
@@ -32,20 +31,17 @@ export const Dashboard: React.FC<DashboardProps> = ({
 }) => {
   const { hasPermission, hasAnyPermission } = useAuth();
   const { isMobile } = useResponsive();
-  const { 
-    vehicles: contextVehicles, 
-    updateVehicle, 
-    connectionState, 
-    loading, 
-    error, 
-    refreshVehicles,
-    clearError 
+  const {
+    vehicles: contextVehicles,
+    updateVehicle,
+    connectionState,
+    refreshVehicles
   } = useVehicleUpdate();
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
 
   // Use context vehicles if available, otherwise fall back to props
-  const vehicles = Object.keys(contextVehicles).length > 0 
-    ? Object.values(contextVehicles) 
+  const vehicles = Object.keys(contextVehicles).length > 0
+    ? Object.values(contextVehicles)
     : propVehicles;
 
   // Update selected vehicle when vehicles change (real-time updates)
@@ -144,7 +140,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       {/* Header */}
       <Header
         criticalAlertsCount={criticalAlerts.length}
@@ -155,7 +151,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
       {/* Desktop Navigation Tabs - Hidden on Mobile */}
       {!isMobile && (
-        <nav className="bg-gray-800 border-b border-gray-700 px-4">
+        <nav className="bg-brand-primary-800 border-b border-brand-primary-700 px-4">
           <div className="flex space-x-8">
             {[
               {
@@ -191,7 +187,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`flex items-center space-x-2 py-4 px-2 border-b-2 font-medium text-sm transition-colors ${activeTab === tab.id
-                    ? "border-blue-400 text-blue-400"
+                    ? "border-brand-secondary-400 text-brand-secondary-400"
                     : "border-transparent text-gray-400 hover:text-gray-300"
                     }`}
                 >
@@ -244,32 +240,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 onVehicleSelect={setSelectedVehicle}
                 onVehicleUpdate={handleVehicleUpdate}
               />
-            </section>
-
-            {/* Fuel Monitoring - Mobile-First Responsive Layout */}
-            <section className="space-y-2">
-              <h2 className={`font-semibold ${isMobile ? 'text-lg px-1' : 'text-xl'
-                }`}>
-                Fuel Monitoring
-              </h2>
-              <div className={`bg-gray-800 rounded-lg border border-gray-700 ${isMobile ? 'p-4' : 'p-6'
-                }`}>
-                <div className={`grid gap-4 ${isMobile
-                  ? 'grid-cols-1'
-                  : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
-                  }`}>
-                  {vehicles.map((vehicle) => (
-                    <FuelGauge
-                      key={vehicle.id}
-                      level={vehicle.fuelLevel}
-                      capacity={vehicle.maxFuelCapacity}
-                      vehicleName={vehicle.name}
-                      size={isMobile ? "large" : "medium"}
-                      showAlert={true}
-                    />
-                  ))}
-                </div>
-              </div>
             </section>
           </div>
         )}

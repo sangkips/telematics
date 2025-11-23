@@ -117,11 +117,11 @@ export const SecuritySettings: React.FC = () => {
       {/* Header */}
       <div className={`flex items-center justify-between ${isMobile ? 'flex-col space-y-3' : ''}`}>
         <div className={isMobile ? 'text-center' : ''}>
-          <h2 className={`font-bold text-white ${isMobile ? 'text-xl' : 'text-2xl'}`}>
+          <h2 className={`font-bold text-gray-900 ${isMobile ? 'text-xl' : 'text-2xl'}`}>
             Security Settings
           </h2>
           {!isMobile && (
-            <p className="text-gray-400">Manage API keys, security policies, and access controls</p>
+            <p className="text-gray-600">Manage API keys, security policies, and access controls</p>
           )}
         </div>
         <button
@@ -141,7 +141,7 @@ export const SecuritySettings: React.FC = () => {
         /* Mobile: Expandable Card Layout */
         <div className="space-y-4">
           {/* API Keys Card */}
-          <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <div
               className="p-4 cursor-pointer"
               onClick={() => toggleExpandedCard('api-keys')}
@@ -149,7 +149,7 @@ export const SecuritySettings: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <Key className="w-5 h-5 text-blue-400" />
-                  <h3 className="text-lg font-semibold text-white">API Keys</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">API Keys</h3>
                 </div>
                 <div className="flex items-center space-x-2">
                   <button
@@ -175,7 +175,7 @@ export const SecuritySettings: React.FC = () => {
               <div className="px-4 pb-4 border-t border-gray-700">
                 <div className="space-y-3 mt-4">
                   {apiKeys.map((apiKey) => (
-                    <div key={apiKey.id} className="bg-gray-700 rounded-lg p-3">
+                    <div key={apiKey.id} className="bg-gray-100 rounded-lg p-3">
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center space-x-2 mb-1">
@@ -218,12 +218,12 @@ export const SecuritySettings: React.FC = () => {
                       </div>
                       
                       <div className="mb-2">
-                        <code className="bg-gray-800 px-2 py-1 rounded text-xs text-gray-300 font-mono block truncate">
+                        <code className="bg-white border border-gray-200 px-2 py-1 rounded text-xs text-gray-300 font-mono block truncate">
                           {apiKey.key}
                         </code>
                       </div>
                       
-                      <div className="text-xs text-gray-400">
+                      <div className="text-xs text-gray-600">
                         Created: {apiKey.createdAt.toLocaleDateString()}<br />
                         Last used: {apiKey.lastUsed ? apiKey.lastUsed.toLocaleDateString() : 'Never'}
                       </div>
@@ -235,7 +235,7 @@ export const SecuritySettings: React.FC = () => {
           </div>
 
           {/* Security Policies Card */}
-          <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <div
               className="p-4 cursor-pointer"
               onClick={() => toggleExpandedCard('security-policies')}
@@ -243,7 +243,7 @@ export const SecuritySettings: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <Shield className="w-5 h-5 text-green-400" />
-                  <h3 className="text-lg font-semibold text-white">Security Policies</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Security Policies</h3>
                 </div>
                 {expandedCards.includes('security-policies') ? (
                   <ChevronDown className="w-4 h-4 text-gray-400" />
@@ -257,24 +257,24 @@ export const SecuritySettings: React.FC = () => {
               <div className="px-4 pb-4 border-t border-gray-700">
                 <div className="space-y-4 mt-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Session Timeout (minutes)</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Session Timeout (minutes)</label>
                     <input
                       type="number"
                       value={settings.sessionTimeout}
                       onChange={(e) => setSettings({...settings, sessionTimeout: parseInt(e.target.value)})}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 min-h-[44px]"
+                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400 min-h-[44px]"
                       min="5"
                       max="480"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Max Failed Login Attempts</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Max Failed Login Attempts</label>
                     <input
                       type="number"
                       value={settings.maxFailedLogins}
                       onChange={(e) => setSettings({...settings, maxFailedLogins: parseInt(e.target.value)})}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 min-h-[44px]"
+                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400 min-h-[44px]"
                       min="1"
                       max="10"
                     />
@@ -282,8 +282,8 @@ export const SecuritySettings: React.FC = () => {
                   
                   <div className="flex items-center justify-between">
                     <div>
-                      <label className="text-sm font-medium text-gray-300">Two-Factor Authentication</label>
-                      <p className="text-xs text-gray-400">Require 2FA for all users</p>
+                      <label className="text-sm font-medium text-gray-700">Two-Factor Authentication</label>
+                      <p className="text-xs text-gray-600">Require 2FA for all users</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input
@@ -301,7 +301,7 @@ export const SecuritySettings: React.FC = () => {
           </div>
 
           {/* Password Policy Card */}
-          <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <div
               className="p-4 cursor-pointer"
               onClick={() => toggleExpandedCard('password-policy')}
@@ -309,7 +309,7 @@ export const SecuritySettings: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <Key className="w-5 h-5 text-amber-400" />
-                  <h3 className="text-lg font-semibold text-white">Password Policy</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Password Policy</h3>
                 </div>
                 {expandedCards.includes('password-policy') ? (
                   <ChevronDown className="w-4 h-4 text-gray-400" />
@@ -323,7 +323,7 @@ export const SecuritySettings: React.FC = () => {
               <div className="px-4 pb-4 border-t border-gray-700">
                 <div className="space-y-4 mt-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Minimum Length</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Length</label>
                     <input
                       type="number"
                       value={settings.passwordPolicy.minLength}
@@ -334,7 +334,7 @@ export const SecuritySettings: React.FC = () => {
                           minLength: parseInt(e.target.value)
                         }
                       })}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 min-h-[44px]"
+                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400 min-h-[44px]"
                       min="6"
                       max="32"
                     />
@@ -376,9 +376,9 @@ export const SecuritySettings: React.FC = () => {
         /* Desktop: Grid Layout */
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* API Keys */}
-          <div className="lg:col-span-2 bg-gray-800 rounded-lg p-6">
+          <div className="lg:col-span-2 bg-white rounded-lg p-6 border border-gray-200">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-white flex items-center">
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
                 <Key className="w-5 h-5 mr-2 text-blue-400" />
                 API Keys
               </h3>
@@ -393,7 +393,7 @@ export const SecuritySettings: React.FC = () => {
 
             <div className="space-y-4">
               {apiKeys.map((apiKey) => (
-                <div key={apiKey.id} className="bg-gray-700 rounded-lg p-4">
+                <div key={apiKey.id} className="bg-gray-100 rounded-lg p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
@@ -407,7 +407,7 @@ export const SecuritySettings: React.FC = () => {
                       </div>
                       
                       <div className="flex items-center space-x-2 mb-2">
-                        <code className="bg-gray-800 px-3 py-1 rounded text-sm text-gray-300 font-mono">
+                        <code className="bg-white border border-gray-200 px-3 py-1 rounded text-sm text-gray-300 font-mono">
                           {apiKey.key}
                         </code>
                         <button
@@ -419,7 +419,7 @@ export const SecuritySettings: React.FC = () => {
                         </button>
                       </div>
                       
-                      <div className="text-xs text-gray-400">
+                      <div className="text-xs text-gray-600">
                         Created: {apiKey.createdAt.toLocaleDateString()} • 
                         Last used: {apiKey.lastUsed ? apiKey.lastUsed.toLocaleDateString() : 'Never'}
                       </div>
@@ -450,32 +450,32 @@ export const SecuritySettings: React.FC = () => {
           </div>
 
           {/* Security Policies */}
-          <div className="bg-gray-800 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+          <div className="bg-white rounded-lg p-6 border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <Shield className="w-5 h-5 mr-2 text-green-400" />
               Security Policies
             </h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Session Timeout (minutes)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Session Timeout (minutes)</label>
                 <input
                   type="number"
                   value={settings.sessionTimeout}
                   onChange={(e) => setSettings({...settings, sessionTimeout: parseInt(e.target.value)})}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   min="5"
                   max="480"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Max Failed Login Attempts</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Max Failed Login Attempts</label>
                 <input
                   type="number"
                   value={settings.maxFailedLogins}
                   onChange={(e) => setSettings({...settings, maxFailedLogins: parseInt(e.target.value)})}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   min="1"
                   max="10"
                 />
@@ -483,8 +483,8 @@ export const SecuritySettings: React.FC = () => {
               
               <div className="flex items-center justify-between">
                 <div>
-                  <label className="text-sm font-medium text-gray-300">Two-Factor Authentication</label>
-                  <p className="text-xs text-gray-400">Require 2FA for all users</p>
+                  <label className="text-sm font-medium text-gray-700">Two-Factor Authentication</label>
+                  <p className="text-xs text-gray-600">Require 2FA for all users</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -500,12 +500,12 @@ export const SecuritySettings: React.FC = () => {
           </div>
 
           {/* Password Policy */}
-          <div className="bg-gray-800 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Password Policy</h3>
+          <div className="bg-white rounded-lg p-6 border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Password Policy</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Minimum Length</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Length</label>
                 <input
                   type="number"
                   value={settings.passwordPolicy.minLength}
@@ -516,7 +516,7 @@ export const SecuritySettings: React.FC = () => {
                       minLength: parseInt(e.target.value)
                     }
                   })}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   min="6"
                   max="32"
                 />
@@ -557,27 +557,27 @@ export const SecuritySettings: React.FC = () => {
       {/* Generate API Key Modal */}
       {showNewKeyModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-semibold text-white mb-4">Generate New API Key</h3>
+          <div className="bg-white rounded-lg p-6 border border-gray-200 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Generate New API Key</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Key Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Key Name</label>
                 <input
                   type="text"
                   value={newKeyName}
                   onChange={(e) => setNewKeyName(e.target.value)}
                   placeholder="e.g., Mobile App API Key"
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Key Type</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Key Type</label>
                 <select
                   value={newKeyType}
                   onChange={(e) => setNewKeyType(e.target.value as any)}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                 >
                   <option value="development">Development</option>
                   <option value="test">Test</option>

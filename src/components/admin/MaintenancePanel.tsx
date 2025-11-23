@@ -108,13 +108,13 @@ export const MaintenancePanel: React.FC = () => {
   const getStatusColor = (status: MaintenanceRecord["status"]) => {
     switch (status) {
       case "completed":
-        return "text-green-400 bg-green-900";
+        return "text-green-700 bg-green-100";
       case "pending":
-        return "text-amber-400 bg-amber-900";
+        return "text-amber-700 bg-amber-100";
       case "cancelled":
-        return "text-red-400 bg-red-900";
+        return "text-red-700 bg-red-100";
       default:
-        return "text-gray-400 bg-gray-900";
+        return "text-gray-700 bg-gray-200";
     }
   };
 
@@ -221,7 +221,7 @@ export const MaintenancePanel: React.FC = () => {
           onClick={() => {
             refetchRecords();
           }}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="px-4 py-2 bg-brand-accent-600 text-white rounded-lg hover:bg-brand-accent-700"
         >
           Retry
         </button>
@@ -234,11 +234,11 @@ export const MaintenancePanel: React.FC = () => {
       {/* Header */}
       <div className={`flex items-center justify-between ${isMobile ? 'flex-col space-y-3' : ''}`}>
         <div className={isMobile ? 'text-center' : ''}>
-          <h2 className={`font-bold text-white ${isMobile ? 'text-xl' : 'text-2xl'}`}>
+          <h2 className={`font-bold text-gray-900 ${isMobile ? 'text-xl' : 'text-2xl'}`}>
             {isMobile ? 'Maintenance Records' : 'Maintenance Management'}
           </h2>
           {!isMobile && (
-            <p className="text-gray-400">
+            <p className="text-gray-600">
               Track vehicle maintenance records and service schedules
             </p>
           )}
@@ -263,7 +263,7 @@ export const MaintenancePanel: React.FC = () => {
             placeholder={isMobile ? "Search records..." : "Search maintenance records..."}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className={`w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 ${
+            className={`w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-brand-secondary-400 ${
               isMobile ? 'min-h-[44px]' : ''
             }`}
           />
@@ -274,7 +274,7 @@ export const MaintenancePanel: React.FC = () => {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value as "all" | ServiceType)}
-            className={`bg-gray-800 border border-gray-700 rounded-lg text-white px-3 py-2 focus:outline-none focus:border-blue-500 ${
+            className={`bg-white border border-gray-300 rounded-lg text-gray-900 px-3 py-2 focus:outline-none focus:border-brand-secondary-400 ${
               isMobile ? 'flex-1 min-h-[44px]' : ''
             }`}
           >
@@ -293,7 +293,7 @@ export const MaintenancePanel: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as "all" | MaintenanceRecord["status"])}
-            className={`bg-gray-800 border border-gray-700 rounded-lg text-white px-3 py-2 focus:outline-none focus:border-blue-500 ${
+            className={`bg-white border border-gray-300 rounded-lg text-gray-900 px-3 py-2 focus:outline-none focus:border-brand-secondary-400 ${
               isMobile ? 'flex-1 min-h-[44px]' : ''
             }`}
           >
@@ -310,10 +310,10 @@ export const MaintenancePanel: React.FC = () => {
         /* Mobile: Card-based Layout */
         <div className="space-y-3">
           {filteredRecords.length === 0 ? (
-            <div className="bg-gray-800 rounded-lg p-6 text-center">
+            <div className="bg-white rounded-lg p-6 border border-gray-200 text-center">
               <Wrench className="w-12 h-12 text-gray-400 mx-auto mb-3" />
               <h3 className="text-lg font-medium text-white mb-2">No Records Found</h3>
-              <p className="text-gray-400">No maintenance records match your current filters</p>
+              <p className="text-gray-600">No maintenance records match your current filters</p>
             </div>
           ) : (
             filteredRecords.map((record) => {
@@ -321,7 +321,7 @@ export const MaintenancePanel: React.FC = () => {
               return (
                 <div
                   key={record.id}
-                  className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden"
+                  className="bg-white rounded-lg border border-gray-200 overflow-hidden"
                 >
                   {/* Card Header - Always Visible */}
                   <div
@@ -354,11 +354,11 @@ export const MaintenancePanel: React.FC = () => {
                             {record.description}
                           </p>
                           <div className="flex items-center justify-between mt-2">
-                            <div className="flex items-center text-xs text-gray-400">
+                            <div className="flex items-center text-xs text-gray-600">
                               <Calendar className="w-3 h-3 mr-1" />
                               {new Date(record.performedAt).toLocaleDateString()}
                             </div>
-                            <div className="flex items-center text-xs text-gray-400">
+                            <div className="flex items-center text-xs text-gray-600">
                               <DollarSign className="w-3 h-3 mr-1" />
                               {record.cost.toFixed(2)} {record.currency}
                             </div>
@@ -371,7 +371,7 @@ export const MaintenancePanel: React.FC = () => {
                             e.stopPropagation();
                             setEditingRecord(record);
                           }}
-                          className="p-2 text-blue-400 hover:text-blue-300 hover:bg-gray-700 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                          className="p-2 text-blue-400 hover:text-blue-300 hover:bg-gray-100 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
                           title="Edit record"
                         >
                           <Edit className="w-4 h-4" />
@@ -381,7 +381,7 @@ export const MaintenancePanel: React.FC = () => {
                             e.stopPropagation();
                             handleDeleteRecord(record.id);
                           }}
-                          className="p-2 text-red-400 hover:text-red-300 hover:bg-gray-700 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                          className="p-2 text-red-400 hover:text-red-300 hover:bg-gray-100 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
                           title="Delete record"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -401,16 +401,16 @@ export const MaintenancePanel: React.FC = () => {
                       <div className="grid grid-cols-2 gap-4 mt-4">
                         <div>
                           <p className="text-xs text-gray-400 mb-1">Service Center</p>
-                          <p className="text-sm text-white">{record.serviceCenter}</p>
+                          <p className="text-sm text-gray-900">{record.serviceCenter}</p>
                         </div>
                         <div>
                           <p className="text-xs text-gray-400 mb-1">Odometer</p>
-                          <p className="text-sm text-white">{record.odometer.toLocaleString()} km</p>
+                          <p className="text-sm text-gray-900">{record.odometer.toLocaleString()} km</p>
                         </div>
                         {record.partsReplaced && record.partsReplaced.length > 0 && (
                           <div className="col-span-2">
                             <p className="text-xs text-gray-400 mb-1">Parts Replaced</p>
-                            <p className="text-sm text-white">
+                            <p className="text-sm text-gray-900">
                               {Array.isArray(record.partsReplaced) 
                                 ? record.partsReplaced.join(', ') 
                                 : record.partsReplaced}
@@ -420,7 +420,7 @@ export const MaintenancePanel: React.FC = () => {
                         {record.notes && (
                           <div className="col-span-2">
                             <p className="text-xs text-gray-400 mb-1">Notes</p>
-                            <p className="text-sm text-white">{record.notes}</p>
+                            <p className="text-sm text-gray-900">{record.notes}</p>
                           </div>
                         )}
                       </div>
@@ -433,52 +433,52 @@ export const MaintenancePanel: React.FC = () => {
         </div>
       ) : (
         /* Desktop: Table Layout */
-        <div className="bg-gray-800 rounded-lg overflow-hidden">
+        <div className="bg-white rounded-lg overflow-hidden border border-gray-200 shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-700">
+              <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Vehicle
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Service Type
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Date
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Odometer
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Cost
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
+              <tbody className="divide-y divide-gray-200 bg-white">
                 {filteredRecords.map((record) => (
-                  <tr key={record.id} className="hover:bg-gray-700">
+                  <tr key={record.id} className="hover:bg-gray-50 border-b border-gray-200">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <Wrench className="w-8 h-8 text-blue-400 mr-3" />
                         <div>
-                          <div className="text-sm font-medium text-white">
+                          <div className="text-sm font-medium text-gray-900">
                             {getVehicleName(record.vehicleId)}
                           </div>
-                          <div className="text-sm text-gray-400">
+                          <div className="text-sm text-gray-600">
                             {record.serviceCenter}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-white">{getTypesDisplay(record.types)}</div>
+                      <div className="text-sm text-gray-900">{getTypesDisplay(record.types)}</div>
                       <div className="text-xs text-gray-400 truncate max-w-32">
                         {record.description}
                       </div>
@@ -486,18 +486,18 @@ export const MaintenancePanel: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <Calendar className="w-4 h-4 text-gray-400 mr-2" />
-                        <span className="text-sm text-white">
+                        <span className="text-sm text-gray-900">
                           {new Date(record.performedAt).toLocaleDateString()}
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {record.odometer.toLocaleString()} km
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <DollarSign className="w-4 h-4 text-gray-400 mr-1" />
-                        <span className="text-sm text-white">
+                        <span className="text-sm text-gray-900">
                           {record.cost.toFixed(2)} {record.currency}
                         </span>
                       </div>
@@ -549,14 +549,14 @@ export const MaintenancePanel: React.FC = () => {
       {/* Add Maintenance Record Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <h3 className="text-lg font-semibold text-white mb-4">
+          <div className="bg-white rounded-lg p-6 border border-gray-200 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Add Maintenance Record
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Vehicle *
                 </label>
                 <select
@@ -564,7 +564,7 @@ export const MaintenancePanel: React.FC = () => {
                   onChange={(e) =>
                     setNewRecord({ ...newRecord, vehicleId: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   required
                 >
                   <option value="">Select Vehicle</option>
@@ -577,12 +577,12 @@ export const MaintenancePanel: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Service Types * (Select multiple)
                 </label>
                 <div className="space-y-2 max-h-32 overflow-y-auto bg-gray-700 border border-gray-600 rounded-lg p-2">
                   {SERVICE_TYPES.map((serviceType) => (
-                    <label key={serviceType.value} className="flex items-center space-x-2 text-sm text-white">
+                    <label key={serviceType.value} className="flex items-center space-x-2 text-sm text-gray-900">
                       <input
                         type="checkbox"
                         checked={newRecord.types.includes(serviceType.value)}
@@ -608,7 +608,7 @@ export const MaintenancePanel: React.FC = () => {
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Description *
                 </label>
                 <input
@@ -617,14 +617,14 @@ export const MaintenancePanel: React.FC = () => {
                   onChange={(e) =>
                     setNewRecord({ ...newRecord, description: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   placeholder="Brief description of the service performed"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Service Date *
                 </label>
                 <input
@@ -633,13 +633,13 @@ export const MaintenancePanel: React.FC = () => {
                   onChange={(e) =>
                     setNewRecord({ ...newRecord, performedAt: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Odometer Reading (km) *
                 </label>
                 <input
@@ -648,7 +648,7 @@ export const MaintenancePanel: React.FC = () => {
                   onChange={(e) =>
                     setNewRecord({ ...newRecord, odometer: parseInt(e.target.value) || 0 })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   placeholder="50000"
                   min="0"
                   required
@@ -656,7 +656,7 @@ export const MaintenancePanel: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Cost *
                 </label>
                 <input
@@ -665,7 +665,7 @@ export const MaintenancePanel: React.FC = () => {
                   onChange={(e) =>
                     setNewRecord({ ...newRecord, cost: parseFloat(e.target.value) || 0 })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   placeholder="150.00"
                   min="0"
                   step="0.01"
@@ -674,7 +674,7 @@ export const MaintenancePanel: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Service Center *
                 </label>
                 <input
@@ -683,7 +683,7 @@ export const MaintenancePanel: React.FC = () => {
                   onChange={(e) =>
                     setNewRecord({ ...newRecord, serviceCenter: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   placeholder="Service Center Name"
                   required
                 />
@@ -692,7 +692,7 @@ export const MaintenancePanel: React.FC = () => {
 
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Parts Replaced
                 </label>
                 <input
@@ -701,13 +701,13 @@ export const MaintenancePanel: React.FC = () => {
                   onChange={(e) =>
                     setNewRecord({ ...newRecord, partsReplaced: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   placeholder="Oil Filter, Engine Oil (comma separated)"
                 />
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Notes
                 </label>
                 <textarea
@@ -715,7 +715,7 @@ export const MaintenancePanel: React.FC = () => {
                   onChange={(e) =>
                     setNewRecord({ ...newRecord, notes: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   rows={3}
                   placeholder="Additional notes about the service..."
                 />
@@ -731,7 +731,7 @@ export const MaintenancePanel: React.FC = () => {
               </button>
               <button
                 onClick={handleAddRecord}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white rounded-lg transition-colors"
               >
                 Add Record
               </button>
@@ -743,14 +743,14 @@ export const MaintenancePanel: React.FC = () => {
       {/* Edit Maintenance Record Modal */}
       {editingRecord && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <h3 className="text-lg font-semibold text-white mb-4">
+          <div className="bg-white rounded-lg p-6 border border-gray-200 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Edit Maintenance Record
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Vehicle *
                 </label>
                 <select
@@ -758,7 +758,7 @@ export const MaintenancePanel: React.FC = () => {
                   onChange={(e) =>
                     setEditingRecord({ ...editingRecord, vehicleId: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   required
                 >
                   <option value="">Select Vehicle</option>
@@ -771,12 +771,12 @@ export const MaintenancePanel: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Service Types * (Select multiple)
                 </label>
                 <div className="space-y-2 max-h-32 overflow-y-auto bg-gray-700 border border-gray-600 rounded-lg p-2">
                   {SERVICE_TYPES.map((serviceType) => (
-                    <label key={serviceType.value} className="flex items-center space-x-2 text-sm text-white">
+                    <label key={serviceType.value} className="flex items-center space-x-2 text-sm text-gray-900">
                       <input
                         type="checkbox"
                         checked={editingRecord.types.includes(serviceType.value)}
@@ -802,7 +802,7 @@ export const MaintenancePanel: React.FC = () => {
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Description *
                 </label>
                 <input
@@ -811,14 +811,14 @@ export const MaintenancePanel: React.FC = () => {
                   onChange={(e) =>
                     setEditingRecord({ ...editingRecord, description: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   placeholder="Brief description of the service performed"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Service Date *
                 </label>
                 <input
@@ -827,13 +827,13 @@ export const MaintenancePanel: React.FC = () => {
                   onChange={(e) =>
                     setEditingRecord({ ...editingRecord, performedAt: new Date(e.target.value) })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Odometer Reading (km) *
                 </label>
                 <input
@@ -842,7 +842,7 @@ export const MaintenancePanel: React.FC = () => {
                   onChange={(e) =>
                     setEditingRecord({ ...editingRecord, odometer: parseInt(e.target.value) || 0 })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   placeholder="50000"
                   min="0"
                   required
@@ -850,7 +850,7 @@ export const MaintenancePanel: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Cost *
                 </label>
                 <input
@@ -859,7 +859,7 @@ export const MaintenancePanel: React.FC = () => {
                   onChange={(e) =>
                     setEditingRecord({ ...editingRecord, cost: parseFloat(e.target.value) || 0 })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   placeholder="150.00"
                   min="0"
                   step="0.01"
@@ -868,7 +868,7 @@ export const MaintenancePanel: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Service Center *
                 </label>
                 <input
@@ -877,14 +877,14 @@ export const MaintenancePanel: React.FC = () => {
                   onChange={(e) =>
                     setEditingRecord({ ...editingRecord, serviceCenter: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   placeholder="Service Center Name"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Status
                 </label>
                 <select
@@ -892,7 +892,7 @@ export const MaintenancePanel: React.FC = () => {
                   onChange={(e) =>
                     setEditingRecord({ ...editingRecord, status: e.target.value as MaintenanceRecord["status"] })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                 >
                   <option value="completed">Completed</option>
                   <option value="pending">Pending</option>
@@ -903,7 +903,7 @@ export const MaintenancePanel: React.FC = () => {
 
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Parts Replaced
                 </label>
                 <input
@@ -915,13 +915,13 @@ export const MaintenancePanel: React.FC = () => {
                       partsReplaced: e.target.value ? e.target.value.split(',').map(p => p.trim()) : undefined
                     })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   placeholder="Oil Filter, Engine Oil (comma separated)"
                 />
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Notes
                 </label>
                 <textarea
@@ -929,7 +929,7 @@ export const MaintenancePanel: React.FC = () => {
                   onChange={(e) =>
                     setEditingRecord({ ...editingRecord, notes: e.target.value || undefined })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   rows={3}
                   placeholder="Additional notes about the service..."
                 />
@@ -945,7 +945,7 @@ export const MaintenancePanel: React.FC = () => {
               </button>
               <button
                 onClick={handleUpdateRecord}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white rounded-lg transition-colors"
               >
                 Update Record
               </button>

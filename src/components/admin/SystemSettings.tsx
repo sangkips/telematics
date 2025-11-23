@@ -30,11 +30,11 @@ export const SystemSettings: React.FC = () => {
       {/* Header */}
       <div className={`flex items-center justify-between ${isMobile ? 'flex-col space-y-3' : ''}`}>
         <div className={isMobile ? 'text-center' : ''}>
-          <h2 className={`font-bold text-white ${isMobile ? 'text-xl' : 'text-2xl'}`}>
+          <h2 className={`font-bold text-gray-900 ${isMobile ? 'text-xl' : 'text-2xl'}`}>
             System Settings
           </h2>
           {!isMobile && (
-            <p className="text-gray-400">Configure global system parameters and preferences</p>
+            <p className="text-gray-600">Configure global system parameters and preferences</p>
           )}
         </div>
         <button
@@ -54,7 +54,7 @@ export const SystemSettings: React.FC = () => {
         /* Mobile: Expandable Card Layout */
         <div className="space-y-4">
           {/* Company Information Card */}
-          <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <div
               className="p-4 cursor-pointer"
               onClick={() => toggleExpandedCard('company-info')}
@@ -62,7 +62,7 @@ export const SystemSettings: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <Globe className="w-5 h-5 text-blue-400" />
-                  <h3 className="text-lg font-semibold text-white">Company Information</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Company Information</h3>
                 </div>
                 {expandedCards.includes('company-info') ? (
                   <ChevronDown className="w-4 h-4 text-gray-400" />
@@ -76,22 +76,22 @@ export const SystemSettings: React.FC = () => {
               <div className="px-4 pb-4 border-t border-gray-700">
                 <div className="space-y-4 mt-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Company Name</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
                     <input
                       type="text"
                       value={settings.companyName}
                       onChange={(e) => setSettings({...settings, companyName: e.target.value})}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 min-h-[44px]"
+                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400 min-h-[44px]"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">API Endpoint</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">API Endpoint</label>
                     <input
                       type="url"
                       value={settings.apiEndpoint}
                       onChange={(e) => setSettings({...settings, apiEndpoint: e.target.value})}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 min-h-[44px]"
+                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400 min-h-[44px]"
                     />
                     <p className="text-xs text-gray-400 mt-1">Base URL for API consumption</p>
                   </div>
@@ -101,7 +101,7 @@ export const SystemSettings: React.FC = () => {
           </div>
 
           {/* Data Management Card */}
-          <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <div
               className="p-4 cursor-pointer"
               onClick={() => toggleExpandedCard('data-management')}
@@ -109,7 +109,7 @@ export const SystemSettings: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <Database className="w-5 h-5 text-green-400" />
-                  <h3 className="text-lg font-semibold text-white">Data Management</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Data Management</h3>
                 </div>
                 {expandedCards.includes('data-management') ? (
                   <ChevronDown className="w-4 h-4 text-gray-400" />
@@ -123,17 +123,17 @@ export const SystemSettings: React.FC = () => {
               <div className="px-4 pb-4 border-t border-gray-700">
                 <div className="space-y-4 mt-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Data Retention Period</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Data Retention Period</label>
                     <div className="flex items-center space-x-2">
                       <input
                         type="number"
                         value={settings.dataRetentionPeriod}
                         onChange={(e) => setSettings({...settings, dataRetentionPeriod: parseInt(e.target.value)})}
-                        className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 min-h-[44px]"
+                        className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400 min-h-[44px]"
                         min="1"
                         max="3650"
                       />
-                      <span className="text-gray-400">days</span>
+                      <span className="text-gray-600">days</span>
                     </div>
                     <p className="text-xs text-gray-400 mt-1">How long to keep historical data</p>
                   </div>
@@ -143,7 +143,7 @@ export const SystemSettings: React.FC = () => {
           </div>
 
           {/* Localization Card */}
-          <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <div
               className="p-4 cursor-pointer"
               onClick={() => toggleExpandedCard('localization')}
@@ -151,7 +151,7 @@ export const SystemSettings: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <Clock className="w-5 h-5 text-purple-400" />
-                  <h3 className="text-lg font-semibold text-white">Localization</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Localization</h3>
                 </div>
                 {expandedCards.includes('localization') ? (
                   <ChevronDown className="w-4 h-4 text-gray-400" />
@@ -165,11 +165,11 @@ export const SystemSettings: React.FC = () => {
               <div className="px-4 pb-4 border-t border-gray-700">
                 <div className="space-y-4 mt-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Timezone</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
                     <select
                       value={settings.timezone}
                       onChange={(e) => setSettings({...settings, timezone: e.target.value})}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 min-h-[44px]"
+                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400 min-h-[44px]"
                     >
                       <option value="UTC">UTC</option>
                       <option value="America/New_York">Eastern Time</option>
@@ -183,11 +183,11 @@ export const SystemSettings: React.FC = () => {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Language</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
                     <select
                       value={settings.language}
                       onChange={(e) => setSettings({...settings, language: e.target.value})}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 min-h-[44px]"
+                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400 min-h-[44px]"
                     >
                       <option value="en">English</option>
                       <option value="es">Spanish</option>
@@ -203,7 +203,7 @@ export const SystemSettings: React.FC = () => {
           </div>
 
           {/* Financial Settings Card */}
-          <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <div
               className="p-4 cursor-pointer"
               onClick={() => toggleExpandedCard('financial-settings')}
@@ -211,7 +211,7 @@ export const SystemSettings: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <DollarSign className="w-5 h-5 text-amber-400" />
-                  <h3 className="text-lg font-semibold text-white">Financial Settings</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Financial Settings</h3>
                 </div>
                 {expandedCards.includes('financial-settings') ? (
                   <ChevronDown className="w-4 h-4 text-gray-400" />
@@ -225,11 +225,11 @@ export const SystemSettings: React.FC = () => {
               <div className="px-4 pb-4 border-t border-gray-700">
                 <div className="space-y-4 mt-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Currency</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Currency</label>
                     <select
                       value={settings.currency}
                       onChange={(e) => setSettings({...settings, currency: e.target.value})}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 min-h-[44px]"
+                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400 min-h-[44px]"
                     >
                       <option value="USD">USD - US Dollar</option>
                       <option value="EUR">EUR - Euro</option>
@@ -248,30 +248,30 @@ export const SystemSettings: React.FC = () => {
         /* Desktop: Grid Layout */
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Company Information */}
-          <div className="bg-gray-800 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+          <div className="bg-white rounded-lg p-6 border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <Globe className="w-5 h-5 mr-2 text-blue-400" />
               Company Information
             </h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Company Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
                 <input
                   type="text"
                   value={settings.companyName}
                   onChange={(e) => setSettings({...settings, companyName: e.target.value})}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">API Endpoint</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">API Endpoint</label>
                 <input
                   type="url"
                   value={settings.apiEndpoint}
                   onChange={(e) => setSettings({...settings, apiEndpoint: e.target.value})}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                 />
                 <p className="text-xs text-gray-400 mt-1">Base URL for API consumption</p>
               </div>
@@ -279,25 +279,25 @@ export const SystemSettings: React.FC = () => {
           </div>
 
           {/* Data Management */}
-          <div className="bg-gray-800 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+          <div className="bg-white rounded-lg p-6 border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <Database className="w-5 h-5 mr-2 text-green-400" />
               Data Management
             </h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Data Retention Period</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Data Retention Period</label>
                 <div className="flex items-center space-x-2">
                   <input
                     type="number"
                     value={settings.dataRetentionPeriod}
                     onChange={(e) => setSettings({...settings, dataRetentionPeriod: parseInt(e.target.value)})}
-                    className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                     min="1"
                     max="3650"
                   />
-                  <span className="text-gray-400">days</span>
+                  <span className="text-gray-600">days</span>
                 </div>
                 <p className="text-xs text-gray-400 mt-1">How long to keep historical data</p>
               </div>
@@ -305,19 +305,19 @@ export const SystemSettings: React.FC = () => {
           </div>
 
           {/* Localization */}
-          <div className="bg-gray-800 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+          <div className="bg-white rounded-lg p-6 border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <Clock className="w-5 h-5 mr-2 text-purple-400" />
               Localization
             </h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Timezone</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
                 <select
                   value={settings.timezone}
                   onChange={(e) => setSettings({...settings, timezone: e.target.value})}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                 >
                   <option value="UTC">UTC</option>
                   <option value="America/New_York">Eastern Time</option>
@@ -331,11 +331,11 @@ export const SystemSettings: React.FC = () => {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Language</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
                 <select
                   value={settings.language}
                   onChange={(e) => setSettings({...settings, language: e.target.value})}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                 >
                   <option value="en">English</option>
                   <option value="es">Spanish</option>
@@ -349,19 +349,19 @@ export const SystemSettings: React.FC = () => {
           </div>
 
           {/* Financial Settings */}
-          <div className="bg-gray-800 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+          <div className="bg-white rounded-lg p-6 border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <DollarSign className="w-5 h-5 mr-2 text-amber-400" />
               Financial Settings
             </h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Currency</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Currency</label>
                 <select
                   value={settings.currency}
                   onChange={(e) => setSettings({...settings, currency: e.target.value})}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                 >
                   <option value="USD">USD - US Dollar</option>
                   <option value="EUR">EUR - Euro</option>
@@ -377,40 +377,40 @@ export const SystemSettings: React.FC = () => {
       )}
 
       {/* API Configuration */}
-      <div className="bg-gray-800 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">API Configuration</h3>
+      <div className="bg-white rounded-lg p-6 border border-gray-200">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">API Configuration</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Rate Limiting</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Rate Limiting</label>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-400">Requests per minute</span>
+                <span className="text-sm text-gray-600">Requests per minute</span>
                 <input
                   type="number"
                   defaultValue="1000"
-                  className="w-20 px-2 py-1 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:outline-none focus:border-blue-500"
+                  className="w-20 px-2 py-1 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:outline-none focus:border-brand-secondary-400"
                 />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-400">Requests per hour</span>
+                <span className="text-sm text-gray-600">Requests per hour</span>
                 <input
                   type="number"
                   defaultValue="10000"
-                  className="w-20 px-2 py-1 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:outline-none focus:border-blue-500"
+                  className="w-20 px-2 py-1 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:outline-none focus:border-brand-secondary-400"
                 />
               </div>
             </div>
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">CORS Settings</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">CORS Settings</label>
             <div className="space-y-2">
               <div>
                 <input
                   type="text"
                   placeholder="Allowed origins (comma separated)"
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 text-sm focus:outline-none focus:border-brand-secondary-400"
                   defaultValue="https://dashboard.company.com, https://mobile.company.com"
                 />
               </div>

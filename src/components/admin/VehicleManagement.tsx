@@ -26,13 +26,13 @@ export const VehicleManagement: React.FC = () => {
   const { isMobile } = useResponsive();
   const { expandedCards, toggleExpandedCard } = useResponsiveContext();
   const { data: apiVehicles, loading: apiLoading, error: apiError, refetch } = useVehicles();
-  const { 
-    vehicles: contextVehicles, 
-    connectionState, 
-    loading: contextLoading, 
+  const {
+    vehicles: contextVehicles,
+    connectionState,
+    loading: contextLoading,
     error: contextError,
     updateVehicle,
-    refreshVehicles 
+    refreshVehicles
   } = useVehicleUpdate();
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
@@ -40,10 +40,10 @@ export const VehicleManagement: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
   // Use context vehicles if available, otherwise fall back to API vehicles
-  const vehicles = Object.keys(contextVehicles).length > 0 
-    ? Object.values(contextVehicles) 
+  const vehicles = Object.keys(contextVehicles).length > 0
+    ? Object.values(contextVehicles)
     : (apiVehicles || []);
-  
+
   const loading = contextLoading || apiLoading;
   const error = contextError || apiError;
 
@@ -88,7 +88,7 @@ export const VehicleManagement: React.FC = () => {
       };
 
       await apiService.createVehicle(vehicleData);
-      await refetch(); 
+      await refetch();
       setShowAddModal(false);
       setNewVehicle({
         name: "",
@@ -132,7 +132,7 @@ export const VehicleManagement: React.FC = () => {
         await apiService.updateVehicle(editingVehicle.id, updateData);
         await refetch(); // Refresh the vehicle list
       }
-      
+
       setEditingVehicle(null);
     } catch (error) {
       console.error("Failed to update vehicle:", error);
@@ -157,13 +157,13 @@ export const VehicleManagement: React.FC = () => {
       case "active":
         return "text-green-400 bg-green-900";
       case "idle":
-        return "text-amber-400 bg-amber-900";
+        return "text-amber-700 bg-amber-100";
       case "maintenance":
-        return "text-blue-400 bg-blue-900";
+        return "text-blue-700 bg-blue-100";
       case "offline":
-        return "text-red-400 bg-red-900";
+        return "text-red-700 bg-red-100";
       default:
-        return "text-gray-400 bg-gray-900";
+        return "text-gray-700 bg-gray-200";
     }
   };
 
@@ -181,7 +181,7 @@ export const VehicleManagement: React.FC = () => {
         <p className="text-red-400 mb-4">Failed to load vehicles</p>
         <button
           onClick={refetch}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="px-4 py-2 bg-brand-accent-600 text-white rounded-lg hover:bg-brand-accent-700"
         >
           Retry
         </button>
@@ -194,10 +194,10 @@ export const VehicleManagement: React.FC = () => {
       <div className={`flex items-center justify-between ${isMobile ? 'flex-col space-y-3' : ''}`}>
         <div className={isMobile ? 'text-center' : ''}>
           <div className="flex items-center space-x-3">
-            <h2 className={`font-bold text-white ${isMobile ? 'text-xl' : 'text-2xl'}`}>
+            <h2 className={`font-bold text-gray-900 ${isMobile ? 'text-xl' : 'text-2xl'}`}>
               Vehicle Management
             </h2>
-            
+
             {/* Connection Status Indicator */}
             {/* <div className="flex items-center space-x-1">
               {connectionState.status === 'connected' && !connectionState.fallbackMode ? (
@@ -224,12 +224,12 @@ export const VehicleManagement: React.FC = () => {
             </div> */}
           </div>
           {!isMobile && (
-            <p className="text-gray-400">
+            <p className="text-gray-600">
               Manage your fleet vehicles and their configurations
             </p>
           )}
         </div>
-        
+
         <div className="flex items-center space-x-2">
           {/* Manual Refresh Button */}
           {/* {(connectionState.fallbackMode || connectionState.status === 'disconnected') && (
@@ -243,12 +243,11 @@ export const VehicleManagement: React.FC = () => {
               {!isMobile && <span>Refresh</span>}
             </button>
           )} */}
-          
+
           <button
             onClick={() => setShowAddModal(true)}
-            className={`flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors ${
-              isMobile ? 'w-full justify-center min-h-[44px]' : ''
-            }`}
+            className={`flex items-center space-x-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white px-4 py-2 rounded-lg transition-colors ${isMobile ? 'w-full justify-center min-h-[44px]' : ''
+              }`}
           >
             <Plus className="w-4 h-4" />
             <span>Add Vehicle</span>
@@ -265,9 +264,8 @@ export const VehicleManagement: React.FC = () => {
             placeholder={isMobile ? "Search vehicles..." : "Search vehicles..."}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className={`w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 ${
-              isMobile ? 'min-h-[44px]' : ''
-            }`}
+            className={`w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-brand-secondary-400 ${isMobile ? 'min-h-[44px]' : ''
+              }`}
           />
         </div>
 
@@ -276,9 +274,8 @@ export const VehicleManagement: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className={`bg-gray-800 border border-gray-700 rounded-lg text-white px-3 py-2 focus:outline-none focus:border-blue-500 ${
-              isMobile ? 'w-full min-h-[44px]' : ''
-            }`}
+            className={`bg-white border border-gray-300 rounded-lg text-gray-900 px-3 py-2 focus:outline-none focus:border-brand-secondary-400 ${isMobile ? 'w-full min-h-[44px]' : ''
+              }`}
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -421,43 +418,42 @@ export const VehicleManagement: React.FC = () => {
           )}
         </div>
       ) : (
-        /* Desktop: Table Layout */
-        <div className="bg-gray-800 rounded-lg overflow-hidden">
+        <div className="bg-white rounded-lg overflow-hidden border border-gray-200 shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-700">
+              <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Vehicle
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Driver
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Fuel Level
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Location
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
+              <tbody className="divide-y divide-gray-200 bg-white">
                 {filteredVehicles.map((vehicle) => (
-                  <tr key={vehicle.id} className="hover:bg-gray-700">
+                  <tr key={vehicle.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <Car className="w-8 h-8 text-blue-400 mr-3" />
                         <div>
-                          <div className="text-sm font-medium text-white">
+                          <div className="text-sm font-medium text-gray-900">
                             {vehicle.name}
                           </div>
-                          <div className="text-sm text-gray-400">
+                          <div className="text-sm text-gray-600">
                             {vehicle.plateNumber}
                           </div>
                         </div>
@@ -466,7 +462,7 @@ export const VehicleManagement: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <User className="w-4 h-4 text-gray-400 mr-2" />
-                        <span className="text-sm text-white">
+                        <span className="text-sm text-gray-900">
                           {vehicle.driver}
                         </span>
                       </div>
@@ -488,7 +484,7 @@ export const VehicleManagement: React.FC = () => {
                             style={{ width: `${vehicle.fuelLevel}%` }}
                           ></div>
                         </div>
-                        <span className="text-sm text-white">
+                        <span className="text-sm text-gray-900">
                           {vehicle.fuelLevel}%
                         </span>
                       </div>
@@ -496,7 +492,7 @@ export const VehicleManagement: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <MapPin className="w-4 h-4 text-gray-400 mr-2" />
-                        <span className="text-sm text-white truncate max-w-32">
+                        <span className="text-sm text-gray-900 truncate max-w-32">
                           {vehicle.location.address}
                         </span>
                       </div>
@@ -528,14 +524,14 @@ export const VehicleManagement: React.FC = () => {
       {/* Add Vehicle Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-semibold text-white mb-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md border border-gray-200 shadow-lg">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Add New Vehicle
             </h3>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Vehicle Name
                 </label>
                 <input
@@ -544,13 +540,13 @@ export const VehicleManagement: React.FC = () => {
                   onChange={(e) =>
                     setNewVehicle({ ...newVehicle, name: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   placeholder="Fleet Alpha"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Plate Number
                 </label>
                 <input
@@ -562,13 +558,13 @@ export const VehicleManagement: React.FC = () => {
                       plateNumber: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   placeholder="ABC-1234"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Driver
                 </label>
                 <input
@@ -577,14 +573,14 @@ export const VehicleManagement: React.FC = () => {
                   onChange={(e) =>
                     setNewVehicle({ ...newVehicle, driver: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   placeholder="John Smith"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Make
                   </label>
                   <input
@@ -593,13 +589,13 @@ export const VehicleManagement: React.FC = () => {
                     onChange={(e) =>
                       setNewVehicle({ ...newVehicle, make: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                     placeholder="Toyota"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Model
                   </label>
                   <input
@@ -608,14 +604,14 @@ export const VehicleManagement: React.FC = () => {
                     onChange={(e) =>
                       setNewVehicle({ ...newVehicle, model: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                     placeholder="Camry"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   VIN
                 </label>
                 <input
@@ -624,7 +620,7 @@ export const VehicleManagement: React.FC = () => {
                   onChange={(e) =>
                     setNewVehicle({ ...newVehicle, vin: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   placeholder="1HGBH41JXMN109186"
                 />
               </div>
@@ -639,7 +635,7 @@ export const VehicleManagement: React.FC = () => {
               </button>
               <button
                 onClick={handleAddVehicle}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white rounded-lg transition-colors"
               >
                 Add Vehicle
               </button>
@@ -652,7 +648,7 @@ export const VehicleManagement: React.FC = () => {
       {editingVehicle && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
           <div className="bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <h3 className="text-lg font-semibold text-white mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Edit Vehicle: {editingVehicle.name}
             </h3>
 
@@ -664,7 +660,7 @@ export const VehicleManagement: React.FC = () => {
                 </h4>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Vehicle Name *
                   </label>
                   <input
@@ -673,14 +669,14 @@ export const VehicleManagement: React.FC = () => {
                     onChange={(e) =>
                       setEditingVehicle({ ...editingVehicle, name: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                     placeholder="Fleet Alpha"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Plate Number *
                   </label>
                   <input
@@ -692,14 +688,14 @@ export const VehicleManagement: React.FC = () => {
                         plateNumber: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                     placeholder="ABC-1234"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Driver *
                   </label>
                   <input
@@ -708,14 +704,14 @@ export const VehicleManagement: React.FC = () => {
                     onChange={(e) =>
                       setEditingVehicle({ ...editingVehicle, driver: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                     placeholder="John Smith"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Status
                   </label>
                   <select
@@ -726,7 +722,7 @@ export const VehicleManagement: React.FC = () => {
                         status: e.target.value as Vehicle['status'],
                       })
                     }
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   >
                     <option value="active">Active</option>
                     <option value="idle">Idle</option>
@@ -744,7 +740,7 @@ export const VehicleManagement: React.FC = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Make
                     </label>
                     <input
@@ -753,13 +749,13 @@ export const VehicleManagement: React.FC = () => {
                       onChange={(e) =>
                         setEditingVehicle({ ...editingVehicle, make: e.target.value })
                       }
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                       placeholder="Toyota"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Model
                     </label>
                     <input
@@ -768,14 +764,14 @@ export const VehicleManagement: React.FC = () => {
                       onChange={(e) =>
                         setEditingVehicle({ ...editingVehicle, model: e.target.value })
                       }
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                       placeholder="Camry"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Year
                   </label>
                   <input
@@ -787,7 +783,7 @@ export const VehicleManagement: React.FC = () => {
                         year: parseInt(e.target.value) || undefined,
                       })
                     }
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                     placeholder="2023"
                     min="1900"
                     max={new Date().getFullYear() + 1}
@@ -795,7 +791,7 @@ export const VehicleManagement: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     VIN
                   </label>
                   <input
@@ -804,13 +800,13 @@ export const VehicleManagement: React.FC = () => {
                     onChange={(e) =>
                       setEditingVehicle({ ...editingVehicle, vin: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                     placeholder="1HGBH41JXMN109186"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Odometer (km)
                   </label>
                   <input
@@ -822,7 +818,7 @@ export const VehicleManagement: React.FC = () => {
                         odometer: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                     placeholder="50000"
                     min="0"
                   />
@@ -837,7 +833,7 @@ export const VehicleManagement: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Max Fuel Capacity (L)
                     </label>
                     <input
@@ -849,7 +845,7 @@ export const VehicleManagement: React.FC = () => {
                           maxFuelCapacity: parseFloat(e.target.value) || 0,
                         })
                       }
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                       placeholder="100"
                       min="1"
                       step="0.1"
@@ -857,7 +853,7 @@ export const VehicleManagement: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Fuel Consumption (L/100km)
                     </label>
                     <input
@@ -869,7 +865,7 @@ export const VehicleManagement: React.FC = () => {
                           fuelConsumption: parseFloat(e.target.value) || 0,
                         })
                       }
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                      className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                       placeholder="8.5"
                       min="0.1"
                       step="0.1"
@@ -888,7 +884,7 @@ export const VehicleManagement: React.FC = () => {
               </button>
               <button
                 onClick={handleUpdateVehicle}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white rounded-lg transition-colors"
               >
                 Update Vehicle
               </button>

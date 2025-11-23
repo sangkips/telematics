@@ -107,7 +107,7 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className={`bg-gray-700 border border-gray-600 rounded-lg text-white px-3 py-2 focus:outline-none focus:border-blue-500 ${
+              className={`bg-white border border-gray-300 rounded-lg text-gray-900 px-3 py-2 focus:outline-none focus:border-brand-secondary-400 ${
                 isMobile ? 'w-full min-h-[44px]' : ''
               }`}
             >
@@ -124,7 +124,7 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
             <select
               value={reportType}
               onChange={(e) => setReportType(e.target.value)}
-              className={`bg-gray-700 border border-gray-600 rounded-lg text-white px-3 py-2 focus:outline-none focus:border-blue-500 ${
+              className={`bg-white border border-gray-300 rounded-lg text-gray-900 px-3 py-2 focus:outline-none focus:border-brand-secondary-400 ${
                 isMobile ? 'w-full min-h-[44px]' : ''
               }`}
             >
@@ -170,7 +170,7 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-gray-700 rounded-lg p-6">
+        <div className="bg-gray-100 rounded-lg p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-400 text-sm">Fleet Utilization</p>
@@ -183,13 +183,13 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
             </div>
             <BarChart3 className="w-8 h-8 text-blue-400" />
           </div>
-          <div className="mt-2 text-sm text-gray-400">
+          <div className="mt-2 text-sm text-gray-600">
             {reportData.activeVehicles} of {reportData.totalVehicles} vehicles
             active
           </div>
         </div>
 
-        <div className="bg-gray-700 rounded-lg p-6">
+        <div className="bg-gray-100 rounded-lg p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-400 text-sm">Avg Fuel Level</p>
@@ -199,12 +199,12 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
             </div>
             <Fuel className="w-8 h-8 text-green-400" />
           </div>
-          <div className="mt-2 text-sm text-gray-400">
+          <div className="mt-2 text-sm text-gray-600">
             {reportData.fuelEfficiency.toFixed(1)} L/100km average
           </div>
         </div>
 
-        <div className="bg-gray-700 rounded-lg p-6">
+        <div className="bg-gray-100 rounded-lg p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-400 text-sm">Total Distance</p>
@@ -214,10 +214,10 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
             </div>
             <MapPin className="w-8 h-8 text-purple-400" />
           </div>
-          <div className="mt-2 text-sm text-gray-400">Across all vehicles</div>
+          <div className="mt-2 text-sm text-gray-600">Across all vehicles</div>
         </div>
 
-        <div className="bg-gray-700 rounded-lg p-6">
+        <div className="bg-gray-100 rounded-lg p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-400 text-sm">Critical Alerts</p>
@@ -227,7 +227,7 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
             </div>
             <AlertTriangle className="w-8 h-8 text-red-400" />
           </div>
-          <div className="mt-2 text-sm text-gray-400">
+          <div className="mt-2 text-sm text-gray-600">
             {reportData.totalAlerts} total alerts
           </div>
         </div>
@@ -238,7 +238,7 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
         /* Mobile: Expandable Card Layout */
         <div className="space-y-4">
           {/* Vehicle Performance Card */}
-          <div className="bg-gray-700 rounded-lg border border-gray-600 overflow-hidden">
+          <div className="bg-gray-100 rounded-lg border border-gray-600 overflow-hidden">
             <div
               className="p-4 cursor-pointer"
               onClick={() => toggleExpandedCard('vehicle-performance')}
@@ -246,7 +246,7 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <TrendingUp className="w-5 h-5 text-blue-400" />
-                  <h3 className="text-lg font-semibold text-white">Vehicle Performance</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Vehicle Performance</h3>
                 </div>
                 {expandedCards.includes('vehicle-performance') ? (
                   <ChevronDown className="w-4 h-4 text-gray-400" />
@@ -260,7 +260,7 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
               <div className="px-4 pb-4 border-t border-gray-600">
                 <div className="space-y-3 mt-4">
                   {vehicles.slice(0, 5).map((vehicle) => (
-                    <div key={vehicle.id} className="bg-gray-800 rounded-lg p-3">
+                    <div key={vehicle.id} className="bg-white border border-gray-200 rounded-lg p-3">
                       <div className="flex items-center justify-between mb-2">
                         <div>
                           <div className="text-white font-medium text-sm">{vehicle.name}</div>
@@ -282,12 +282,12 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-xs text-gray-400">Fuel Level</p>
-                          <p className="text-sm text-white">{vehicle.fuelLevel}%</p>
+                          <p className="text-xs text-gray-600">Fuel Level</p>
+                          <p className="text-sm text-gray-900">{vehicle.fuelLevel}%</p>
                         </div>
                         <div>
-                          <p className="text-xs text-gray-400">Distance</p>
-                          <p className="text-sm text-white">{(vehicle.odometer / 1000).toFixed(1)}k km</p>
+                          <p className="text-xs text-gray-600">Distance</p>
+                          <p className="text-sm text-gray-900">{(vehicle.odometer / 1000).toFixed(1)}k km</p>
                         </div>
                       </div>
                     </div>
@@ -298,7 +298,7 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
           </div>
 
           {/* Alert Summary Card */}
-          <div className="bg-gray-700 rounded-lg border border-gray-600 overflow-hidden">
+          <div className="bg-gray-100 rounded-lg border border-gray-600 overflow-hidden">
             <div
               className="p-4 cursor-pointer"
               onClick={() => toggleExpandedCard('alert-summary')}
@@ -306,7 +306,7 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <AlertTriangle className="w-5 h-5 text-red-400" />
-                  <h3 className="text-lg font-semibold text-white">Alert Summary</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Alert Summary</h3>
                 </div>
                 {expandedCards.includes('alert-summary') ? (
                   <ChevronDown className="w-4 h-4 text-gray-400" />
@@ -323,7 +323,7 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
                     .flatMap((v) => v.alerts)
                     .slice(0, 5)
                     .map((alert) => (
-                      <div key={alert.id} className="bg-gray-800 rounded-lg p-3">
+                      <div key={alert.id} className="bg-white border border-gray-200 rounded-lg p-3">
                         <div className="flex items-start space-x-3">
                           <div
                             className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
@@ -367,8 +367,8 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
         /* Desktop: Grid Layout */
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Vehicle Performance Table */}
-          <div className="bg-gray-700 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+          <div className="bg-gray-100 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <TrendingUp className="w-5 h-5 mr-2 text-blue-400" />
               Vehicle Performance
             </h3>
@@ -415,8 +415,8 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
           </div>
 
           {/* Alert Summary */}
-          <div className="bg-gray-700 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+          <div className="bg-gray-100 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <AlertTriangle className="w-5 h-5 mr-2 text-red-400" />
               Alert Summary
             </h3>
@@ -461,8 +461,8 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
       )}
 
       {/* Fuel Consumption Chart Placeholder */}
-      <div className="bg-gray-700 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+      <div className="bg-gray-100 rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <Fuel className="w-5 h-5 mr-2 text-green-400" />
           Fuel Consumption Trends
         </h3>
@@ -470,7 +470,7 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
         <div className="h-64 bg-gray-800 rounded-lg flex items-center justify-center">
           <div className="text-center">
             <BarChart3 className="w-12 h-12 text-gray-500 mx-auto mb-2" />
-            <p className="text-gray-400">
+            <p className="text-gray-600">
               Chart visualization would be displayed here
             </p>
             <p className="text-gray-500 text-sm">

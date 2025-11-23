@@ -52,7 +52,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="bg-gray-800 border-b border-gray-700 p-4 relative z-40">
+      <header className="bg-brand-primary-800 border-b border-brand-primary-700 p-4 relative z-40">
         <div className="flex items-center justify-between">
           {/* Mobile Layout */}
           {isMobile ? (
@@ -70,9 +70,8 @@ export const Header: React.FC<HeaderProps> = ({
                 )}
               </button>
 
-              {/* Center - Logo (icon only on mobile) */}
               <div className="flex items-center">
-                <Car className="w-8 h-8 text-blue-400" />
+                <Car className="w-8 h-8 text-brand-secondary-400" />
                 <span className="ml-2 text-lg font-bold text-white">Nura</span>
               </div>
 
@@ -80,8 +79,8 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 onClick={onToggleNotifications}
                 className={`relative p-2 rounded-lg transition-colors ${notifications
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-700 text-gray-400"
+                  ? "bg-brand-accent-600 text-white"
+                  : "bg-brand-primary-700 text-gray-400"
                   }`}
               >
                 <Bell className="w-5 h-5" />
@@ -94,9 +93,8 @@ export const Header: React.FC<HeaderProps> = ({
             </>
           ) : (
             <>
-              {/* Desktop Layout - Original */}
               <div className="flex items-center space-x-4">
-                <Car className="w-8 h-8 text-blue-400" />
+                <Car className="w-8 h-8 text-brand-secondary-400" />
                 <div>
                   <h1 className="text-2xl font-bold text-white">Nura Fleet System</h1>
                   <p className="text-gray-400">
@@ -109,8 +107,8 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   onClick={onToggleNotifications}
                   className={`relative p-2 rounded-lg transition-colors ${notifications
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-700 text-gray-400"
+                    ? "bg-brand-accent-600 text-white"
+                    : "bg-brand-primary-700 text-gray-400"
                     }`}
                 >
                   <Bell className="w-5 h-5" />
@@ -158,7 +156,7 @@ export const Header: React.FC<HeaderProps> = ({
                   </div>
 
                   <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                    <div className="w-8 h-8 bg-brand-accent-600 rounded-full flex items-center justify-center">
                       <User className="w-4 h-4 text-white" />
                     </div>
 
@@ -195,14 +193,14 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Slide-out Drawer */}
           <div
-            className={`fixed top-0 left-0 h-full w-80 bg-gray-800 border-r border-gray-700 z-40 transform transition-transform duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "-translate-x-full"
+            className={`fixed top-0 left-0 h-full w-80 bg-brand-primary-800 border-r border-brand-primary-700 z-40 transform transition-transform duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "-translate-x-full"
               }`}
           >
             <div className="p-6">
               {/* Header */}
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center space-x-3">
-                  <Car className="w-8 h-8 text-blue-400" />
+                  <Car className="w-8 h-8 text-brand-secondary-400" />
                   <div>
                     <h2 className="text-xl font-bold text-white">Nura Fleet</h2>
                     <p className="text-gray-400 text-sm">Fleet Management</p>
@@ -219,7 +217,7 @@ export const Header: React.FC<HeaderProps> = ({
               {/* User Profile Section */}
               <div className="bg-gray-700 rounded-lg p-4 mb-6">
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-brand-accent-600 rounded-full flex items-center justify-center">
                     <User className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">

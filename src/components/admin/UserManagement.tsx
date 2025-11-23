@@ -170,7 +170,7 @@ export const UserManagement: React.FC = () => {
         </p>
         <button
           onClick={refetch}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="px-4 py-2 bg-brand-accent-600 text-white rounded-lg hover:bg-brand-accent-700"
         >
           Retry
         </button>
@@ -183,15 +183,15 @@ export const UserManagement: React.FC = () => {
   const getRoleColor = (role: string) => {
     switch (role) {
       case "admin":
-        return "text-red-400 bg-red-900";
+        return "text-red-700 bg-red-100";
       case "manager":
-        return "text-blue-400 bg-blue-900";
+        return "text-blue-700 bg-blue-100";
       case "operator":
         return "text-green-400 bg-green-900";
       case "viewer":
-        return "text-gray-400 bg-gray-900";
+        return "text-gray-700 bg-gray-200";
       default:
-        return "text-gray-400 bg-gray-900";
+        return "text-gray-700 bg-gray-200";
     }
   };
 
@@ -200,11 +200,11 @@ export const UserManagement: React.FC = () => {
       case "active":
         return "text-green-400 bg-green-900";
       case "inactive":
-        return "text-gray-400 bg-gray-900";
+        return "text-gray-700 bg-gray-200";
       case "suspended":
-        return "text-red-400 bg-red-900";
+        return "text-red-700 bg-red-100";
       default:
-        return "text-gray-400 bg-gray-900";
+        return "text-gray-700 bg-gray-200";
     }
   };
 
@@ -213,11 +213,11 @@ export const UserManagement: React.FC = () => {
       {/* Header */}
       <div className={`flex items-center justify-between ${isMobile ? 'flex-col space-y-3' : ''}`}>
         <div className={isMobile ? 'text-center' : ''}>
-          <h2 className={`font-bold text-white ${isMobile ? 'text-xl' : 'text-2xl'}`}>
+          <h2 className={`font-bold text-gray-900 ${isMobile ? 'text-xl' : 'text-2xl'}`}>
             User Management
           </h2>
           {!isMobile && (
-            <p className="text-gray-400">
+            <p className="text-gray-600">
               Manage system users and their permissions
             </p>
           )}
@@ -242,7 +242,7 @@ export const UserManagement: React.FC = () => {
             placeholder={isMobile ? "Search users..." : "Search users..."}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className={`w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 ${
+            className={`w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-brand-secondary-400 ${
               isMobile ? 'min-h-[44px]' : ''
             }`}
           />
@@ -253,7 +253,7 @@ export const UserManagement: React.FC = () => {
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className={`bg-gray-800 border border-gray-700 rounded-lg text-white px-3 py-2 focus:outline-none focus:border-blue-500 ${
+            className={`bg-white border border-gray-300 rounded-lg text-gray-900 px-3 py-2 focus:outline-none focus:border-brand-secondary-400 ${
               isMobile ? 'w-full min-h-[44px]' : ''
             }`}
           >
@@ -271,10 +271,10 @@ export const UserManagement: React.FC = () => {
         /* Mobile: Card-based Layout */
         <div className="space-y-3">
           {filteredUsers.length === 0 ? (
-            <div className="bg-gray-800 rounded-lg p-6 text-center">
+            <div className="bg-white rounded-lg p-6 border border-gray-200 text-center">
               <User className="w-12 h-12 text-gray-400 mx-auto mb-3" />
               <h3 className="text-lg font-medium text-white mb-2">No Users Found</h3>
-              <p className="text-gray-400">No users match your current filters</p>
+              <p className="text-gray-600">No users match your current filters</p>
             </div>
           ) : (
             filteredUsers.map((user) => {
@@ -282,7 +282,7 @@ export const UserManagement: React.FC = () => {
               return (
                 <div
                   key={user.id}
-                  className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden"
+                  className="bg-white rounded-lg border border-gray-200 overflow-hidden"
                 >
                   {/* Card Header - Always Visible */}
                   <div
@@ -320,7 +320,7 @@ export const UserManagement: React.FC = () => {
                             </div>
                           </div>
                           <div className="flex items-center space-x-4 mt-1">
-                            <div className="flex items-center text-xs text-gray-400">
+                            <div className="flex items-center text-xs text-gray-600">
                               <Mail className="w-3 h-3 mr-1" />
                               {user.email}
                             </div>
@@ -334,7 +334,7 @@ export const UserManagement: React.FC = () => {
                             e.stopPropagation();
                             setEditingUser(user);
                           }}
-                          className="p-2 text-blue-400 hover:text-blue-300 hover:bg-gray-700 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                          className="p-2 text-blue-400 hover:text-blue-300 hover:bg-gray-100 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
                           title="Edit user"
                         >
                           <Edit className="w-4 h-4" />
@@ -346,7 +346,7 @@ export const UserManagement: React.FC = () => {
                               handleDeleteUser(user.id);
                             }
                           }}
-                          className={`p-2 hover:bg-gray-700 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center ${
+                          className={`p-2 hover:bg-gray-100 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center ${
                             user.role === "admin"
                               ? "text-gray-600 cursor-not-allowed"
                               : "text-red-400 hover:text-red-300 cursor-pointer"
@@ -373,7 +373,7 @@ export const UserManagement: React.FC = () => {
                           <p className="text-xs text-gray-400 mb-1">Last Login</p>
                           <div className="flex items-center">
                             <Clock className="w-3 h-3 text-gray-400 mr-1" />
-                            <p className="text-sm text-white">
+                            <p className="text-sm text-gray-900">
                               {user.lastLogin
                                 ? new Date(user.lastLogin).toLocaleDateString()
                                 : "Never"}
@@ -382,7 +382,7 @@ export const UserManagement: React.FC = () => {
                         </div>
                         <div>
                           <p className="text-xs text-gray-400 mb-1">Created</p>
-                          <p className="text-sm text-white">
+                          <p className="text-sm text-gray-900">
                             {new Date(user.createdAt).toLocaleDateString()}
                           </p>
                         </div>
@@ -392,7 +392,7 @@ export const UserManagement: React.FC = () => {
                             {getDefaultPermissions(user.role).map((permission, index) => (
                               <span
                                 key={index}
-                                className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-gray-700 text-gray-300"
+                                className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-gray-200 text-gray-700"
                               >
                                 {permission}
                               </span>
@@ -409,42 +409,42 @@ export const UserManagement: React.FC = () => {
         </div>
       ) : (
         /* Desktop: Table Layout */
-        <div className="bg-gray-800 rounded-lg overflow-hidden">
+        <div className="bg-white rounded-lg overflow-hidden border border-gray-200 shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-700">
+              <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     User
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Role
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Last Login
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Created
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
+              <tbody className="divide-y divide-gray-200 bg-white">
                 {filteredUsers.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-700">
+                  <tr key={user.id} className="hover:bg-gray-50 border-b border-gray-200">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <User className="w-8 h-8 text-blue-400 mr-3" />
                         <div>
-                          <div className="text-sm font-medium text-white">
+                          <div className="text-sm font-medium text-gray-900">
                             {user.firstName} {user.lastName}
                           </div>
-                          <div className="text-sm text-gray-400">
+                          <div className="text-sm text-gray-600">
                             {user.email}
                           </div>
                           <div className="text-xs text-gray-500">
@@ -476,14 +476,14 @@ export const UserManagement: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <Clock className="w-4 h-4 text-gray-400 mr-2" />
-                        <span className="text-sm text-white">
+                        <span className="text-sm text-gray-900">
                           {user.lastLogin
                             ? new Date(user.lastLogin).toLocaleDateString()
                             : "Never"}
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {new Date(user.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -519,15 +519,15 @@ export const UserManagement: React.FC = () => {
       {/* Add User Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-semibold text-white mb-4">
+          <div className="bg-white rounded-lg p-6 border border-gray-200 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Add New User
             </h3>
 
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     First Name
                   </label>
                   <input
@@ -536,11 +536,11 @@ export const UserManagement: React.FC = () => {
                     onChange={(e) =>
                       setNewUser({ ...newUser, firstName: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Last Name
                   </label>
                   <input
@@ -549,13 +549,13 @@ export const UserManagement: React.FC = () => {
                     onChange={(e) =>
                       setNewUser({ ...newUser, lastName: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Username
                 </label>
                 <input
@@ -564,12 +564,12 @@ export const UserManagement: React.FC = () => {
                   onChange={(e) =>
                     setNewUser({ ...newUser, username: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Email
                 </label>
                 <input
@@ -578,12 +578,12 @@ export const UserManagement: React.FC = () => {
                   onChange={(e) =>
                     setNewUser({ ...newUser, email: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Role
                 </label>
                 <select
@@ -594,7 +594,7 @@ export const UserManagement: React.FC = () => {
                       role: e.target.value as UserType["role"],
                     })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                 >
                   <option value="viewer">Viewer</option>
                   <option value="operator">Operator</option>
@@ -604,7 +604,7 @@ export const UserManagement: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Password
                 </label>
                 <input
@@ -613,12 +613,12 @@ export const UserManagement: React.FC = () => {
                   onChange={(e) =>
                     setNewUser({ ...newUser, password: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Confirm Password
                 </label>
                 <input
@@ -627,7 +627,7 @@ export const UserManagement: React.FC = () => {
                   onChange={(e) =>
                     setNewUser({ ...newUser, confirmPassword: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                 />
               </div>
             </div>
@@ -641,7 +641,7 @@ export const UserManagement: React.FC = () => {
               </button>
               <button
                 onClick={handleAddUser}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white rounded-lg transition-colors"
               >
                 Add User
               </button>
@@ -653,15 +653,15 @@ export const UserManagement: React.FC = () => {
       {/* Edit User Modal */}
       {editingUser && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-semibold text-white mb-4">
+          <div className="bg-white rounded-lg p-6 border border-gray-200 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Edit User: {editingUser.firstName} {editingUser.lastName}
             </h3>
 
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     First Name *
                   </label>
                   <input
@@ -670,12 +670,12 @@ export const UserManagement: React.FC = () => {
                     onChange={(e) =>
                       setEditingUser({ ...editingUser, firstName: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Last Name *
                   </label>
                   <input
@@ -684,14 +684,14 @@ export const UserManagement: React.FC = () => {
                     onChange={(e) =>
                       setEditingUser({ ...editingUser, lastName: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Username *
                 </label>
                 <input
@@ -700,13 +700,13 @@ export const UserManagement: React.FC = () => {
                   onChange={(e) =>
                     setEditingUser({ ...editingUser, username: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Email *
                 </label>
                 <input
@@ -715,13 +715,13 @@ export const UserManagement: React.FC = () => {
                   onChange={(e) =>
                     setEditingUser({ ...editingUser, email: e.target.value })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Role
                 </label>
                 <select
@@ -732,7 +732,7 @@ export const UserManagement: React.FC = () => {
                       role: e.target.value as UserType["role"],
                     })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                 >
                   <option value="viewer">Viewer</option>
                   <option value="operator">Operator</option>
@@ -742,7 +742,7 @@ export const UserManagement: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Status
                 </label>
                 <select
@@ -753,7 +753,7 @@ export const UserManagement: React.FC = () => {
                       status: e.target.value as UserType["status"],
                     })
                   }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-brand-secondary-400"
                 >
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
@@ -761,9 +761,9 @@ export const UserManagement: React.FC = () => {
                 </select>
               </div>
 
-              <div className="bg-gray-700 p-3 rounded-lg">
-                <h4 className="text-sm font-medium text-gray-300 mb-2">Permissions</h4>
-                <div className="text-xs text-gray-400">
+              <div className="bg-gray-100 p-3 rounded-lg">
+                <h4 className="text-sm font-medium text-gray-700 mb-2">Permissions</h4>
+                <div className="text-xs text-gray-600">
                   {getDefaultPermissions(editingUser.role).join(", ")}
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
@@ -781,7 +781,7 @@ export const UserManagement: React.FC = () => {
               </button>
               <button
                 onClick={handleUpdateUser}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white rounded-lg transition-colors"
               >
                 Update User
               </button>
