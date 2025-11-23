@@ -245,7 +245,7 @@ export const MaintenancePanel: React.FC = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className={`flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors ${
+          className={`flex items-center space-x-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white px-4 py-2 rounded-lg transition-colors ${
             isMobile ? 'w-full justify-center min-h-[44px]' : ''
           }`}
         >

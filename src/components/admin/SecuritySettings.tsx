@@ -129,7 +129,7 @@ export const SecuritySettings: React.FC = () => {
           className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
             saved 
               ? 'bg-green-600 text-white' 
-              : 'bg-blue-600 hover:bg-blue-700 text-white'
+              : 'bg-brand-accent-600 hover:bg-brand-accent-700 text-white'
           } ${isMobile ? 'w-full justify-center min-h-[44px]' : ''}`}
         >
           <Save className="w-4 h-4" />
@@ -157,7 +157,7 @@ export const SecuritySettings: React.FC = () => {
                       e.stopPropagation();
                       setShowNewKeyModal(true);
                     }}
-                    className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                    className="p-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
                     title="Generate New API Key"
                   >
                     <Plus className="w-4 h-4" />
@@ -292,7 +292,7 @@ export const SecuritySettings: React.FC = () => {
                         onChange={(e) => setSettings({...settings, twoFactorAuth: e.target.checked})}
                         className="sr-only peer"
                       />
-                      <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-accent-600"></div>
                     </label>
                   </div>
                 </div>
@@ -362,7 +362,7 @@ export const SecuritySettings: React.FC = () => {
                             })}
                             className="sr-only peer"
                           />
-                          <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                          <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-accent-600"></div>
                         </label>
                       </div>
                     ))}
@@ -384,7 +384,7 @@ export const SecuritySettings: React.FC = () => {
               </h3>
               <button
                 onClick={() => setShowNewKeyModal(true)}
-                className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+                className="flex items-center space-x-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 <span>Generate New API Key</span>
@@ -493,7 +493,7 @@ export const SecuritySettings: React.FC = () => {
                     onChange={(e) => setSettings({...settings, twoFactorAuth: e.target.checked})}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-accent-600"></div>
                 </label>
               </div>
             </div>
@@ -544,7 +544,7 @@ export const SecuritySettings: React.FC = () => {
                         })}
                         className="sr-only peer"
                       />
-                      <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-accent-600"></div>
                     </label>
                   </div>
                 ))}
@@ -596,7 +596,7 @@ export const SecuritySettings: React.FC = () => {
               <button
                 onClick={generateApiKey}
                 disabled={!newKeyName.trim()}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-brand-accent-600 hover:bg-brand-accent-700 disabled:bg-gray-600 text-white rounded-lg transition-colors"
               >
                 Generate Key
               </button>
