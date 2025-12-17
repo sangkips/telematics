@@ -46,7 +46,7 @@ export const VehicleListTest: React.FC = () => {
           
           <button
             onClick={handleTestUpdate}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors"
+            className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-lg text-sm transition-colors"
           >
             Test Update
           </button>

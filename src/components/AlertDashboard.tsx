@@ -122,7 +122,7 @@ export const AlertDashboard: React.FC = () => {
         <div className={`flex gap-2 ${isMobile ? 'w-full' : ''}`}>
           <button
             onClick={() => setShowCreateModal(true)}
-            className={`flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors ${isMobile ? 'flex-1 justify-center min-h-[44px]' : ''
+            className={`flex items-center space-x-2 bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition-colors ${isMobile ? 'flex-1 justify-center min-h-[44px]' : ''
               }`}
           >
             <AlertTriangle className="w-4 h-4" />

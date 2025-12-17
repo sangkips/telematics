@@ -181,7 +181,7 @@ export const VehicleManagement: React.FC = () => {
         <p className="text-red-400 mb-4">Failed to load vehicles</p>
         <button
           onClick={refetch}
-          className="px-4 py-2 bg-brand-accent-600 text-white rounded-lg hover:bg-brand-accent-700"
+          className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800"
         >
           Retry
         </button>
@@ -246,7 +246,7 @@ export const VehicleManagement: React.FC = () => {
 
           <button
             onClick={() => setShowAddModal(true)}
-            className={`flex items-center space-x-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white px-4 py-2 rounded-lg transition-colors ${isMobile ? 'w-full justify-center min-h-[44px]' : ''
+            className={`flex items-center space-x-2 bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition-colors ${isMobile ? 'w-full justify-center min-h-[44px]' : ''
               }`}
           >
             <Plus className="w-4 h-4" />
@@ -635,7 +635,7 @@ export const VehicleManagement: React.FC = () => {
               </button>
               <button
                 onClick={handleAddVehicle}
-                className="px-4 py-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors"
               >
                 Add Vehicle
               </button>
@@ -884,7 +884,7 @@ export const VehicleManagement: React.FC = () => {
               </button>
               <button
                 onClick={handleUpdateVehicle}
-                className="px-4 py-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors"
               >
                 Update Vehicle
               </button>

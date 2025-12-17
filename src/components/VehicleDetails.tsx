@@ -580,7 +580,7 @@ export const VehicleDetails: React.FC<VehicleDetailsProps> = ({
               {!isEditMode ? (
                 <button
                   onClick={enterEditMode}
-                  className="flex items-center px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition-colors"
+                  className="flex items-center px-3 py-1 bg-gray-900 hover:bg-gray-800 text-white rounded text-sm transition-colors"
                 >
                   <Edit3 className="w-4 h-4 mr-1" />
                   Edit
@@ -599,7 +599,7 @@ export const VehicleDetails: React.FC<VehicleDetailsProps> = ({
                   <button
                     onClick={handleSave}
                     disabled={isSubmitting}
-                    className="flex items-center px-3 py-1 bg-green-600 hover:bg-green-700 disabled:bg-green-800 text-white rounded text-sm transition-colors"
+                    className="flex items-center px-3 py-1 bg-gray-900 hover:bg-gray-800 disabled:bg-green-800 text-white rounded text-sm transition-colors"
                   >
                     <Save className="w-4 h-4 mr-1" />
                     {isSubmitting ? 'Saving...' : 'Save'}

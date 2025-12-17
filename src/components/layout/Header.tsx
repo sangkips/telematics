@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Truck, Bell, User, LogOut, Settings, Shield, Menu, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useResponsive } from "../../hooks/useResponsive";
 import { useResponsiveContext } from "../../contexts/ResponsiveContext";
@@ -18,8 +19,9 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAdminPanel,
 }) => {
   const { user, logout, hasPermission, hasAnyPermission } = useAuth();
-  const { isMobile, isTablet } = useResponsive();
+  const { isMobile } = useResponsive();
   const { menuOpen, setMenuOpen } = useResponsiveContext();
+  const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
@@ -52,7 +54,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="bg-white border-b border-gray-200 p-4 relative z-40">
+      <header className="bg-gray-900 border-b border-gray-700 p-4 sticky top-0 z-40">
         <div className="flex items-center justify-between">
           {/* Mobile Layout */}
           {isMobile ? (
@@ -60,29 +62,33 @@ export const Header: React.FC<HeaderProps> = ({
               {/* Left side - Hamburger menu */}
               <button
                 onClick={toggleMobileMenu}
-                className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                className="p-2 rounded-lg hover:bg-gray-800 transition-colors"
                 aria-label="Toggle menu"
               >
                 {menuOpen ? (
-                  <X className="w-6 h-6 text-gray-900" />
+                  <X className="w-6 h-6 text-white" />
                 ) : (
-                  <Menu className="w-6 h-6 text-gray-900" />
+                  <Menu className="w-6 h-6 text-white" />
                 )}
               </button>
 
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center">
-                  <Truck className="w-5 h-5 text-white" />
+              <button
+                onClick={() => navigate("/")}
+                className="flex items-center hover:opacity-80 transition-opacity"
+                title="Go to Homepage"
+              >
+                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
+                  <Truck className="w-5 h-5 text-gray-900" />
                 </div>
-                <span className="ml-2 text-lg font-bold text-gray-900">Nura</span>
-              </div>
+                <span className="ml-2 text-lg font-bold text-white">Nura</span>
+              </button>
 
               {/* Right side - Notifications */}
               <button
                 onClick={onToggleNotifications}
                 className={`relative p-2 rounded-lg transition-colors ${notifications
-                  ? "bg-gray-900 text-white"
-                  : "bg-gray-100 text-gray-600"
+                  ? "bg-white text-gray-900"
+                  : "bg-gray-800 text-gray-300"
                   }`}
               >
                 <Bell className="w-5 h-5" />
@@ -95,24 +101,28 @@ export const Header: React.FC<HeaderProps> = ({
             </>
           ) : (
             <>
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center">
-                  <Truck className="w-5 h-5 text-white" />
+              <button
+                onClick={() => navigate("/")}
+                className="flex items-center space-x-4 hover:opacity-80 transition-opacity"
+                title="Go to Homepage"
+              >
+                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
+                  <Truck className="w-5 h-5 text-gray-900" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">Nura Fleet System</h1>
-                  <p className="text-gray-600">
+                  <h1 className="text-2xl font-bold text-white">Nura Fleet System</h1>
+                  <p className="text-gray-400">
                     Real-time vehicle monitoring & fuel tracking
                   </p>
                 </div>
-              </div>
+              </button>
 
               <div className="flex items-center space-x-4">
                 <button
                   onClick={onToggleNotifications}
                   className={`relative p-2 rounded-lg transition-colors ${notifications
-                    ? "bg-gray-900 text-white"
-                    : "bg-gray-100 text-gray-600"
+                    ? "bg-white text-gray-900"
+                    : "bg-gray-800 text-gray-300"
                     }`}
                 >
                   <Bell className="w-5 h-5" />
@@ -124,60 +134,16 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
 
                 {/* Admin Panel Button - Only for Admin/Manager */}
-                {(hasPermission("all") ||
-                  hasAnyPermission([
-                    "view_system_settings",
-                    "create_users",
-                    "create_vehicles",
-                    "manage_api_keys",
-                  ])) &&
+                {(user?.role === "admin" || user?.role === "manager") &&
                   onOpenAdminPanel && (
                     <button
                       onClick={onOpenAdminPanel}
-                      className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                      title="Admin Panel"
+                      className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors text-white font-medium text-sm"
                     >
-                      <Settings className="w-5 h-5 text-gray-600" />
+                      <Settings className="w-4 h-4" />
+                      <span>Admin</span>
                     </button>
                   )}
-
-                {/* User Profile */}
-                <div className="flex items-center space-x-3">
-                  <div className="text-right">
-                    <div className="text-gray-900 text-sm font-medium">
-                      {user?.firstName} {user?.lastName}
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getRoleColor(
-                          user?.role || ""
-                        )}`}
-                      >
-                        <Shield className="w-3 h-3 mr-1" />
-                        {user?.role}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
-                      <User className="w-4 h-4 text-white" />
-                    </div>
-
-                    <button
-                      onClick={handleLogout}
-                      disabled={isLoggingOut}
-                      className="p-2 text-gray-600 hover:text-red-500 transition-colors"
-                      title="Logout"
-                    >
-                      {isLoggingOut ? (
-                        <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-                      ) : (
-                        <LogOut className="w-4 h-4" />
-                      )}
-                    </button>
-                  </div>
-                </div>
               </div>
             </>
           )}
@@ -197,37 +163,37 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Slide-out Drawer */}
           <div
-            className={`fixed top-0 left-0 h-full w-80 bg-white border-r border-gray-200 z-40 transform transition-transform duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "-translate-x-full"
+            className={`fixed top-0 left-0 h-full w-80 bg-gray-900 z-40 transform transition-transform duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "-translate-x-full"
               }`}
           >
             <div className="p-6">
               {/* Header */}
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center">
-                    <Truck className="w-5 h-5 text-white" />
+                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
+                    <Truck className="w-5 h-5 text-gray-900" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900">Nura Fleet</h2>
-                    <p className="text-gray-600 text-sm">Fleet Management</p>
+                    <h2 className="text-xl font-bold text-white">Nura Fleet</h2>
+                    <p className="text-gray-400 text-sm">Fleet Management</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setMenuOpen(false)}
-                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="p-2 rounded-lg hover:bg-gray-800 transition-colors"
                 >
-                  <X className="w-5 h-5 text-gray-600" />
+                  <X className="w-5 h-5 text-gray-300" />
                 </button>
               </div>
 
               {/* User Profile Section */}
-              <div className="bg-gray-50 rounded-lg p-4 mb-6 border border-gray-200">
+              <div className="bg-gray-800 rounded-lg p-4 mb-6">
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center">
-                    <User className="w-6 h-6 text-white" />
+                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                    <User className="w-6 h-6 text-gray-900" />
                   </div>
                   <div className="flex-1">
-                    <div className="text-gray-900 font-medium">
+                    <div className="text-white font-medium">
                       {user?.firstName} {user?.lastName}
                     </div>
                     <div className="flex items-center space-x-2 mt-1">
@@ -260,10 +226,10 @@ export const Header: React.FC<HeaderProps> = ({
                         onOpenAdminPanel();
                         setMenuOpen(false);
                       }}
-                      className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors text-left"
+                      className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors text-left"
                     >
-                      <Settings className="w-5 h-5 text-gray-600" />
-                      <span className="text-gray-900">Admin Panel</span>
+                      <Settings className="w-5 h-5 text-gray-300" />
+                      <span className="text-white">Admin Panel</span>
                     </button>
                   )}
 
@@ -274,14 +240,14 @@ export const Header: React.FC<HeaderProps> = ({
                     setMenuOpen(false);
                   }}
                   disabled={isLoggingOut}
-                  className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors text-left"
+                  className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors text-left"
                 >
                   {isLoggingOut ? (
                     <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
                   ) : (
-                    <LogOut className="w-5 h-5 text-red-500" />
+                    <LogOut className="w-5 h-5 text-red-400" />
                   )}
-                  <span className="text-gray-900">Logout</span>
+                  <span className="text-white">Logout</span>
                 </button>
               </div>
             </div>

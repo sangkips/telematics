@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
-import { Wifi, WifiOff, RefreshCw, XCircle } from "lucide-react";
+import React, { useRef, useState, useMemo } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { Search, XCircle, Filter } from "lucide-react";
 import { Vehicle } from "../types";
 import { VehicleCard } from "./VehicleCard";
 import { useResponsive } from "../hooks/useResponsive";
@@ -15,11 +16,15 @@ interface ResponsiveVehicleGridProps {
 export const ResponsiveVehicleGrid: React.FC<ResponsiveVehicleGridProps> = ({
   vehicles: propVehicles,
   onVehicleSelect,
-  // onVehicleUpdate,
 }) => {
   const { isMobile, isTablet } = useResponsive();
   const { hasAnyPermission } = useAuth();
-  const { vehicles: contextVehicles, connectionState, loading, error, refreshVehicles } = useVehicleUpdate();
+  const { vehicles: contextVehicles, error, refreshVehicles } = useVehicleUpdate();
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  // Search and filter state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const canManageVehicles = hasAnyPermission([
     "create_vehicles",
@@ -29,50 +34,100 @@ export const ResponsiveVehicleGrid: React.FC<ResponsiveVehicleGridProps> = ({
   ]);
 
   // Use context vehicles if available, otherwise fall back to props
-  const vehicles = Object.keys(contextVehicles).length > 0 
-    ? Object.values(contextVehicles) 
+  const allVehicles = Object.keys(contextVehicles).length > 0
+    ? Object.values(contextVehicles)
     : propVehicles;
 
-  // Subscribe to real-time updates on mount
-  useEffect(() => {
-    // Context will handle subscription automatically
-  }, []);
+  // Filter vehicles based on search and status
+  const filteredVehicles = useMemo(() => {
+    return allVehicles.filter((vehicle) => {
+      const matchesSearch = searchQuery === "" ||
+        vehicle.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        vehicle.plateNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        vehicle.driver.toLowerCase().includes(searchQuery.toLowerCase());
 
-  // Determine grid columns based on screen size
-  const getGridColumns = () => {
-    if (isMobile) return "grid-cols-1";
-    if (isTablet) return "grid-cols-2";
-    return "grid-cols-3 xl:grid-cols-4";
+      const matchesStatus = statusFilter === "all" || vehicle.status === statusFilter;
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [allVehicles, searchQuery, statusFilter]);
+
+  // Determine columns based on screen size
+  const columns = isMobile ? 1 : isTablet ? 2 : 3;
+
+  // Calculate rows for virtual grid
+  const rowCount = Math.ceil(filteredVehicles.length / columns);
+
+  // Card height estimation (adjust based on your card design)
+  const cardHeight = isMobile ? 200 : 280;
+  const gap = 16;
+
+  // Virtual row renderer
+  const rowVirtualizer = useVirtualizer({
+    count: rowCount,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => cardHeight + gap,
+    overscan: 3, // Render 3 extra rows above/below viewport
+  });
+
+  // Get vehicles for a specific row
+  const getVehiclesForRow = (rowIndex: number): Vehicle[] => {
+    const startIndex = rowIndex * columns;
+    return filteredVehicles.slice(startIndex, startIndex + columns);
   };
-
-  // Handle vehicle edit
-  // const handleEditVehicle = (vehicle: Vehicle) => {
-  //   if (hasPermission('update_vehicles') && onVehicleUpdate) {
-  //     onVehicleUpdate(vehicle);
-  //   }
-  // };
-
-  // Handle vehicle delete
-  // const handleDeleteVehicle = (vehicle: Vehicle) => {
-  //   if (hasPermission('delete_vehicles')) {
-  //     // In a real app, this would show a confirmation dialog
-  //     console.log('Delete vehicle:', vehicle.id);
-  //   }
-  // };
 
   return (
     <div className="space-y-4">
+      {/* Search and Filter Bar */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        {/* Search Input */}
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search by name, plate, or driver..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-10 py-2.5 bg-white border border-gray-200 rounded-lg text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              <XCircle className="w-5 h-5" />
+            </button>
+          )}
+        </div>
+
+        {/* Status Filter */}
+        <div className="relative">
+          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="pl-9 pr-8 py-2.5 bg-white border border-gray-200 rounded-lg text-gray-900 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all appearance-none cursor-pointer"
+          >
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="idle">Idle</option>
+            <option value="maintenance">Maintenance</option>
+            <option value="offline">Offline</option>
+          </select>
+        </div>
+      </div>
+
       {/* Error Display */}
       {error && (
-        <div className="bg-red-900 bg-opacity-50 border border-red-700 rounded-lg p-4">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <XCircle className="w-5 h-5 text-red-400" />
-              <span className="text-red-300">Failed to load vehicles: {error}</span>
+              <XCircle className="w-5 h-5 text-red-500" />
+              <span className="text-red-600">Failed to load vehicles: {error}</span>
             </div>
             <button
               onClick={refreshVehicles}
-              className="text-red-300 hover:text-red-200 underline text-sm"
+              className="text-red-600 hover:text-red-700 underline text-sm"
             >
               Retry
             </button>
@@ -82,100 +137,102 @@ export const ResponsiveVehicleGrid: React.FC<ResponsiveVehicleGridProps> = ({
 
       {/* Grid Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <h2 className="text-xl font-semibold text-white">
-            Fleet Overview ({vehicles.length} vehicles)
-          </h2>
-          
-          {/* Connection Status Indicator */}
-          {/* <div className="flex items-center space-x-1">
-            {connectionState.status === 'connected' && !connectionState.fallbackMode ? (
-              <div className="flex items-center space-x-1 text-green-400" title="Real-time connected">
-                <Wifi className="w-4 h-4" />
-                {!isMobile && <span className="text-xs">Live</span>}
-              </div>
-            ) : connectionState.status === 'connecting' ? (
-              <div className="flex items-center space-x-1 text-yellow-400" title="Connecting...">
-                <RefreshCw className="w-4 h-4 animate-spin" />
-                {!isMobile && <span className="text-xs">Connecting</span>}
-              </div>
-            ) : connectionState.fallbackMode ? (
-              <div className="flex items-center space-x-1 text-orange-400" title="Polling mode">
-                <RefreshCw className="w-4 h-4" />
-                {!isMobile && <span className="text-xs">Polling</span>}
-              </div>
-            ) : (
-              <div className="flex items-center space-x-1 text-red-400" title="Disconnected">
-                <WifiOff className="w-4 h-4" />
-                {!isMobile && <span className="text-xs">Offline</span>}
-              </div>
-            )}
-          </div> */}
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          {/* Manual Refresh Button */}
-          {/* {(connectionState.fallbackMode || connectionState.status === 'disconnected') && (
-            <button
-              onClick={refreshVehicles}
-              disabled={loading}
-              className="flex items-center space-x-1 px-2 py-1 text-xs bg-gray-700 hover:bg-gray-600 text-gray-300 rounded transition-colors disabled:opacity-50"
-              title="Refresh vehicles"
-            >
-              <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
-              {!isMobile && <span>Refresh</span>}
-            </button>
-          )} */}
-          
-          {isMobile && (
-            <div className="text-sm text-gray-400">Tap cards for details</div>
-          )}
-        </div>
+        <h2 className="text-xl font-semibold text-gray-900">
+          Fleet Overview ({filteredVehicles.length} of {allVehicles.length} vehicles)
+        </h2>
+
+        {isMobile && (
+          <div className="text-sm text-gray-500">Tap cards for details</div>
+        )}
       </div>
 
-      {/* Vehicle Grid */}
+      {/* Virtual Scrolling Container */}
       <div
-        className={`grid ${getGridColumns()} gap-4 ${
-          isMobile ? "gap-y-6" : "gap-6"
-        }`}
+        ref={parentRef}
+        className="overflow-auto rounded-lg"
+        style={{ height: isMobile ? "calc(100vh - 350px)" : "calc(100vh - 320px)" }}
       >
-        {vehicles.map((vehicle) => (
-          <div
-            key={vehicle.id}
-            className={`
-              ${isMobile ? "touch-manipulation" : ""}
-              transition-transform duration-200
-              ${isMobile ? "active:scale-95" : "hover:scale-105"}
-            `}
-          >
-            <VehicleCard
-              vehicle={vehicle}
-              onClick={() => onVehicleSelect?.(vehicle)}
-              // onEdit={hasPermission('update_vehicles') ? handleEditVehicle : undefined}
-              // onDelete={hasPermission('delete_vehicles') ? handleDeleteVehicle : undefined}
-            />
-          </div>
-        ))}
+        <div
+          style={{
+            height: `${rowVirtualizer.getTotalSize()}px`,
+            width: "100%",
+            position: "relative",
+          }}
+        >
+          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+            const vehicles = getVehiclesForRow(virtualRow.index);
+
+            return (
+              <div
+                key={virtualRow.key}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: `${virtualRow.size}px`,
+                  transform: `translateY(${virtualRow.start}px)`,
+                }}
+              >
+                <div
+                  className={`grid gap-4 ${isMobile ? "grid-cols-1" : isTablet ? "grid-cols-2" : "grid-cols-3 xl:grid-cols-4"
+                    }`}
+                  style={{ paddingBottom: `${gap}px` }}
+                >
+                  {vehicles.map((vehicle) => (
+                    <div
+                      key={vehicle.id}
+                      className={`
+                        ${isMobile ? "touch-manipulation" : ""}
+                        transition-transform duration-200
+                        ${isMobile ? "active:scale-95" : "hover:scale-[1.02]"}
+                      `}
+                    >
+                      <VehicleCard
+                        vehicle={vehicle}
+                        onClick={() => onVehicleSelect?.(vehicle)}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Empty state */}
-      {vehicles.length === 0 && (
+      {filteredVehicles.length === 0 && (
         <div className="text-center py-12">
-          <div className="text-gray-400 text-lg mb-2">No vehicles found</div>
-          <div className="text-gray-500 text-sm">
-            {canManageVehicles
-              ? "Add your first vehicle to get started"
-              : "Contact your administrator to add vehicles"}
-          </div>
-        </div>
-      )}
-
-      {/* Mobile-specific loading indicator placeholder */}
-      {isMobile && vehicles.length > 0 && (
-        <div className="text-center py-4">
-          <div className="text-gray-500 text-sm">Pull down to refresh</div>
+          {allVehicles.length === 0 ? (
+            <>
+              <div className="text-gray-500 text-lg mb-2">No vehicles found</div>
+              <div className="text-gray-400 text-sm">
+                {canManageVehicles
+                  ? "Add your first vehicle to get started"
+                  : "Contact your administrator to add vehicles"}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="text-gray-500 text-lg mb-2">No matching vehicles</div>
+              <div className="text-gray-400 text-sm">
+                Try adjusting your search or filter criteria
+              </div>
+              <button
+                onClick={() => {
+                  setSearchQuery("");
+                  setStatusFilter("all");
+                }}
+                className="mt-4 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
+              >
+                Clear Filters
+              </button>
+            </>
+          )}
         </div>
       )}
     </div>
   );
 };
+

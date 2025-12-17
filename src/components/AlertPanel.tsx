@@ -167,7 +167,7 @@ const SwipeableAlertCard: React.FC<SwipeableAlertCardProps> = ({
             {!alert.resolved && onResolve && (
               <button
                 onClick={() => onResolve(alert.id)}
-                className="p-2 bg-green-600 rounded-full text-white hover:bg-green-700 transition-colors"
+                className="p-2 bg-gray-900 rounded-full text-white hover:bg-gray-800 transition-colors"
                 title="Resolve"
               >
                 <Check className="w-4 h-4" />
@@ -210,7 +210,7 @@ const SwipeableAlertCard: React.FC<SwipeableAlertCardProps> = ({
                   onClick={handleSelectClick}
                   className={`mt-1 w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
                     isSelected 
-                      ? 'bg-blue-600 border-blue-600' 
+                      ? 'bg-gray-900 border-gray-900' 
                       : 'border-gray-400 hover:border-blue-400'
                   }`}
                 >
@@ -269,7 +269,7 @@ const SwipeableAlertCard: React.FC<SwipeableAlertCardProps> = ({
                   onClick={handleSelectClick}
                   className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
                     isSelected 
-                      ? 'bg-blue-600 border-blue-600' 
+                      ? 'bg-gray-900 border-gray-900' 
                       : 'border-gray-400 hover:border-blue-400'
                   }`}
                 >
@@ -465,7 +465,7 @@ export const AlertPanel: React.FC<AlertPanelProps> = ({
             {onResolveAlert && (
               <button
                 onClick={handleBatchResolve}
-                className={`px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm ${
+                className={`px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm ${
                   isMobile ? 'min-h-[44px]' : ''
                 }`}
               >

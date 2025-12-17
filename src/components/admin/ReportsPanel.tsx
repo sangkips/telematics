@@ -149,7 +149,7 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
           </button>
           <button
             onClick={() => exportReport("excel")}
-            className={`flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors ${
+            className={`flex items-center space-x-2 bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition-colors ${
               isMobile ? 'justify-center min-h-[44px]' : ''
             }`}
           >
@@ -158,7 +158,7 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
           </button>
           <button
             onClick={() => exportReport("csv")}
-            className={`flex items-center space-x-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white px-4 py-2 rounded-lg transition-colors ${
+            className={`flex items-center space-x-2 bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition-colors ${
               isMobile ? 'justify-center min-h-[44px]' : ''
             }`}
           >
@@ -333,7 +333,7 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
                                 ? "bg-orange-500"
                                 : alert.severity === "medium"
                                 ? "bg-amber-500"
-                                : "bg-blue-500"
+                                : "bg-gray-900"
                             }`}
                           ></div>
                           <div className="flex-1 min-w-0">
@@ -435,7 +435,7 @@ export const ReportsPanel: React.FC<ReportsPanelProps> = ({ vehicles: propVehicl
                           ? "bg-orange-500"
                           : alert.severity === "medium"
                           ? "bg-amber-500"
-                          : "bg-blue-500"
+                          : "bg-gray-900"
                       }`}
                     ></div>
                     <div className="flex-1">

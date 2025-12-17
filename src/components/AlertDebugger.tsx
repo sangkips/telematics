@@ -117,7 +117,7 @@ export const AlertDebugger: React.FC = () => {
             <button
               onClick={testApiConnection}
               disabled={debugInfo.loading}
-              className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
+              className="flex items-center space-x-2 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
             >
               <RefreshCw className={`w-4 h-4 ${debugInfo.loading ? 'animate-spin' : ''}`} />
               <span>Test Connection</span>

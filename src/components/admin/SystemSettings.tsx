@@ -41,8 +41,8 @@ export const SystemSettings: React.FC = () => {
           onClick={handleSave}
           className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
             saved 
-              ? 'bg-green-600 text-white' 
-              : 'bg-brand-accent-600 hover:bg-brand-accent-700 text-white'
+              ? 'bg-gray-900 text-white' 
+              : 'bg-gray-900 hover:bg-gray-800 text-white'
           } ${isMobile ? 'w-full justify-center min-h-[44px]' : ''}`}
         >
           <Save className="w-4 h-4" />

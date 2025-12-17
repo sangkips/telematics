@@ -158,7 +158,7 @@ export const WebSocketIntegrationTest: React.FC = () => {
             <button
               onClick={runIntegrationTest}
               disabled={isRunningTest || Object.keys(vehicles).length === 0}
-              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white rounded-lg transition-colors"
+              className="flex items-center space-x-2 px-4 py-2 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-600 text-white rounded-lg transition-colors"
             >
               {isRunningTest ? (
                 <RefreshCw className="w-4 h-4 animate-spin" />

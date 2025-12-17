@@ -192,7 +192,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
           {(hasPendingUpdates || isUpdating || hasFailedUpdates) && (
             <div className="absolute top-2 left-2 z-10">
               {hasPendingUpdates && !hasFailedUpdates ? (
-                <div className="flex items-center space-x-1 bg-blue-600 text-white px-2 py-1 rounded-full text-xs">
+                <div className="flex items-center space-x-1 bg-gray-900 text-white px-2 py-1 rounded-full text-xs">
                   <Loader2 className="w-3 h-3 animate-spin" />
                   <span>Updating</span>
                 </div>
@@ -385,7 +385,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
             {onEdit && (
               <button
                 onClick={handleEdit}
-                className="h-full px-4 bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center transition-colors touch-target"
+                className="h-full px-4 bg-gray-900 hover:bg-gray-800 text-white flex items-center justify-center transition-colors touch-target"
                 style={{ minWidth: '60px' }}
               >
                 <Edit className="w-5 h-5" />
@@ -421,7 +421,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
       {(hasPendingUpdates || isUpdating || hasFailedUpdates) && (
         <div className="absolute top-4 left-4 z-10">
           {hasPendingUpdates && !hasFailedUpdates ? (
-            <div className="flex items-center space-x-1 bg-blue-600 text-white px-2 py-1 rounded-full text-xs">
+            <div className="flex items-center space-x-1 bg-gray-900 text-white px-2 py-1 rounded-full text-xs">
               <Loader2 className="w-3 h-3 animate-spin" />
               <span>Updating</span>
             </div>

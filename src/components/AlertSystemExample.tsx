@@ -25,7 +25,7 @@ export const AlertSystemExample: React.FC = () => {
               <div className="flex items-center space-x-4">
                 <button
                   onClick={() => setShowCreateModal(true)}
-                  className={`bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors ${
+                  className={`bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition-colors ${
                     isMobile ? 'text-sm' : ''
                   }`}
                 >

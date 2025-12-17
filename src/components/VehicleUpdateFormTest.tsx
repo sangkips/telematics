@@ -176,7 +176,7 @@ export const VehicleUpdateFormTest: React.FC = () => {
           <p className="text-gray-600 mb-4">Form is hidden. Click "Reset Test" to show it again.</p>
           <button
             onClick={() => setShowForm(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800"
           >
             Show Form
           </button>

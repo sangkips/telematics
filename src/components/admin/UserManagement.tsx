@@ -170,7 +170,7 @@ export const UserManagement: React.FC = () => {
         </p>
         <button
           onClick={refetch}
-          className="px-4 py-2 bg-brand-accent-600 text-white rounded-lg hover:bg-brand-accent-700"
+          className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800"
         >
           Retry
         </button>
@@ -224,7 +224,7 @@ export const UserManagement: React.FC = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className={`flex items-center space-x-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white px-4 py-2 rounded-lg transition-colors ${
+          className={`flex items-center space-x-2 bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition-colors ${
             isMobile ? 'w-full justify-center min-h-[44px]' : ''
           }`}
         >
@@ -641,7 +641,7 @@ export const UserManagement: React.FC = () => {
               </button>
               <button
                 onClick={handleAddUser}
-                className="px-4 py-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors"
               >
                 Add User
               </button>
@@ -781,7 +781,7 @@ export const UserManagement: React.FC = () => {
               </button>
               <button
                 onClick={handleUpdateUser}
-                className="px-4 py-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors"
               >
                 Update User
               </button>

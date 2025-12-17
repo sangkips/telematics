@@ -14,6 +14,8 @@ import {
   Menu,
   X,
   AlertTriangle,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { VehicleManagement } from "./VehicleManagement";
 import { UserManagement } from "./UserManagement";
@@ -45,6 +47,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
     "vehicles" | "users" | "maintenance" | "alerts" | "system" | "notifications" | "security" | "reports"
   >("vehicles");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const adminStats = {
     totalUsers: 124,
@@ -119,7 +122,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
       {/* Mobile/Desktop Header */}
-      <div className={`bg-brand-primary-800 border-b border-brand-primary-700 ${isMobile ? 'p-4' : 'p-6'}`}>
+      <div className={`bg-gray-900 border-b border-gray-700 sticky top-0 z-40 ${isMobile ? 'p-4' : 'p-6'}`}>
         <div className="flex items-center justify-between">
           {/* Mobile Layout */}
           {isMobile ? (
@@ -147,7 +150,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
               </div>
 
               <div className="flex items-center space-x-2">
-                <Settings className="w-6 h-6 text-brand-secondary-400" />
+                <Settings className="w-6 h-6 text-white" />
                 <h1 className="text-lg font-bold text-white">Admin</h1>
               </div>
 
@@ -273,7 +276,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       {/* Mobile Slide-out Navigation */}
       {isMobile && (
         <div
-          className={`fixed top-0 left-0 h-full w-80 bg-brand-primary-800 border-r border-brand-primary-700 z-50 transform transition-transform duration-300 ease-in-out ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+          className={`fixed top-0 left-0 h-full w-80 bg-gray-900 border-r border-gray-700 z-50 transform transition-transform duration-300 ease-in-out ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
             }`}
         >
           <div className="p-4">
@@ -295,8 +298,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                     setMobileMenuOpen(false);
                   }}
                   className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors text-left ${activeTab === tab.id
-                    ? "bg-brand-accent-600 text-white"
-                    : "text-gray-300 hover:text-white hover:bg-brand-primary-700"
+                    ? "bg-white text-gray-900"
+                    : "text-gray-300 hover:text-white hover:bg-gray-700"
                     }`}
                 >
                   <tab.icon className="w-5 h-5 flex-shrink-0" />
@@ -314,31 +317,60 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       <div className={isMobile ? 'block' : 'flex'}>
         {/* Desktop Sidebar Navigation */}
         {!isMobile && (
-          <nav className="w-80 bg-brand-primary-800 border-r border-brand-primary-700 min-h-screen">
-            <div className="p-4">
-              <h3 className="text-lg font-semibold text-white mb-4">
-                Administration
-              </h3>
+          <nav className={`bg-gray-900 border-r border-gray-700 min-h-screen flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'w-20' : 'w-80'}`}>
+            <div className="p-4 flex-1">
+              {!sidebarCollapsed && (
+                <h3 className="text-lg font-semibold text-white mb-4">
+                  Administration
+                </h3>
+              )}
               <div className="space-y-2">
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
-                    className={`w-full flex items-start space-x-3 p-4 rounded-lg transition-colors text-left ${activeTab === tab.id
-                      ? "bg-brand-accent-600 text-white"
-                      : "text-gray-300 hover:text-white hover:bg-brand-primary-700"
-                      }`}
+                    className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left group relative ${activeTab === tab.id
+                      ? "bg-white text-gray-900"
+                      : "text-gray-300 hover:text-white hover:bg-gray-700"
+                      } ${sidebarCollapsed ? 'justify-center' : ''}`}
+                    title={sidebarCollapsed ? tab.label : undefined}
                   >
-                    <tab.icon className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <div className="font-medium">{tab.label}</div>
-                      <div className="text-xs opacity-75 mt-1">
-                        {tab.description}
+                    <tab.icon className="w-5 h-5 flex-shrink-0" />
+                    {!sidebarCollapsed && (
+                      <div>
+                        <div className="font-medium">{tab.label}</div>
+                        <div className="text-xs opacity-75 mt-1">
+                          {tab.description}
+                        </div>
                       </div>
-                    </div>
+                    )}
+                    {/* Tooltip for collapsed state */}
+                    {sidebarCollapsed && (
+                      <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded-md whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
+                        {tab.label}
+                      </div>
+                    )}
                   </button>
                 ))}
               </div>
+            </div>
+
+            {/* Collapse Toggle Button */}
+            <div className="p-3 border-t border-gray-700">
+              <button
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition-colors ${sidebarCollapsed ? 'justify-center' : ''}`}
+                title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              >
+                {sidebarCollapsed ? (
+                  <ChevronRight className="w-5 h-5" />
+                ) : (
+                  <>
+                    <ChevronLeft className="w-5 h-5" />
+                    <span className="text-sm">Collapse</span>
+                  </>
+                )}
+              </button>
             </div>
           </nav>
         )}

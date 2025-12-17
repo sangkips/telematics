@@ -221,7 +221,7 @@ export const MaintenancePanel: React.FC = () => {
           onClick={() => {
             refetchRecords();
           }}
-          className="px-4 py-2 bg-brand-accent-600 text-white rounded-lg hover:bg-brand-accent-700"
+          className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800"
         >
           Retry
         </button>
@@ -245,7 +245,7 @@ export const MaintenancePanel: React.FC = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className={`flex items-center space-x-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white px-4 py-2 rounded-lg transition-colors ${
+          className={`flex items-center space-x-2 bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition-colors ${
             isMobile ? 'w-full justify-center min-h-[44px]' : ''
           }`}
         >
@@ -731,7 +731,7 @@ export const MaintenancePanel: React.FC = () => {
               </button>
               <button
                 onClick={handleAddRecord}
-                className="px-4 py-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors"
               >
                 Add Record
               </button>
@@ -945,7 +945,7 @@ export const MaintenancePanel: React.FC = () => {
               </button>
               <button
                 onClick={handleUpdateRecord}
-                className="px-4 py-2 bg-brand-accent-600 hover:bg-brand-accent-700 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors"
               >
                 Update Record
               </button>

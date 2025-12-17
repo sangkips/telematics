@@ -35,7 +35,7 @@ export const MaintenanceTabsPanel: React.FC = () => {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`flex items-center justify-center space-x-2 py-3 px-4 rounded-md font-medium text-sm transition-colors ${activeTab === tab.id
-                    ? "bg-brand-accent-600 text-white"
+                    ? "bg-gray-900 text-white"
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-200"
                   }`}
               >

@@ -345,7 +345,7 @@ export const CreateAlertModal: React.FC<CreateAlertModalProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className={`px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white rounded-lg transition-colors ${
+              className={`px-6 py-2 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-600 text-white rounded-lg transition-colors ${
                 isMobile ? 'min-h-[44px]' : ''
               }`}
             >
