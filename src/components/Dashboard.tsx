@@ -151,7 +151,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
       {/* Desktop Navigation Tabs - Hidden on Mobile */}
       {!isMobile && (
-        <nav className="bg-brand-primary-800 border-b border-brand-primary-700 px-4">
+        <nav className="bg-white border-b border-gray-200 px-4">
           <div className="flex space-x-8">
             {[
               {
@@ -187,8 +187,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`flex items-center space-x-2 py-4 px-2 border-b-2 font-medium text-sm transition-colors ${activeTab === tab.id
-                    ? "border-brand-secondary-400 text-brand-secondary-400"
-                    : "border-transparent text-gray-400 hover:text-gray-300"
+                    ? "border-gray-900 text-gray-900"
+                    : "border-transparent text-gray-500 hover:text-gray-700"
                     }`}
                 >
                   <tab.icon className="w-4 h-4" />
@@ -226,7 +226,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             {/* Stats Cards - Mobile-First Responsive Design */}
             <section className="space-y-2">
               {isMobile && (
-                <h2 className="text-lg font-semibold text-white px-1">
+                <h2 className="text-lg font-semibold text-gray-900 px-1">
                   Fleet Overview
                 </h2>
               )}
@@ -257,9 +257,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
             />
 
             {selectedVehicle && (
-              <div className={`bg-gray-800 rounded-lg border border-gray-700 ${isMobile ? 'p-4' : 'p-6'
+              <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${isMobile ? 'p-4' : 'p-6'
                 }`}>
-                <h3 className={`font-semibold mb-4 ${isMobile ? 'text-base' : 'text-lg'
+                <h3 className={`font-semibold mb-4 text-gray-900 ${isMobile ? 'text-base' : 'text-lg'
                   }`}>
                   {selectedVehicle.name} - Details
                 </h3>
@@ -272,29 +272,29 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     <div className={`grid gap-4 ${isMobile ? 'grid-cols-1' : 'grid-cols-2'
                       }`}>
                       <div>
-                        <p className="text-gray-400 text-sm">
+                        <p className="text-gray-500 text-sm">
                           Current Location
                         </p>
-                        <p className="text-white">
+                        <p className="text-gray-900">
                           {selectedVehicle.location.address}
                         </p>
                       </div>
                       <div>
-                        <p className="text-gray-400 text-sm">Coordinates</p>
-                        <p className="text-white">
+                        <p className="text-gray-500 text-sm">Coordinates</p>
+                        <p className="text-gray-900">
                           {selectedVehicle.location.lat.toFixed(4)},{" "}
                           {selectedVehicle.location.lng.toFixed(4)}
                         </p>
                       </div>
                       <div>
-                        <p className="text-gray-400 text-sm">Last Update</p>
-                        <p className="text-white">
+                        <p className="text-gray-500 text-sm">Last Update</p>
+                        <p className="text-gray-900">
                           {selectedVehicle.lastUpdate.toLocaleString()}
                         </p>
                       </div>
                       <div>
-                        <p className="text-gray-400 text-sm">Driver</p>
-                        <p className="text-white">{selectedVehicle.driver}</p>
+                        <p className="text-gray-500 text-sm">Driver</p>
+                        <p className="text-gray-900">{selectedVehicle.driver}</p>
                       </div>
                     </div>
                   </div>

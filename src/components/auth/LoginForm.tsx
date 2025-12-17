@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Car, Lock, User, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { Truck, Lock, User, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { LoginCredentials } from "../../types";
 
@@ -32,35 +33,36 @@ export const LoginForm: React.FC = () => {
 
   const displayError = error || authError;
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          <div className="flex justify-center mb-4">
-            <div className="bg-blue-600 p-3 rounded-full">
-              <Car className="w-8 h-8 text-white" />
+          <Link to="/" className="inline-flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-gray-900 rounded-xl flex items-center justify-center shadow-lg">
+              <Truck className="w-6 h-6 text-white" />
             </div>
-          </div>
-          <h2 className="text-3xl font-bold text-white">
-            Nura Telematic System
+            <span className="text-2xl font-bold text-gray-900">Nura Logistics</span>
+          </Link>
+          <h2 className="text-3xl font-bold text-gray-900">
+            Welcome back
           </h2>
-          <p className="mt-2 text-gray-400">Sign in to your account</p>
+          <p className="mt-2 text-gray-600">Sign in to your account</p>
         </div>
 
         {/* Login Form */}
-        <div className="bg-gray-800 rounded-lg shadow-xl p-8 border border-gray-700">
+        <div className="bg-gray-50 rounded-2xl shadow-xl p-8 border border-gray-200">
           <form onSubmit={handleSubmit} className="space-y-6">
             {displayError && (
-              <div className="bg-red-900 bg-opacity-50 border border-red-700 rounded-lg p-3 flex items-center">
-                <AlertCircle className="w-5 h-5 text-red-400 mr-2" />
-                <span className="text-red-300 text-sm">{displayError}</span>
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-center">
+                <AlertCircle className="w-5 h-5 text-red-500 mr-2" />
+                <span className="text-red-600 text-sm">{displayError}</span>
               </div>
             )}
 
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-sm font-medium text-gray-700 mb-2"
               >
                 Email
               </label>
@@ -74,7 +76,7 @@ export const LoginForm: React.FC = () => {
                   onChange={(e) =>
                     setCredentials({ ...credentials, email: e.target.value })
                   }
-                  className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-colors"
                   placeholder="Enter your email"
                 />
               </div>
@@ -83,7 +85,7 @@ export const LoginForm: React.FC = () => {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-sm font-medium text-gray-700 mb-2"
               >
                 Password
               </label>
@@ -97,13 +99,13 @@ export const LoginForm: React.FC = () => {
                   onChange={(e) =>
                     setCredentials({ ...credentials, password: e.target.value })
                   }
-                  className="w-full pl-10 pr-12 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="w-full pl-10 pr-12 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-colors"
                   placeholder="Enter your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   {showPassword ? (
                     <EyeOff className="w-5 h-5" />
@@ -117,7 +119,7 @@ export const LoginForm: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
+              className="w-full bg-gray-900 hover:bg-gray-800 disabled:bg-gray-400 text-white font-medium py-3 px-4 rounded-full transition-colors duration-200 flex items-center justify-center shadow-lg"
             >
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -126,6 +128,13 @@ export const LoginForm: React.FC = () => {
               )}
             </button>
           </form>
+        </div>
+
+        {/* Back to home link */}
+        <div className="text-center">
+          <Link to="/" className="text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors">
+            ← Back to home
+          </Link>
         </div>
       </div>
     </div>

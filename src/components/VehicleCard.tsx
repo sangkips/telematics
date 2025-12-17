@@ -274,8 +274,8 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
 
             {/* Critical Alerts - Always Visible */}
             {criticalAlerts.length > 0 && (
-              <div className="mb-3 p-2 bg-red-900 bg-opacity-50 rounded border border-red-700">
-                <div className="flex items-center text-red-400">
+              <div className="mb-3 p-2 bg-red-50 rounded border border-red-200">
+                <div className="flex items-center text-red-600">
                   <AlertTriangle className="w-4 h-4 mr-2 flex-shrink-0" />
                   <span className="text-sm font-medium truncate">
                     {criticalAlerts.length} Critical Alert{criticalAlerts.length > 1 ? 's' : ''}
@@ -303,22 +303,22 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
 
             {/* Expandable Secondary Information */}
             {isExpanded && (
-              <div className="mt-4 space-y-3 border-t border-gray-700 pt-3">
+              <div className="mt-4 space-y-3 border-t border-gray-200 pt-3">
                 {/* Location and Speed */}
                 <div className="space-y-2">
-                  <div className="flex items-center text-gray-300">
-                    <MapPin className="w-4 h-4 mr-2 text-gray-400 flex-shrink-0" />
+                  <div className="flex items-center text-gray-700">
+                    <MapPin className="w-4 h-4 mr-2 text-gray-500 flex-shrink-0" />
                     <span className="text-sm truncate">{vehicle.location.address}</span>
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center text-gray-300">
-                      <Gauge className="w-4 h-4 mr-2 text-gray-400" />
+                    <div className="flex items-center text-gray-700">
+                      <Gauge className="w-4 h-4 mr-2 text-gray-500" />
                       <span className="text-sm">{vehicle.speed} km/h</span>
                     </div>
 
-                    <div className="flex items-center text-gray-300">
-                      <Clock className="w-4 h-4 mr-2 text-gray-400" />
+                    <div className="flex items-center text-gray-700">
+                      <Clock className="w-4 h-4 mr-2 text-gray-500" />
                       <span className="text-sm">
                         {new Date(vehicle.lastUpdate).toLocaleTimeString()}
                       </span>
@@ -328,18 +328,18 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
 
                 {/* Maintenance Status */}
                 {vehicle.nextServiceDue && (
-                  <div className="p-3 bg-gray-700 rounded-lg">
+                  <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
-                        <Wrench className="w-4 h-4 text-blue-400 mr-2" />
-                        <span className="text-sm text-gray-300">Next Service</span>
+                        <Wrench className="w-4 h-4 text-blue-500 mr-2" />
+                        <span className="text-sm text-gray-600">Next Service</span>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm font-medium text-white">
+                        <div className="text-sm font-medium text-gray-900">
                           {new Date(vehicle.nextServiceDue).toLocaleDateString()}
                         </div>
                         {vehicle.nextServiceOdometer && (
-                          <div className="text-xs text-gray-400">
+                          <div className="text-xs text-gray-500">
                             @ {vehicle.nextServiceOdometer.toLocaleString()} km
                           </div>
                         )}
@@ -349,16 +349,16 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
                 )}
 
                 {/* Statistics */}
-                <div className="grid grid-cols-2 gap-4 pt-2 border-t border-gray-700">
+                <div className="grid grid-cols-2 gap-4 pt-2 border-t border-gray-200">
                   <div>
-                    <div className="text-xs text-gray-400">Odometer</div>
-                    <div className="text-sm font-medium text-white">
+                    <div className="text-xs text-gray-500">Odometer</div>
+                    <div className="text-sm font-medium text-gray-900">
                       {vehicle.odometer.toLocaleString()} km
                     </div>
                   </div>
                   <div>
-                    <div className="text-xs text-gray-400">Fuel Efficiency</div>
-                    <div className="text-sm font-medium text-white">
+                    <div className="text-xs text-gray-500">Fuel Efficiency</div>
+                    <div className="text-sm font-medium text-gray-900">
                       {vehicle.fuelConsumption} L/100km
                     </div>
                   </div>
@@ -527,13 +527,13 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
 
       {/* Critical Alerts */}
       {criticalAlerts.length > 0 && (
-        <div className="mb-4 p-3 bg-red-900 bg-opacity-50 rounded-lg border border-red-700">
-          <div className="flex items-center text-red-400 mb-2">
+        <div className="mb-4 p-3 bg-red-50 rounded-lg border border-red-200">
+          <div className="flex items-center text-red-600 mb-2">
             <AlertTriangle className="w-4 h-4 mr-2" />
             <span className="text-sm font-medium">Critical Alert</span>
           </div>
           {criticalAlerts.map(alert => (
-            <p key={alert.id} className="text-red-300 text-sm">
+            <p key={alert.id} className="text-red-600 text-sm">
               {alert.message}
             </p>
           ))}
@@ -578,18 +578,18 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
 
       {/* Maintenance Status */}
       {vehicle.nextServiceDue && (
-        <div className="mt-4 p-3 bg-gray-700 rounded-lg">
+        <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <Wrench className="w-4 h-4 text-blue-400 mr-2" />
-              <span className="text-sm text-gray-300">Next Service</span>
+              <Wrench className="w-4 h-4 text-blue-500 mr-2" />
+              <span className="text-sm text-gray-600">Next Service</span>
             </div>
             <div className="text-right">
-              <div className="text-sm font-medium text-white">
+              <div className="text-sm font-medium text-gray-900">
                 {new Date(vehicle.nextServiceDue).toLocaleDateString()}
               </div>
               {vehicle.nextServiceOdometer && (
-                <div className="text-xs text-gray-400">
+                <div className="text-xs text-gray-500">
                   @ {vehicle.nextServiceOdometer.toLocaleString()} km
                 </div>
               )}
@@ -599,17 +599,17 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
       )}
 
       {/* Statistics */}
-      <div className="mt-4 pt-4 border-t border-gray-700">
+      <div className="mt-4 pt-4 border-t border-gray-200">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <div className="text-xs text-gray-400">Odometer</div>
-            <div className="text-sm font-medium text-white">
+            <div className="text-xs text-gray-500">Odometer</div>
+            <div className="text-sm font-medium text-gray-900">
               {vehicle.odometer.toLocaleString()} km
             </div>
           </div>
           <div>
-            <div className="text-xs text-gray-400">Fuel Efficiency</div>
-            <div className="text-sm font-medium text-white">
+            <div className="text-xs text-gray-500">Fuel Efficiency</div>
+            <div className="text-sm font-medium text-gray-900">
               {vehicle.fuelConsumption} L/100km
             </div>
           </div>

@@ -208,8 +208,8 @@ export const StatsCarousel: React.FC<StatsCarouselProps> = ({ stats }) => {
             key={index}
             onClick={() => scrollToCard(index)}
             className={`w-2 h-2 rounded-full transition-colors ${index === currentIndex
-              ? 'bg-blue-400'
-              : 'bg-gray-600 hover:bg-gray-500'
+              ? 'bg-gray-900'
+              : 'bg-gray-300 hover:bg-gray-400'
               }`}
             aria-label={`Go to stat ${index + 1}`}
           />
