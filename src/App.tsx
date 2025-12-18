@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
 import { Input } from './components/ui/input';
 import { Button } from './components/ui/button';
-import { Eye, EyeOff, Truck, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, Truck, AlertCircle, ArrowLeft } from 'lucide-react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Dashboard } from './components/Dashboard';
 import { ResponsiveProvider } from './contexts/ResponsiveContext';
@@ -56,7 +56,18 @@ const LoginPage = () => {
   const displayError = error || authError;
 
   return (
-    <div className="min-h-screen w-full flex">
+    <div className="min-h-screen w-full flex relative">
+      {/* Back Button */}
+      <Link
+        to="/"
+        className="absolute top-4 left-4 sm:top-6 sm:left-6 z-50 flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors group"
+      >
+        <div className="w-10 h-10 rounded-full bg-white shadow-md group-hover:bg-gray-100 flex items-center justify-center transition-colors border border-gray-200">
+          <ArrowLeft className="w-5 h-5" />
+        </div>
+        <span className="hidden sm:inline font-medium">Back to Home</span>
+      </Link>
+
       {/* Left Side - Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden items-center justify-center p-12">
         {/* Decorative elements */}

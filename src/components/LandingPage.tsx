@@ -215,7 +215,7 @@ export const LandingPage = () => {
                                     <div className="w-3 h-3 rounded-full bg-red-500" />
                                     <div className="w-3 h-3 rounded-full bg-yellow-500" />
                                     <div className="w-3 h-3 rounded-full bg-green-500" />
-                                    <span className="text-xs text-gray-400 ml-4">dashboard.nura-telematics.com</span>
+                                    <span className="text-xs text-gray-400 ml-4">dashboard.nura-telematics</span>
                                 </div>
                                 <div className="p-6 grid grid-cols-2 md:grid-cols-4 gap-4">
                                     <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
