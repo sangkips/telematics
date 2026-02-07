@@ -15,6 +15,7 @@ import { Button } from './ui/button';
 
 export const LandingPage = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
     const services = [
         {
@@ -38,6 +39,34 @@ export const LandingPage = () => {
             description: 'Expert guidance to make your logistics business profitable.',
         },
     ];
+
+    const handleAjaxSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setFormStatus('submitting');
+
+        const form = e.currentTarget;
+        const data = new FormData(form);
+
+        try {
+            const response = await fetch("https://formspree.io/f/xeeljykb", {
+                method: "POST",
+                body: data,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                setFormStatus('success');
+                form.reset();
+                setTimeout(() => setFormStatus('idle'), 5000);
+            } else {
+                setFormStatus('error');
+            }
+        } catch (error) {
+            setFormStatus('error');
+        }
+    };
 
     const scrollToContact = () => {
         const contactSection = document.getElementById('contact');
@@ -242,7 +271,7 @@ export const LandingPage = () => {
 
                         {/* Contact Form */}
                         <div>
-                            <form action="https://formspree.io/f/xeeljykb" method="POST" className="space-y-6">
+                            <form onSubmit={handleAjaxSubmit} className="space-y-6">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -252,6 +281,7 @@ export const LandingPage = () => {
                                             type="text"
                                             id="name"
                                             name="name"
+                                            required
                                             placeholder="Your name"
                                             className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1a1f36] focus:border-transparent outline-none transition-all"
                                         />
@@ -264,6 +294,7 @@ export const LandingPage = () => {
                                             type="email"
                                             id="email"
                                             name="email"
+                                            required
                                             placeholder="Your email"
                                             className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1a1f36] focus:border-transparent outline-none transition-all"
                                         />
@@ -277,6 +308,7 @@ export const LandingPage = () => {
                                         type="text"
                                         id="subject"
                                         name="subject"
+                                        required
                                         placeholder="Subject"
                                         className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1a1f36] focus:border-transparent outline-none transition-all"
                                     />
@@ -288,6 +320,7 @@ export const LandingPage = () => {
                                     <textarea
                                         id="message"
                                         name="message"
+                                        required
                                         placeholder="Your message"
                                         rows={5}
                                         className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#1a1f36] focus:border-transparent outline-none transition-all resize-none"
@@ -295,10 +328,21 @@ export const LandingPage = () => {
                                 </div>
                                 <Button
                                     type="submit"
-                                    className="w-full py-4 bg-[#1a1f36] hover:bg-[#2a2f46] text-white font-semibold rounded-lg transition-all"
+                                    disabled={formStatus === 'submitting'}
+                                    className="w-full py-4 bg-[#1a1f36] hover:bg-[#2a2f46] text-white font-semibold rounded-lg transition-all disabled:opacity-70"
                                 >
-                                    Send Message
+                                    {formStatus === 'submitting' ? 'Sending...' : 'Send Message'}
                                 </Button>
+                                {formStatus === 'success' && (
+                                    <p className="text-green-600 text-sm text-center">
+                                        Thank you! Your message has been sent successfully.
+                                    </p>
+                                )}
+                                {formStatus === 'error' && (
+                                    <p className="text-red-600 text-sm text-center">
+                                        Oops! Something went wrong. Please try again later.
+                                    </p>
+                                )}
                             </form>
                         </div>
                     </div>
